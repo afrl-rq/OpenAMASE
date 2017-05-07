@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<drag-effects>
+	<rubber-bands default="org.flexdock.docking.drag.effects.RubberBand">
+		<os name="windows">
+			<rubber-band class="org.flexdock.docking.drag.outline.win32.Win32RubberBand" /> 
+		</os>
+		
+		<os name="unix">
+			<rubber-band class="org.flexdock.docking.drag.outline.xlib.XlibRubberBand" /> 
+			<rubber-band class="org.flexdock.docking.drag.outline.x11.X11RubberBand" /> 
+		</os>
+	</rubber-bands>
+	
+	<drag-previews default="org.flexdock.docking.drag.preview.XORPreview">
+		<!-- We will be adding plaf-specific defaults for previews in here. -->
+	</drag-previews>
+</drag-effects>

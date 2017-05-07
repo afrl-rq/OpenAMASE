@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<jnlp spec="1.0+" codebase="https://flexdock.dev.java.net/webstart/" href="flexdockdemo.jnlp">
+   <information>
+      <title>FlexDock Demo</title>
+      <vendor>felxdock.dev.java.net</vendor>
+      <homepage href="http://flexdock.dev.java.net/"/>
+      <description>FlexDock is a Swing-based Java docking framework distributed under the MIT license.</description>
+      <offline-allowed/>
+   </information>
+   <security>
+      <all-permissions/>
+   </security>
+   <resources>
+      <j2se version="1.4+" initial-heap-size="20m" max-heap-size="384m"/>
+      <jar href="@DEMO_JAR_NAME@"/>
+      <jar href="@FRAMEWORK_JAR_NAME@"/>
+      <jar href="@JMF_JAR_NAME@" download="lazy"/>
+      <jar href="@APACHE_LOGGING@" download="lazy"/>
+      <jar href="@LOOKS@" download="lazy"/>
+      <jar href="@SKIN_LF@" download="lazy"/>
+   </resources>
+   <application-desc main-class="org.flexdock.demos.AllDemos"/>
+</jnlp>

@@ -1,0 +1,67 @@
+Building Flexdock
+--------------------------
+
+To build this project, obtain a copy of Apache's Ant from
+http://ant.apache.org. You must use version 1.6.0 or later.
+
+From this directory you should be able to build everything by running
+the command:
+
+  ant dist
+
+This will generate output in the following directories:
+
+  build/bin       The compiled framework and required resource files.
+  build/bin-demo  The compiled demos and required resource files.
+  build/bin-test  The compiled tests and required resource files
+  build/docs      The PDF documentation
+  build/docs/api  The framework javadocs
+  build/dist      Contains:
+                   - a jar containing just the framework code and
+                     it's resources
+                   - a zip containing this jar, the license file,
+                     plus the PDF docs and the javadoc (i.e. a binary
+                     distribution of the framework)
+
+
+If you just want to build the build/binxxx dirs, you can run just: ant
+
+To do this plus build the jar: ant jar
+
+If you want to build a jar without any native code in it, run:
+
+  ant jar -Dgeneric.jar=T
+
+The generated jar will have a -generic.jar suffix.
+
+To clean up everything built by ant, delete the build dir or run: ant clean
+
+
+
+Running The Demos via Ant
+--------------------------
+
+There are several ant targets for running the demo applications:
+
+  demo         <-- this one is a generic launcher for all the others
+  demo.adapter
+  demo.border
+  demo.compound
+  demo.elegant
+  demo.jmf
+  demo.perspective
+  demo.simple
+  demo.splitpane
+  demo.tabbedpane
+  demo.view
+
+To run a demo, choose the name of the demo target you wish to run
+and execute it via ant.  For example,
+
+  ant demo
+
+will run the generic demo launcher and
+
+  ant demo.simple
+
+will run the simple demo.

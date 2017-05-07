@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<tabEdgeInset>
+		<property key="com.sun.java.swing.plaf.windows.WindowsLookAndFeel" value="1" />
+		<property key="javax.swing.plaf.metal.MetalLookAndFeel" value="1" />
+		<property key="com.sun.java.swing.plaf.motif.MotifLookAndFeel" value="1" />
+		<property key="com.l2fprod.gui.plaf.skin.CompoundSkin" value="2" />
+		<property key="com.jgoodies.looks.plastic.PlasticXPLookAndFeel" value="1" />
+		<property key="com.jgoodies.looks.plastic.Plastic3DLookAndFeel" value="1" />
+	</tabEdgeInset>
+</settings>

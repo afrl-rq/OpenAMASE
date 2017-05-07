@@ -1,0 +1,14 @@
+<Multiflight>
+    <DefaultAircraft>
+        <Module Class="avtas.amase.multiflight.KinematicFlight"/>
+        <Module Class="avtas.amase.multiflight.CameraManager"/>
+        <Module Class="avtas.amase.multiflight.GimbalManager"/>
+        <Module Class="avtas.amase.multiflight.WaypointFollower"/>
+        <Module Class="avtas.amase.multiflight.LoiterControl"/>
+        <Module Class="avtas.amase.multiflight.TargetDetector">
+            <TrackTimeout>2.0</TrackTimeout>
+            <MinTimeInView>1.0</MinTimeInView>
+        </Module>
+        <Module Class="avtas.amase.multiflight.TrackControl"/>
+    </DefaultAircraft>
+</Multiflight>

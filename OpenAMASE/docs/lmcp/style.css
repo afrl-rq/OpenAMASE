@@ -1,0 +1,96 @@
+h2 {
+    font-family: verdana, arial, helvetica, sans-serif; font-size: 22px;
+    line-height: 150%; color: #000000;
+    background-color: #CCCCCC;
+    padding:  0px 0px 0px 8px;
+    margin-left: 0px; margin-right: 0px; margin-top: 12px; margin-bottom: 12px;
+    border: #000000; border-style: solid;
+    border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px
+}
+
+body {
+    font-family: verdana, arial, helvetica, sans-serif;
+    color: #000000;
+    font-size: 12px; 
+    text-align: Left;
+    line-height: 150%;
+    padding: 0px;
+    margin: 6px;
+}
+
+p.id {
+    margin: 3px;
+}
+
+p.comment {
+    font-family: verdana, arial, helvetica, sans-serif;
+    color: #000000;
+    font-size: 12px; 
+    text-align: Left;
+    line-height: 150%;
+    padding: 0px;
+    margin: 6px;
+    font-style: italic;
+}
+
+table.st {
+    width: 100%;
+    border-style: solid;
+    border-width: 1px;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    border-color: black;
+    page-break-before: always;
+    font-family: verdana, arial, helvetica, sans-serif; font-size: 12px;
+}
+
+table.st td.field {
+    padding: 2px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+}
+
+table.st td.name {
+    font-family: verdana, arial, helvetica, sans-serif; font-size: 18px;
+    line-height: 150%;
+    color: #000000;
+    background-color: #CCCCCC;
+    padding:  0px 0px 0px 8px;
+    margin-left: 0px; margin-right: 0px; margin-top: 12px; margin-bottom: 12px;
+    column-span: 2;
+}
+
+table.st td.header {
+    text-decoration: underline;
+    padding: 2px;
+    text-align: center;
+    font-weight: bold;
+    color: #000000;
+    font-size: 12px;
+    line-height: 150%;
+    padding: 0px;
+    margin: 6px;
+}
+
+table.st td.comment {
+    column-span: 3;
+}
+
+table.st td.id {
+    line-height: 150%;
+    color: #000000;
+    background-color: #CCCCCC;
+    padding:  0px 8px 0px 8px;
+    margin-left: 12px; margin-right: 12px; margin-top: 12px; margin-bottom: 12px;
+    colspan: 1;
+    text-align: right;
+}
+
+table.st td.fieldsection {
+    display: block;
+    margin: 0;
+    line-height: 150%;
+    column-span: 3;
+    text-align: left;
+}

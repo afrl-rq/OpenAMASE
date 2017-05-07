@@ -1,0 +1,1682 @@
+<html>
+<head>
+<title>MDM Description</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<h2><a name="overview">MDM Documentation</a></h2>
+<p>This document describes a message data model (MDM) for use with the Lightweight
+Message Construction Protocol (LMCP). </p>
+<p>
+<p>Documentation generated on Friday, June 3, 2011</p>
+</p>
+<br><b>MDM Series Names:</b> &nbsp;&nbsp; CMASI,  ENTITIES, 
+</p>       
+
+<h1>Series Name: CMASI</h1>
+<p>        <h2>Introduction</h2>        CMASI message definitions.  the Common Mission Automation Services Interface (CMASI) defines data relevant to mission planning and        UAV autonomy.        <br/>        <p>CMASI is designed for machine-to-machine communication of information related to UAV mission planning.  It is designed        to provide a minimum set of data for that purpose.  It is envisioned that end-users would expand on the base data set        by making custom messages that extend from existing data types.</p>        <p><i>Note on units:</i> Whenever possible, MKSD (meters, kilograms, seconds, degrees) system is used.  Since this is a system        for machine-to-machine communication, end applications are expected to do appropriate conversions to and from the MKSD unit types.</p>        <p><i>Note on Earth coordinates:</i>Unless otherwise specified, latitudes and longitudes are assumed to be based on the        WGS84 ellipsoid/datum and EGM96 gravitational model.  Altitude is the height above mean sea level for a given point.        (See <a href="http://en.wikipedia.org/wiki/World_Geodetic_System">WGS-84</a> and <a href="http://en.wikipedia.org/wiki/EGM96">EGM96</a>        for more info)</p>        <p>Note on directions:  Unless otherwise noted, all directional angles are relative to true North.</p>        <p>Note on IDs:  Many types have scenario-wide unique ids associated with them (VehicleID, TaskID, etc.)  These IDs should not be zero.</p>        <h2>Changes</h2>        <h3>8 October 2010</h3>        <ul>            <li>Changed EndPoint in <a href="detail.html#CMASI_datatype_VehicleInfo">VehicleInfo</a> to be <a href="detail.html#CMASI_datatype_Location2D">Location2D</a> based on group discussion            <li>Added Centerpoint field in <a href="detail.html#CMASI_datatype_CameraState">CameraState</a>            <li>Changed "ClimbRate" to "VerticalSpeed" in <a href="detail.html#CMASI_datatype_FlightProfile">FlightProfile</a>        </ul>        <h3>7 October 2010</h3>        <ul>            <li>Changed StartPoint in <a href="detail.html#CMASI_datatype_VehicleInfo">VehicleInfo</a> to be <a href="detail.html#CMASI_datatype_Location3D">Location3D</a> so that altitude is always well defined            <li>Fixed documentation in <a href="detail.html#CMASI_datatype_AirVehicleConfiguration">AirVehicleConfiguration</a> regarding MinAltAboveGround            <li>Fixed documentation in <a href="detail.html#CMASI_datatype_AirVehicleState">AirVehicleState</a> regarding VerticalSpeed        </ul>        <h3>4 October 2010</h3>        <ul>            <li>Made <a href="detail.html#CMASI_datatype_VideoStreamState">VideoStreamState</a> extend <a href="detail.html#CMASI_datatype_PayloadState">PayloadState</a>            <li>Fixed documentation in <a href="detail.html#CMASI_datatype_WeatherReport">WeatherReport</a>        </ul>        <h3>21 September 2010</h3>        <ul>            <li>Set default WavelengthBand to "EO" in <a href="detail.html#CMASI_datatype_CameraConfiguration">CameraConfiguration</a>.            <li>Added aspect ratio comment in <a href="detail.html#CMASI_datatype_CameraConfiguration">CameraConfiguration</a>.            <li>Changed documentation in <a href="detail.html#CMASI_datatype_VehicleInfo">VehicleInfo</a> to denote use of <a href="detail.html#CMASI_datatype_Location2D">Location2D</a> or            <a href="detail.html#CMASI_datatype_Location3D">Location3D</a> objects for "StartPoint" and "EndPoint".            <li>Added note regarding end-of-route behavior in <a href="detail.html#CMASI_datatype_MissionCommand">MissionCommand</a>.            <li>Changed <a href="detail.html#CMASI_datatype_VideoStreamConfiguration">VideoStreamConfiguration</a> to extend <a href="detail.html#CMASI_datatype_PayloadConfiguration">PayloadConfiguration</a> and removed.            "VideoStreamConfigurationList" from <a href="detail.html#CMASI_datatype_AirVehicleConfiguration">AirVehicleConfiguration</a>.            <li>Added "Priority" and "Required" fields to <a href="detail.html#CMASI_datatype_Task">Task</a>.            <li>Created <a href="detail.html#CMASI_datatype_WeatherReport">WeatherReport</a>.            <li>Changed comment regarding WGS-84 and EGM-96.        </ul>                <h3>31 August 2010</h3>        <ul>        <li>Fixed missing type in "UseInertialViewAngles" in <a href="detail.html#CMASI_datatype_LineSearchTask">LineSearchTask</a>        </ul>        <h3>20 August 2010</h3>        <ul>        <li>Changed default altitude to Mean-sea-level from Height-above-ellipsoid</li>        <li>Added note in main documentation regarding "zero" in ids        <li>Changed documentation for "ContingencyPoint" in <a href="detail.html#CMASI_datatype_Waypoint">Waypoint</a>        <li>Removed WavelengthBand from <a href="detail.html#CMASI_datatype_CameraAction">CameraAction</a> and changed WavelengthBands to WavelengthBand (array to scalar) in <a href="detail.html#CMASI_datatype_CameraConfiguration">CameraConfiguration</a>        <li>Removed framerate information from <a href="detail.html#CMASI_datatype_CameraConfiguration">CameraConfiguration</a> and <a href="detail.html#CMASI_datatype_SearchTask">SearchTask</a>        <li>Renamed "FlightMode" to <a href="detail.html#CMASI_enum_NavigationMode">NavigationMode</a>        <li>Added "Hover" to <a href="detail.html#CMASI_enum_LoiterType">LoiterType</a> and updated <a href="detail.html#CMASI_datatype_LoiterAction">LoiterAction</a> to reflect the use of Axis in hover-mode.        <li>Added Min, Max, and Min AGL altitudes to <a href="detail.html#CMASI_datatype_AirVehicleConfiguration">AirVehicleConfiguration</a>        <li>Updated documentation for Min/Max altitudes in <a href="detail.html#CMASI_datatype_VehicleInfo">VehicleInfo</a>.        <li>Added start and end points in <a href="detail.html#CMASI_datatype_VehicleInfo">VehicleInfo</a>.        <li>Improved (hopefully) the view angle documentation in <a href="detail.html#CMASI_datatype_LineSearchTask">LineSearchTask</a>.        <li>Updated documentation in <a href="detail.html#CMASI_datatype_Wedge">Wedge</a>.        </ul>        <h3>10 August 2010</h3>        <ul>        <li>Changed "ContingencyWaypoint" type from <a href="detail.html#CMASI_datatype_Waypoint">Waypoint</a> to uint32 in <a href="detail.html#CMASI_datatype_Waypoint">Waypoint</a>.        <li>Renamed "LostCommPoint" to "ContingencyPoint" in <a href="detail.html#CMASI_datatype_VehicleInfo">VehicleInfo</a> and updated the documentation.        <li>Added "RequiredFramerate" to <a href="detail.html#CMASI_datatype_SearchTask">SearchTask</a>.        <li>Addded "AvailableFramerates" to <a href="detail.html#CMASI_datatype_CameraConfiguration">CameraConfiguration</a>.        <li>Changed "WaypointMode" enum to <a href="detail.html#CMASI_enum_FlightMode">FlightMode</a>.  WaypointMode was a misnomer, since the enum describes many flight states, "WaypointFollow" being        only one of the available states.        <li>Added "AvailableLoiterTypes" and "AvailableTurnTypes" to <a href="detail.html#CMASI_datatype_AirVehicleConfiguration">AirVehicleConfiguration</a> to denote vehicle capabilities.        <li>Removed "AssignedAltitude" from <a href="detail.html#CMASI_datatype_AirVehicleConfiguration">AirVehicleConfiguration</a> since altitude can be assigned using <a href="detail.html#CMASI_datatype_VehicleInfo">VehicleInfo</a> object in <a href="detail.html#CMASI_datatype_AutomationRequest">AutomationRequest</a>        The presence of "AssignedAltitude" caused ambiguity in planning situations.  (which takes precedence?)        <li>Added "CurrentCommand" to <a href="detail.html#CMASI_datatype_AirVehicleState">AirVehicleState</a> to denote the VehicleActionCommand or MissionCommand currently being executed.        <li>Improved documentation in <a href="detail.html#CMASI_datatype_Wedge">Wedge</a>.        </ul>        <h3>28 July 2010</h3>        <ul>        <li>Removed "WedgeList" from <a href="detail.html#CMASI_datatype_Task">Task</a> and put "ViewAngleList" fields in <a href="detail.html#CMASI_datatype_PointSearchTask">PointSearchTask</a> <a href="detail.html#CMASI_datatype_LineSearchTask">LineSearchTask</a>, and <a href="detail.html#CMASI_datatype_AreaSearchTask">AreaSearchTask</a>        The definition of ViewAngle is based on the type of task.</li>        <li>Removed "Azimuth" and "Elevation" from <a href="detail.html#CMASI_datatype_LineSearchTask">LineSearchTask</a>. Replaced with "ViewAngleList"</li>        <li>Added <a href="detail.html#CMASI_datatype_KeyValuePair">KeyValuePair</a> to replace many existing string fields with a more structured set of data</li>        <li>Replaced string fields with <a href="detail.html#CMASI_datatype_KeyValuePair">KeyValuePair</a> type to enable structured maps of data in <a href="detail.html#CMASI_datatype_Task">Task</a>, <a href="detail.html#CMASI_datatype_OperatorSignal">OperatorSignal</a>, <a href="detail.html#CMASI_datatype_AutomationResponse">AutomationResponse</a>,        <a href="detail.html#CMASI_datatype_ServiceStatus">ServiceStatus</a>, <a href="detail.html#CMASI_datatype_SessionStatus">SessionStatus</a>.</li>        <li>Added "CommandID" in <a href="detail.html#CMASI_datatype_VehicleActionCommand">VehicleActionCommand</a> and <a href="detail.html#CMASI_datatype_MissionCommand">MissionCommand</a></li>        <li>Added <a href="detail.html#CMASI_enum_CommandStatusType">CommandStatusType</a> enum        <li>Added "Status" fields in <a href="detail.html#CMASI_datatype_VehicleActionCommand">VehicleActionCommand</a> and <a href="detail.html#CMASI_datatype_MissionCommand">MissionCommand</a>.        <li>Updated documentation to <a href="detail.html#CMASI_datatype_VehicleInfo">VehicleInfo</a> to clarify the meaning of min/max altitudes.        </ul>        <h3>26 July 2010</h3>        <ul>        <li>Changed version tag to "2".        <li>Replaced references to "No Fly" to "Keep Out".        <li>Added "Length" parameter in <a href="detail.html#CMASI_datatype_LoiterAction">LoiterAction</a>.        <li>Fixed azimuth and elevation fields in <a href="detail.html#CMASI_datatype_LineSearchTask">LineSearchTask</a> to reflect inertial coordinates.        <li>Updated comments in <a href="detail.html#CMASI_datatype_AirVehicleState">AirVehicleState</a> regarding body angles.        <li>Added "Visual" to <a href="detail.html#CMASI_enum_ZoneAvoidanceType">ZoneAvoidanceType</a> enum.        <li>Added vertical component to <a href="detail.html#CMASI_datatype_Wedge">Wedge</a>.        <li>Added "ContingencyWaypoint" field in <a href="detail.html#CMASI_datatype_Waypoint">Waypoint</a>.        <li>Added <a href="detail.html#CMASI_datatype_AutomationResponse">AutomationResponse</a> type.        <li>Changed "PlanRequest" to <a href="detail.html#CMASI_datatype_AutomationRequest">AutomationRequest</a>.        <li>Added "UseAltitude" field in <a href="detail.html#CMASI_datatype_MustFlyTask">MustFlyTask</a>.        <li>Moved "Boundary" from <a href="detail.html#CMASI_datatype_KeepInZone">KeepInZone</a> and <a href="detail.html#CMASI_datatype_KeepOutZone">KeepOutZone</a> into <a href="detail.html#CMASI_datatype_AbstractZone">AbstractZone</a>.        <li>Added <a href="detail.html#CMASI_datatype_RemoveZones">RemoveZones</a> and <a href="detail.html#CMASI_datatype_RemoveAirVehicles">RemoveAirVehicles</a> types.        <li>Added <a href="detail.html#CMASI_datatype_FlightDirectorAction">FlightDirectorAction</a> type.        </ul>        ( Previous changes are reflected in CMASI version 1 MDM )        </p>
+<h2>Enumerations</h2>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_enum_WavelengthBand"</a>WavelengthBand</td><tr><td class="comment" colspan="3">
+<p class="comment"> Describes wavelength bands </p>
+</td></tr>
+<tr><td class="field"><a name="CMASI_enum_WavelengthBand_field_AllAny"><B>AllAny</B></a> ( 0 )<p class="comment"> used in cases when wavelength is not applicable </p></td></tr>
+<tr><td class="field"><a name="CMASI_enum_WavelengthBand_field_EO"><B>EO</B></a> ( 1 )<p class="comment"> Electro-optical.  Visible spectrum </p></td></tr>
+<tr><td class="field"><a name="CMASI_enum_WavelengthBand_field_LWIR"><B>LWIR</B></a> ( 2 )<p class="comment"> Long-wave Infrared </p></td></tr>
+<tr><td class="field"><a name="CMASI_enum_WavelengthBand_field_SWIR"><B>SWIR</B></a> ( 3 )<p class="comment"> Short-wave infrared </p></td></tr>
+<tr><td class="field"><a name="CMASI_enum_WavelengthBand_field_MWIR"><B>MWIR</B></a> ( 4 )<p class="comment"> mid-wave infrared </p></td></tr>
+<tr><td class="field"><a name="CMASI_enum_WavelengthBand_field_Other"><B>Other</B></a> ( 5 )<p class="comment"> Other or undefined wavelength band </p></td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_enum_NavigationMode"</a>NavigationMode</td><tr><td class="comment" colspan="3">
+<p class="comment"> Describes waypoint modes </p>
+</td></tr>
+<tr><td class="field"><a name="CMASI_enum_NavigationMode_field_Waypoint"><B>Waypoint</B></a> ( 0 )<p class="comment"> standard waypoint following mode </p></td></tr>
+<tr><td class="field"><a name="CMASI_enum_NavigationMode_field_Loiter"><B>Loiter</B></a> ( 1 )<p class="comment"> loiter mode, vehicle in constant orbit </p></td></tr>
+<tr><td class="field"><a name="CMASI_enum_NavigationMode_field_FlightDirector"><B>FlightDirector</B></a> ( 2 )<p class="comment"> flight director, vehicle following specific heading and spedd commands without regard to waypoints </p></td></tr>
+<tr><td class="field"><a name="CMASI_enum_NavigationMode_field_TargetTrack"><B>TargetTrack</B></a> ( 3 )<p class="comment"> track target, vehicle adjusts path to maintain current target track </p></td></tr>
+<tr><td class="field"><a name="CMASI_enum_NavigationMode_field_FollowLeader"><B>FollowLeader</B></a> ( 4 )<p class="comment"> follow leader, vehicle path is maintained to remain in formation with a leader </p></td></tr>
+<tr><td class="field"><a name="CMASI_enum_NavigationMode_field_LostComm"><B>LostComm</B></a> ( 5 )<p class="comment"> lost comm, vehicle is out of comm range and should be executing lost-comm behavior </p></td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_enum_FOVOperationMode"</a>FOVOperationMode</td><tr><td class="comment" colspan="3">
+<p class="comment"> Describes how the field-of-view for a camera can be changed, i.e. in a continuous or discrete manner </p>
+</td></tr>
+<tr><td class="field"><a name="CMASI_enum_FOVOperationMode_field_Continuous"><B>Continuous</B></a> ( 0 )<p class="comment"> field of view can be continuously changed </p></td></tr>
+<tr><td class="field"><a name="CMASI_enum_FOVOperationMode_field_Discrete"><B>Discrete</B></a> ( 1 )<p class="comment"> field of view can only be set to certian, discrete values </p></td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_enum_GimbalPointingMode"</a>GimbalPointingMode</td><tr><td class="comment" colspan="3">
+<p class="comment"> Describes available pointing modes for a gimbal </p>
+</td></tr>
+<tr><td class="field"><a name="CMASI_enum_GimbalPointingMode_field_AirVehicleRelativeAngle"><B>AirVehicleRelativeAngle</B></a> ( 0 )<p class="comment"> angles are commanded relative to the vehicle </p></td></tr>
+<tr><td class="field"><a name="CMASI_enum_GimbalPointingMode_field_AirVehicleRelativeSlewRate"><B>AirVehicleRelativeSlewRate</B></a> ( 1 )<p class="comment"> angle rates are commanded relative to the vehicle </p></td></tr>
+<tr><td class="field"><a name="CMASI_enum_GimbalPointingMode_field_LatLonSlaved"><B>LatLonSlaved</B></a> ( 2 )<p class="comment"> gimbal aimed at an inertial location </p></td></tr>
+<tr><td class="field"><a name="CMASI_enum_GimbalPointingMode_field_InertialRelativeSlewRate"><B>InertialRelativeSlewRate</B></a> ( 3 )<p class="comment"> gimbal rates are calculated relative to the inertial coordinate system </p></td></tr>
+<tr><td class="field"><a name="CMASI_enum_GimbalPointingMode_field_Scan"><B>Scan</B></a> ( 4 )<p class="comment"> gimbal continuously scans in a pre-determined pattern </p></td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_enum_ZoneAvoidanceType"</a>ZoneAvoidanceType</td><tr><td class="comment" colspan="3">
+<p class="comment"> Describes types of keep-out zones </p>
+</td></tr>
+<tr><td class="field"><a name="CMASI_enum_ZoneAvoidanceType_field_Physical"><B>Physical</B></a> ( 1 )<p class="comment"> zone corresponds to a physical boundary (e.g. terrain, buildings) </p></td></tr>
+<tr><td class="field"><a name="CMASI_enum_ZoneAvoidanceType_field_Regulatory"><B>Regulatory</B></a> ( 2 )<p class="comment"> zone corresponds to a regulatory boundary (e.g. flight control corridor) </p></td></tr>
+<tr><td class="field"><a name="CMASI_enum_ZoneAvoidanceType_field_Acoustic"><B>Acoustic</B></a> ( 3 )<p class="comment"> zone corresponds to an area that is sensitive to acoustic intrusion </p></td></tr>
+<tr><td class="field"><a name="CMASI_enum_ZoneAvoidanceType_field_Threat"><B>Threat</B></a> ( 4 )<p class="comment"> zone contains a threat</p></td></tr>
+<tr><td class="field"><a name="CMASI_enum_ZoneAvoidanceType_field_Visual"><B>Visual</B></a> ( 5 )<p class="comment"> zone defines an area that is sensitive to visual detection.  The threshold of visual detection                is not defined by this standard.</p></td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_enum_LoiterType"</a>LoiterType</td><tr><td class="comment" colspan="3">
+<p class="comment"> Describes loiter types </p>
+</td></tr>
+<tr><td class="field"><a name="CMASI_enum_LoiterType_field_VehicleDefault"><B>VehicleDefault</B></a> ( 0 )<p class="comment"> vehicle default </p></td></tr>
+<tr><td class="field"><a name="CMASI_enum_LoiterType_field_Circular"><B>Circular</B></a> ( 1 )<p class="comment"> circular </p></td></tr>
+<tr><td class="field"><a name="CMASI_enum_LoiterType_field_Racetrack"><B>Racetrack</B></a> ( 2 )<p class="comment"> racetrack </p></td></tr>
+<tr><td class="field"><a name="CMASI_enum_LoiterType_field_FigureEight"><B>FigureEight</B></a> ( 3 )<p class="comment"> figure eight</p></td></tr>
+<tr><td class="field"><a name="CMASI_enum_LoiterType_field_Hover"><B>Hover</B></a> ( 4 )<p class="comment"> Hovering.</p></td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_enum_LoiterDirection"</a>LoiterDirection</td><tr><td class="comment" colspan="3">
+<p class="comment"> Describes loiter direction </p>
+</td></tr>
+<tr><td class="field"><a name="CMASI_enum_LoiterDirection_field_VehicleDefault"><B>VehicleDefault</B></a> ( 0 )<p class="comment"> vehicle default </p></td></tr>
+<tr><td class="field"><a name="CMASI_enum_LoiterDirection_field_CounterClockwise"><B>CounterClockwise</B></a> ( 1 )<p class="comment"> counter-clockwise </p></td></tr>
+<tr><td class="field"><a name="CMASI_enum_LoiterDirection_field_Clockwise"><B>Clockwise</B></a> ( 2 )<p class="comment"> clockwise </p></td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_enum_ServiceStatusType"</a>ServiceStatusType</td><tr><td class="comment" colspan="3">
+<p class="comment"> Describes automation service status types </p>
+</td></tr>
+<tr><td class="field"><a name="CMASI_enum_ServiceStatusType_field_Information"><B>Information</B></a> ( 0 )<p class="comment"> informational note from automation service </p></td></tr>
+<tr><td class="field"><a name="CMASI_enum_ServiceStatusType_field_Warning"><B>Warning</B></a> ( 1 )<p class="comment"> warning from automation service </p></td></tr>
+<tr><td class="field"><a name="CMASI_enum_ServiceStatusType_field_Error"><B>Error</B></a> ( 2 )<p class="comment"> error from automation service </p></td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_enum_SimulationStatusType"</a>SimulationStatusType</td><tr><td class="comment" colspan="3">
+<p class="comment"> Describes simulation status types </p>
+</td></tr>
+<tr><td class="field"><a name="CMASI_enum_SimulationStatusType_field_Stopped"><B>Stopped</B></a> ( 0 )<p class="comment"> simulation is stopped </p></td></tr>
+<tr><td class="field"><a name="CMASI_enum_SimulationStatusType_field_Running"><B>Running</B></a> ( 1 )<p class="comment"> simulation is running </p></td></tr>
+<tr><td class="field"><a name="CMASI_enum_SimulationStatusType_field_Paused"><B>Paused</B></a> ( 2 )<p class="comment"> simulation paused </p></td></tr>
+<tr><td class="field"><a name="CMASI_enum_SimulationStatusType_field_Reset"><B>Reset</B></a> ( 3 )<p class="comment"> simulation is reset </p></td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_enum_SpeedType"</a>SpeedType</td><tr><td class="comment" colspan="3">
+<p class="comment"> Describes vehicle speed type </p>
+</td></tr>
+<tr><td class="field"><a name="CMASI_enum_SpeedType_field_Airspeed"><B>Airspeed</B></a> ( 0 )<p class="comment"> airspeed </p></td></tr>
+<tr><td class="field"><a name="CMASI_enum_SpeedType_field_Groundspeed"><B>Groundspeed</B></a> ( 1 )<p class="comment"> groundspeed </p></td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_enum_TurnType"</a>TurnType</td><tr><td class="comment" colspan="3">
+<p class="comment"> Describes vehicle turn type </p>
+</td></tr>
+<tr><td class="field"><a name="CMASI_enum_TurnType_field_TurnShort"><B>TurnShort</B></a> ( 0 )<p class="comment"> turn short, return to track </p></td></tr>
+<tr><td class="field"><a name="CMASI_enum_TurnType_field_FlyOver"><B>FlyOver</B></a> ( 1 )<p class="comment"> fly over, return to track </p></td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_enum_CommandStatusType"</a>CommandStatusType</td><tr><td class="comment" colspan="3"></td></tr>
+<tr><td class="field"><a name="CMASI_enum_CommandStatusType_field_Pending"><B>Pending</B></a> ( 0 )<p class="comment"> Pending authorization prior to execution </p></td></tr>
+<tr><td class="field"><a name="CMASI_enum_CommandStatusType_field_Approved"><B>Approved</B></a> ( 1 )<p class="comment"> Approved for execution by the aircraft </p></td></tr>
+<tr><td class="field"><a name="CMASI_enum_CommandStatusType_field_InProcess"><B>InProcess</B></a> ( 2 )<p class="comment"> Currently executing by an aircraft </p></td></tr>
+<tr><td class="field"><a name="CMASI_enum_CommandStatusType_field_Executed"><B>Executed</B></a> ( 3 )<p class="comment"> Completed execution by an aircraft </p></td></tr>
+<tr><td class="field"><a name="CMASI_enum_CommandStatusType_field_Cancelled"><B>Cancelled</B></a> ( 4 )<p class="comment"> Cancelled by an operator, aircraft, or other entity </p></td></tr>
+</table>
+<h2>Structs</h2>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_AbstractGeometry"</a>AbstractGeometry</td><td class="id">ID = 1</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">Known Subtypes: <a href="detail.html#CMASI_datatype_Circle">Circle</a>, <a href="detail.html#CMASI_datatype_Polygon">Polygon</a>, <a href="detail.html#CMASI_datatype_Rectangle">Rectangle</a>, </p>
+<p class="id">field of: <a href="detail.html#CMASI_datatype_AbstractZone">AbstractZone</a>, <a href="detail.html#CMASI_datatype_AreaSearchTask">AreaSearchTask</a>, </p>
+
+<p class="comment"> Base class for geometry types </p>
+</td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_AbstractZone"</a>AbstractZone</td><td class="id">ID = 2</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">Known Subtypes: <a href="detail.html#CMASI_datatype_KeepInZone">KeepInZone</a>, <a href="detail.html#CMASI_datatype_KeepOutZone">KeepOutZone</a>, </p>
+<p class="id">field of: <a href="detail.html#CMASI_datatype_WeatherReport">WeatherReport</a>, </p>
+
+<p class="comment"> Base Type for all zones (keep-in and keep-out zones) </p>
+</td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_AbstractZone_field_ZoneID"><B>ZoneID</B></a><br><p class="comment"> A globally unique reference number for this zone </p>
+<td class="field" align=center>uint32</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AbstractZone_field_MinAltitude"><B>MinAltitude</B></a><br><p class="comment"> Lower bounds for the zone.  Altitude is height above WGS84 ellipsoid </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AbstractZone_field_MaxAltitude"><B>MaxAltitude</B></a><br><p class="comment"> Maximum altitude for operations </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AbstractZone_field_AffectedAircraft"><B>AffectedAircraft</B></a><br><p class="comment"> A list of aircraft IDs that this zone applies to.  If the list is empty, then it is                 assumed that the boundary applies to all aircraft. </p>
+<td class="field" align=center>uint32[]</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AbstractZone_field_StartTime"><B>StartTime</B></a><br><p class="comment"> Time at which this zone becomes active.  The time datum is undefined.</p>
+<td class="field" align=center>real64</td>
+<td class="field" align=center>seconds</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AbstractZone_field_EndTime"><B>EndTime</B></a><br><p class="comment"> Time at which this zone becomes inactive.  The time datum is undefined.</p>
+<td class="field" align=center>real64</td>
+<td class="field" align=center>seconds</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AbstractZone_field_Padding"><B>Padding</B></a><br><p class="comment"> Buffer to add/subtract around the border of the zone </p>
+<p class="comment">Default Value = 0</p></td>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meters</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AbstractZone_field_Label"><B>Label</B></a><br><p class="comment"> Optional label for this zone </p>
+<td class="field" align=center>string</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AbstractZone_field_Boundary"><B>Boundary</B></a><br><p class="comment">                Geometry object describing the boundary.  This boundary is 2-dimensional.  The zone boundary is defined as                an extrusion of this boundary from MinAltitude to MaxAltitude.            </p>
+<td class="field" align=center><a href="#CMASI_datatype_AbstractGeometry">AbstractGeometry</a></td>
+<td class="field" align=center>None</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_AirVehicleConfiguration"</a>AirVehicleConfiguration</td><td class="id">ID = 3</td></tr>
+<tr><td class="comment" colspan="3">
+<p class="comment">            Provides information regarding a vehicle's configuration items.        </p>
+</td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleConfiguration_field_VehicleID"><B>VehicleID</B></a><br><p class="comment"> A unique id for this vehicle </p>
+<td class="field" align=center>uint32</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleConfiguration_field_Label"><B>Label</B></a><br><p class="comment">                An optional text string for the vehicle.  This is not necesarily unique, and is included                for information only.  VehicleID should be used to uniquely identify vehicles.            </p>
+<td class="field" align=center>string</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleConfiguration_field_MinimumSpeed"><B>MinimumSpeed</B></a><br><p class="comment"> The minimum true airspeed that should be commanded for this aircraft </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter/sec</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleConfiguration_field_MaximumSpeed"><B>MaximumSpeed</B></a><br><p class="comment"> The maximum true airspeed that should be commanded for this aircraft </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter/sec</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleConfiguration_field_NominalFlightProfile"><B>NominalFlightProfile</B></a><br><p class="comment"> Describes the preferred operating mode for most planning purposes.  This can be a max range            or endurance speed profile, or any other operating point chosen by a user.  This field may not            be null.            </p>
+<td class="field" align=center><a href="#CMASI_datatype_FlightProfile">FlightProfile</a></td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleConfiguration_field_AlternateFlightProfiles"><B>AlternateFlightProfiles</B></a><br><p class="comment"> A list of all flight configurations described for this vehicle.                Each flight configuration specifies a different mode of flight, for instance: climb, cruise,                dash, loiter.  This list may be empty, and does not necessarily contain the nominal flight                configuration.            </p>
+<td class="field" align=center><a href="#CMASI_datatype_FlightProfile">FlightProfile</a>[]</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleConfiguration_field_PayloadConfigurationList"><B>PayloadConfigurationList</B></a><br><p class="comment"> A list of all payload configurations for this vehicle. Payloads include gimbaled sensors,                 SAR radars (not yet supported), air-launched UAVs (not yet supported), and weapons (not yet supported). </p>
+<td class="field" align=center><a href="#CMASI_datatype_PayloadConfiguration">PayloadConfiguration</a>[]</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleConfiguration_field_AvailableLoiterTypes"><B>AvailableLoiterTypes</B></a><br><p class="comment"> A list of available loiter types for this aircraft </p>
+<p class="comment">Default Value = VehicleDefault</p></td>
+<td class="field" align=center><a href="#CMASI_enum_LoiterType">LoiterType</a>[]</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleConfiguration_field_AvailableTurnTypes"><B>AvailableTurnTypes</B></a><br><p class="comment"> A list of available turning modes for this aircraft </p>
+<p class="comment">Default Value = TurnShort</p></td>
+<td class="field" align=center><a href="#CMASI_enum_TurnType">TurnType</a>[]</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleConfiguration_field_MinimumAltitude"><B>MinimumAltitude</B></a><br><p class="comment"> Minimum MSL altitude that this aircraft is allowed to fly.  This value should be treated as            a regulatory or safety-of-flight parameter and therefore takes precedence over other requests. </p>
+<p class="comment">Default Value = 0</p></td>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleConfiguration_field_MaximumAltitude"><B>MaximumAltitude</B></a><br><p class="comment"> Maximum MSL altitude that this aircraft is allowed to fly.  This value should be treated as            a regulatory or safety-of-flight parameter and therefore takes precedence over other requests.            </p>
+<p class="comment">Default Value = 1000000</p></td>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleConfiguration_field_MinAltAboveGround"><B>MinAltAboveGround</B></a><br><p class="comment"> Minimum altitude above ground that this aircraft is allowed to fly.  This value should be treated as            a regulatory or safety-of-flight parameter and therefore takes precedence over other requests. </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_AirVehicleState"</a>AirVehicleState</td><td class="id">ID = 4</td></tr>
+<tr><td class="comment" colspan="3">
+<p class="comment">            Provides basic information regarding the vehicle state with regard to its location and orientation in the            world, and current velocity in body axis.  <br/>            Provides basic state information regarding entity position, orientation, velocity, and acceleration.            The entity body right-hand coordinate system is used, where X is out the nose, Y is out the right side, and Z            is downward.  The order of rotation from inertial to body coordinates is yaw-pitch-roll. <br/>            The direction cosine matrix (DCM) for conversion from body to inertial coordinates is:<br/><br/>            [cTheta*cPsi, cTheta*sPsi, -sTheta]<br/>            [sPhi*sTheta*cPsi-cPhi*sPsi, sPhi*sTheta*sPsi+cPhi*cPsi, sPhi*cTheta]<br/>            [cPhi*sTheta*cPsi+sPhi*sPsi, cPhi*sTheta*sPsi-sPhi*cPsi, cPhi*cTheta]<br/><br/>            where, c denotes cosine and s denotes sine.            <br/><br/>            To convert from body to inertial velocities, use,<br/>            [North Vel, East Vel, Down Vel]' = DCM' * [Vx, Vy, Vz]'  where [Vx, Vy, Vz] is the body vel or accel.        </p>
+</td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleState_field_VehicleID"><B>VehicleID</B></a><br><p class="comment"> A unique id for this vehicle </p>
+<td class="field" align=center>uint32</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleState_field_Position"><B>Position</B></a><br><p class="comment"> The current position of the air vehicle </p>
+<td class="field" align=center><a href="#CMASI_datatype_Location3D">Location3D</a></td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleState_field_u"><B>u</B></a><br><p class="comment"> Velocity in the body x-direction (postive out nose) </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter/sec</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleState_field_v"><B>v</B></a><br><p class="comment"> Velocity in the body y-direction (positive out right wing) </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter/sec</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleState_field_w"><B>w</B></a><br><p class="comment"> Velocity in the body z-direction (positve downward) </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter/sec</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleState_field_udot"><B>udot</B></a><br><p class="comment"> Acceleration in the body x-direction (postive out nose) </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter/sec/sec</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleState_field_vdot"><B>vdot</B></a><br><p class="comment"> Acceleration in the body y-direction (positive out right wing) </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter/sec/sec</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleState_field_wdot"><B>wdot</B></a><br><p class="comment"> Acceleration in the body z-direction (positve downward) </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter/sec/sec</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleState_field_Heading"><B>Heading</B></a><br><p class="comment"> Angle between true North and the projection of the body x-axis in the North-East plane. </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleState_field_Pitch"><B>Pitch</B></a><br><p class="comment"> Pitch of vehicle around body y-axis (positive upwards) </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleState_field_Roll"><B>Roll</B></a><br><p class="comment"> Roll angle of the vehicle around body x-axis (positive right wing down) </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleState_field_p"><B>p</B></a><br><p class="comment"> roll-rate of vehicle (angular velocity around body x-axis).  Positive right-wing down. </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree/sec</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleState_field_q"><B>q</B></a><br><p class="comment"> pitch rate of the vehicle (angular velocity around body y-axis).  Positive nose-up.</p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree/sec</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleState_field_r"><B>r</B></a><br><p class="comment"> yaw rate of the vehicle (angular velocity around body z-axis).  Positive nose right. </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree/sec</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleState_field_Airspeed"><B>Airspeed</B></a><br><p class="comment"> vehicle true airspeed </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter/sec</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleState_field_VerticalSpeed"><B>VerticalSpeed</B></a><br><p class="comment"> Vertical speed (positive upwards) of the vehicle in the inertial frame, rate of change of altitude </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter/sec</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleState_field_ActualEnergyRate"><B>ActualEnergyRate</B></a><br><p class="comment"> The consumption rate of available energy, expressed in terms of the percentage of maximum capacity                used per second. </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>%/sec</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleState_field_EnergyAvailable"><B>EnergyAvailable</B></a><br><p class="comment"> The available energy remaining, expressed in terms of the percentage of maximum capacity </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>%</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleState_field_WindSpeed"><B>WindSpeed</B></a><br><p class="comment"> Wind speed as detected or computed by the vehicle </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter/sec</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleState_field_WindDirection"><B>WindDirection</B></a><br><p class="comment"> Wind source direction (true) as detected or computed by the vehicle</p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleState_field_GroundSpeed"><B>GroundSpeed</B></a><br><p class="comment"> ground speed as detected or computed by the vehicle </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter/sec</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleState_field_GroundTrack"><B>GroundTrack</B></a><br><p class="comment"> True ground track angle as detected or computed by the vehicle </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleState_field_PayloadStateList"><B>PayloadStateList</B></a><br><p class="comment">                Supplies information regarding the current state of onboard payload items.            </p>
+<td class="field" align=center><a href="#CMASI_datatype_PayloadState">PayloadState</a>[]</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleState_field_CurrentWaypoint"><B>CurrentWaypoint</B></a><br><p class="comment">                The ID of the current waypoint. Only valid if the vehicle is in waypoint following mode.            </p>
+<td class="field" align=center>uint32</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleState_field_CurrentCommand"><B>CurrentCommand</B></a><br><p class="comment"> Current command (VehicleActionCommand or MissionCommand) being executed. A value of zero denotes no command being flown,            or that a command without an set identifier (CommandID) is being executed.            </p>
+<td class="field" align=center>uint32</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleState_field_Mode"><B>Mode</B></a><br><p class="comment">                The current mode for this vehicle.             </p>
+<p class="comment">Default Value = Waypoint</p></td>
+<td class="field" align=center><a href="#CMASI_enum_NavigationMode">NavigationMode</a></td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleState_field_AssociatedTasks"><B>AssociatedTasks</B></a><br><p class="comment">                Tasks that this vehicle is currently executing.  An empty list indicates no associated tasks.  The task number should                coincide with the task number in the task request.  For instance, if a waypoint is associated with a search task, then the                task number associated with that search should be included in this list.            </p>
+<td class="field" align=center>uint32[]</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AirVehicleState_field_Time"><B>Time</B></a><br><p class="comment"> time stamp of this data.  Time datum is defined by the application. </p>
+<td class="field" align=center>real64</td>
+<td class="field" align=center>second</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_AreaSearchTask"</a>AreaSearchTask</td><td class="id">ID = 5</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">extends <a href="#CMASI_datatype_SearchTask">SearchTask</a></p>
+<p class="comment"> Area search task </p>
+</td></tr>
+<tr><td class="fieldsection" colspan="3">Members inherited from <a href="#CMASI_datatype_Task">Task</a>: TaskID, Label, RevisitRate, Parameters, Priority, Required, <br>Members inherited from <a href="#CMASI_datatype_SearchTask">SearchTask</a>: DesiredWavelengthBands, DwellTime, GroundSampleDistance, <br></td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_AreaSearchTask_field_SearchArea"><B>SearchArea</B></a><br><p class="comment"> Area to search </p>
+<td class="field" align=center><a href="#CMASI_datatype_AbstractGeometry">AbstractGeometry</a></td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AreaSearchTask_field_ViewAngleList"><B>ViewAngleList</B></a><br><p class="comment"> A list of acceptable look-angles for this task.  Each wedge is defined relative to true North. To be a valid                 look angle, a sensor must be looking from a direction within the bounds of the wedge.            </p>
+<td class="field" align=center><a href="#CMASI_datatype_Wedge">Wedge</a>[]</td>
+<td class="field" align=center>None</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_CameraAction"</a>CameraAction</td><td class="id">ID = 6</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">extends <a href="#CMASI_datatype_PayloadAction">PayloadAction</a></p>
+<p class="comment">            An action for controlling a camera that is mounted on a gimbal.        </p>
+</td></tr>
+<tr><td class="fieldsection" colspan="3">Members inherited from <a href="#CMASI_datatype_VehicleAction">VehicleAction</a>: AssociatedTaskList, <br>Members inherited from <a href="#CMASI_datatype_PayloadAction">PayloadAction</a>: PayloadID, <br></td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_CameraAction_field_HorizontalFieldOfView"><B>HorizontalFieldOfView</B></a><br><p class="comment"> The commanded horizontal (azimuth) field of view. </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_CameraConfiguration"</a>CameraConfiguration</td><td class="id">ID = 7</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">extends <a href="#CMASI_datatype_PayloadConfiguration">PayloadConfiguration</a></p>
+<p class="comment">            Description of capabilities of a camera (EO, LWIR, SWIR, MWIR, etc.). If a camera has multiple bands,            then a CameraConfiguration for each camera mode should be included in the PayloadConfigurationList.<br/>            <i>Note on Aspect ratio:</i> Aspect ratio is computed by taking the ratio of VideoStreamHorizontalResolution and            VideoStreamVerticalResolution.  It is assumed that the camera has a constant aspect ratio through all            fields-of-view and that the field-of-view aspect ratio is the same as the video stream aspect ratio.        </p>
+</td></tr>
+<tr><td class="fieldsection" colspan="3">Members inherited from <a href="#CMASI_datatype_PayloadConfiguration">PayloadConfiguration</a>: PayloadID, PayloadKind, <br></td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_CameraConfiguration_field_SupportedWavelengthBand"><B>SupportedWavelengthBand</B></a><br><p class="comment"> The supported wavelength band of this camera </p>
+<p class="comment">Default Value = EO</p></td>
+<td class="field" align=center><a href="#CMASI_enum_WavelengthBand">WavelengthBand</a></td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_CameraConfiguration_field_FieldOfViewMode"><B>FieldOfViewMode</B></a><br><p class="comment"> The manner in which field of views are commanded:                 Continuous (any FOV between MinHorizontalFieldOfView and MaxHorizontalFieldOfView can be commanded), or                 Discrete (the only supported FOVs are listed in DiscreteHorizontalFieldOfViewList). </p>
+<p class="comment">Default Value = Continuous</p></td>
+<td class="field" align=center><a href="#CMASI_enum_FOVOperationMode">FOVOperationMode</a></td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_CameraConfiguration_field_MinHorizontalFieldOfView"><B>MinHorizontalFieldOfView</B></a><br><p class="comment"> The minimum horizontal field of view of the sensor. Only used if FieldOfViewMode is Continuous. </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_CameraConfiguration_field_MaxHorizontalFieldOfView"><B>MaxHorizontalFieldOfView</B></a><br><p class="comment"> The maximum horizontal field of view of the sensor. Only used if FieldOfViewMode is Continuous. </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_CameraConfiguration_field_DiscreteHorizontalFieldOfViewList"><B>DiscreteHorizontalFieldOfViewList</B></a><br><p class="comment"> The horizontal field of views supported by the sensor. Only used if FieldOfViewMode is Discrete. </p>
+<td class="field" align=center>real32[]</td>
+<td class="field" align=center>degree</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_CameraConfiguration_field_VideoStreamHorizontalResolution"><B>VideoStreamHorizontalResolution</B></a><br><p class="comment"> The number of horizontal pixels in the output live-motion video stream. </p>
+<td class="field" align=center>uint32</td>
+<td class="field" align=center>pixel</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_CameraConfiguration_field_VideoStreamVerticalResolution"><B>VideoStreamVerticalResolution</B></a><br><p class="comment"> The number of vertical pixels in the output live-motion video stream. </p>
+<td class="field" align=center>uint32</td>
+<td class="field" align=center>pixel</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_CameraState"</a>CameraState</td><td class="id">ID = 8</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">extends <a href="#CMASI_datatype_PayloadState">PayloadState</a></p>
+<p class="comment"> Describes the current state of a camera. </p>
+</td></tr>
+<tr><td class="fieldsection" colspan="3">Members inherited from <a href="#CMASI_datatype_PayloadState">PayloadState</a>: PayloadID, <br></td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_CameraState_field_HorizontalFieldOfView"><B>HorizontalFieldOfView</B></a><br><p class="comment"> The current horizontal field of view (in sensor axis). </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_CameraState_field_Footprint"><B>Footprint</B></a><br><p class="comment"> The current sensor footprint of the camera represented as a polygon with n-vertices.                 If this field contains zero items then the footprint is unavailable or was not calculated. </p>
+<td class="field" align=center><a href="#CMASI_datatype_Location3D">Location3D</a>[]</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_CameraState_field_Centerpoint"><B>Centerpoint</B></a><br><p class="comment"> the current location according to the intersection of a ray along the center axis of the current                camera field of view with the ground.  If this field is null, then the location was not computed.            </p>
+<p class="comment">Default Value = null</p></td>
+<td class="field" align=center><a href="#CMASI_datatype_Location3D">Location3D</a></td>
+<td class="field" align=center>None</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_Circle"</a>Circle</td><td class="id">ID = 9</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">extends <a href="#CMASI_datatype_AbstractGeometry">AbstractGeometry</a></p>
+<p class="comment"> Defines a circular shape based on a center point and radius </p>
+</td></tr>
+<tr><td class="fieldsection" colspan="3">Members inherited from <a href="#CMASI_datatype_AbstractGeometry">AbstractGeometry</a>: <br></td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_Circle_field_CenterPoint"><B>CenterPoint</B></a><br><p class="comment"> Center point of the circle </p>
+<td class="field" align=center><a href="#CMASI_datatype_Location2D">Location2D</a></td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_Circle_field_Radius"><B>Radius</B></a><br><p class="comment"> Radius of the circle </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_FlightProfile"</a>FlightProfile</td><td class="id">ID = 10</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">field of: <a href="detail.html#CMASI_datatype_AirVehicleConfiguration">AirVehicleConfiguration</a>, </p>
+
+<p class="comment">            A set of parameter describing the operations of a vehicle.  This can be used to set routing preferences            for a particular vehicle.  The "Name" field can be used to describe a given condition, such as "cruise" or "climb".        </p>
+</td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_FlightProfile_field_Name"><B>Name</B></a><br><p class="comment"> The unique name for this configuration </p>
+<td class="field" align=center>string</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_FlightProfile_field_Airspeed"><B>Airspeed</B></a><br><p class="comment"> True Airspeed </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter/sec</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_FlightProfile_field_PitchAngle"><B>PitchAngle</B></a><br><p class="comment"> The pitch angle of the aircraft in this flight condition(assuming zero bank) </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_FlightProfile_field_VerticalSpeed"><B>VerticalSpeed</B></a><br><p class="comment"> Vertical speed (positive upwards) of the vehicle </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter/sec</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_FlightProfile_field_MaxBankAngle"><B>MaxBankAngle</B></a><br><p class="comment"> The maximum angle that this vehicle will bank </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_FlightProfile_field_EnergyRate"><B>EnergyRate</B></a><br><p class="comment">                The consumption rate of available energy, expressed in terms of the percentage of maximum capacity                used per second.            </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>%/sec</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_GimbalAngleAction"</a>GimbalAngleAction</td><td class="id">ID = 11</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">extends <a href="#CMASI_datatype_PayloadAction">PayloadAction</a></p>
+<p class="comment">            An action for controlling the movement of a gimbal. Individual sensors on the gimbal are controlled            via the <a href="detail.html#CMASI_datatype_CameraAction">CameraAction</a> message.<br/>            Azimuth is defined as the angle between the long axis of the aircraft and the sensor boresight, positive clockwise.<br/>            Elevation is defined as the angle between the aircraft long-lat plane and the sensor boresight, positive upwards.<br/>            Rotation is defined as rotation from the aircraft normal (Up), positive clockwise.<br/>        </p>
+</td></tr>
+<tr><td class="fieldsection" colspan="3">Members inherited from <a href="#CMASI_datatype_VehicleAction">VehicleAction</a>: AssociatedTaskList, <br>Members inherited from <a href="#CMASI_datatype_PayloadAction">PayloadAction</a>: PayloadID, <br></td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_GimbalAngleAction_field_Azimuth"><B>Azimuth</B></a><br><p class="comment"> The commanded azimuth angle (0 degrees out of nose, positive clockwise).  </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_GimbalAngleAction_field_Elevation"><B>Elevation</B></a><br><p class="comment"> The commanded elevation angle (0 degrees horizontal, positive upwards).  </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_GimbalAngleAction_field_Rotation"><B>Rotation</B></a><br><p class="comment"> The commanded rotation angle (0 degrees aligned with aircraft normal, positive clockwise).  </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_GimbalConfiguration"</a>GimbalConfiguration</td><td class="id">ID = 12</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">extends <a href="#CMASI_datatype_PayloadConfiguration">PayloadConfiguration</a></p>
+<p class="comment">            Description of a gimbal's capabilities. A gimbal is defined as the mount of a sensor or set of sensors            that may or may not have freedom of motion (for instance, the fixed mounting of a camera would still be            considered a gimbal payload that must be defined).<br/>            Azimuth is defined as the angle between the long axis of the aircraft and the sensor boresight, positive clockwise.<br/>            Elevation is defined as the angle between the aircraft long-lat plane and the sensor boresight, positive upwards.<br/>            Rotation is defined as rotation from the aircraft normal (Up), positive clockwise.<br/>        </p>
+</td></tr>
+<tr><td class="fieldsection" colspan="3">Members inherited from <a href="#CMASI_datatype_PayloadConfiguration">PayloadConfiguration</a>: PayloadID, PayloadKind, <br></td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_GimbalConfiguration_field_SupportedPointingModes"><B>SupportedPointingModes</B></a><br><p class="comment">                The pointing modes supported by the gimbal            </p>
+<p class="comment">Default Value = AirVehicleRelativeAngle</p></td>
+<td class="field" align=center><a href="#CMASI_enum_GimbalPointingMode">GimbalPointingMode</a>[]</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_GimbalConfiguration_field_MinAzimuth"><B>MinAzimuth</B></a><br><p class="comment">                Minimum azimuth that this sensor can slew in body axis (0 degrees out of nose, positive clockwise).                If this is a fixed-azimuth sensor, then this should be set to the fixed azimuth value.            </p>
+<p class="comment">Default Value = -180</p></td>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_GimbalConfiguration_field_MaxAzimuth"><B>MaxAzimuth</B></a><br><p class="comment">                Maximum azimuth that this sensor can slew in body axis (0 degrees out of nose, positive clockwise).                If this is a fixed-azimuth sensor, then this should be set to the fixed azimuth value.            </p>
+<p class="comment">Default Value = 180</p></td>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_GimbalConfiguration_field_IsAzimuthClamped"><B>IsAzimuthClamped</B></a><br><p class="comment">                Determines whether there are any limits on the azimuth of the gimbal. If this is set to                false, then MinAzimuth and MaxAzimuth are not used, and the gimbal is capable of                continuously spinning in a 360 degree circle without hitting any stops.            </p>
+<p class="comment">Default Value = false</p></td>
+<td class="field" align=center>bool</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_GimbalConfiguration_field_MinElevation"><B>MinElevation</B></a><br><p class="comment">                Minimum elevation that this sensor can slew in body axis (0 degrees horizontal, positive upwards).                If this is a fixed-elevation sensor, then this should be set to the fixed elevation value.            </p>
+<p class="comment">Default Value = -180</p></td>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_GimbalConfiguration_field_MaxElevation"><B>MaxElevation</B></a><br><p class="comment">                Maximum elevation that this sensor can slew in body axis (0 degrees horizontal, positive upwards).                If this is a fixed-elevation sensor, then this should be set to the fixed elevation value.            </p>
+<p class="comment">Default Value = 180</p></td>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_GimbalConfiguration_field_IsElevationClamped"><B>IsElevationClamped</B></a><br><p class="comment">                Determines whether there are any limits on the elevation of the gimbal. If this is set to                false, then MinElevation and MaxElevation are not used, and the gimbal is capable of                continuously spinning in a 360 degree circle without hitting any stops.            </p>
+<p class="comment">Default Value = false</p></td>
+<td class="field" align=center>bool</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_GimbalConfiguration_field_MinRotation"><B>MinRotation</B></a><br><p class="comment">                Minimum rotation that this sensor can slew in body axis (0 degrees aligned with aircraft normal, positive clockwise).                If this is a fixed-rotation sensor, then this should be set to the fixed rotation value.            </p>
+<p class="comment">Default Value = 0</p></td>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_GimbalConfiguration_field_MaxRotation"><B>MaxRotation</B></a><br><p class="comment">                Maximum rotation that this sensor can slew in body axis (0 degrees aligned with aircraft normal, positive clockwise).                If this is a fixed-rotation sensor, then this should be set to the fixed rotation value.            </p>
+<p class="comment">Default Value = 0</p></td>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_GimbalConfiguration_field_IsRotationClamped"><B>IsRotationClamped</B></a><br><p class="comment">                Determines whether there are any limits on the rotation of the gimbal. If this is set to                false, then MinRotation and MaxRotation are not used, and the gimbal is capable of                continuously rotating in a 360 degree circle without hitting any stops.            </p>
+<p class="comment">Default Value = true</p></td>
+<td class="field" align=center>bool</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_GimbalConfiguration_field_MaxAzimuthSlewRate"><B>MaxAzimuthSlewRate</B></a><br><p class="comment"> Rate of maximum horizontal slew for this gimbal. </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree/sec</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_GimbalConfiguration_field_MaxElevationSlewRate"><B>MaxElevationSlewRate</B></a><br><p class="comment"> Rate of maximum vertical slew for this gimbal. </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree/sec</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_GimbalConfiguration_field_MaxRotationRate"><B>MaxRotationRate</B></a><br><p class="comment"> Rate of maximum rotation for this gimbal. </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree/sec</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_GimbalConfiguration_field_ContainedSensorList"><B>ContainedSensorList</B></a><br><p class="comment">                Lists the PayloadID of each sensor physically located within the gimbal and that shares                the same gimbal angles. It is assumed that all sensors are boresighted.            </p>
+<td class="field" align=center>uint32[]</td>
+<td class="field" align=center>None</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_GimbalScanAction"</a>GimbalScanAction</td><td class="id">ID = 13</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">extends <a href="#CMASI_datatype_PayloadAction">PayloadAction</a></p>
+<p class="comment">            Parameters for controlling the movement of a sensor in a continuous motion.  This can be used to start a back-and-forth or rotational            scan over time.  The sensor will sweep in a box pattern from the corner defined by:            (StartAzimuth, StartElevation) to (StartAzimuth, EndElevation) to (EndAzimuth, EndElevation)            to (EndAzimuth, StartElevation) and back to the origin.        </p>
+</td></tr>
+<tr><td class="fieldsection" colspan="3">Members inherited from <a href="#CMASI_datatype_VehicleAction">VehicleAction</a>: AssociatedTaskList, <br>Members inherited from <a href="#CMASI_datatype_PayloadAction">PayloadAction</a>: PayloadID, <br></td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_GimbalScanAction_field_AzimuthSlewRate"><B>AzimuthSlewRate</B></a><br><p class="comment">                 sets the time-to-scan in the azimuthal direction. This is the time to complete one sweep through the                 the length of EndAzimuth - StartAzimuth.            </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree/second</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_GimbalScanAction_field_ElevationSlewRate"><B>ElevationSlewRate</B></a><br><p class="comment">                 sets the time-to-scan in the elevation direction. This is the time to complete one sweep through the                 the length of EndElevation - StartElevation.            </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree/second</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_GimbalScanAction_field_StartAzimuth"><B>StartAzimuth</B></a><br><p class="comment"> The starting azimuth for the sensor scan (boresight angle right of aircraft long axis)</p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_GimbalScanAction_field_EndAzimuth"><B>EndAzimuth</B></a><br><p class="comment"> The ending azimuth for the sensor scan (boresight angle right of aircraft long axis) </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_GimbalScanAction_field_StartElevation"><B>StartElevation</B></a><br><p class="comment"> The starting elevation for the sensor scan (boresight angle positive from aircraft x-y plane)</p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_GimbalScanAction_field_EndElevation"><B>EndElevation</B></a><br><p class="comment"> The ending elevation for the sensor scan (boresight angle positive from aircraft x-y plane)</p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_GimbalScanAction_field_Cycles"><B>Cycles</B></a><br><p class="comment"> Number of sensor sweeps to perform.  A zero value denotes indefinite number of sweeps. </p>
+<td class="field" align=center>uint32</td>
+<td class="field" align=center>None</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_GimbalStareAction"</a>GimbalStareAction</td><td class="id">ID = 14</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">extends <a href="#CMASI_datatype_PayloadAction">PayloadAction</a></p>
+<p class="comment">            An action that commands a gimbal to make necessary rotations to allow mounted sensors to stare at the            given location.Individual sensors on the gimbal are controlled via the <a href="detail.html#CMASI_datatype_CameraAction">CameraAction</a> message.<br/>        </p>
+</td></tr>
+<tr><td class="fieldsection" colspan="3">Members inherited from <a href="#CMASI_datatype_VehicleAction">VehicleAction</a>: AssociatedTaskList, <br>Members inherited from <a href="#CMASI_datatype_PayloadAction">PayloadAction</a>: PayloadID, <br></td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_GimbalStareAction_field_Starepoint"><B>Starepoint</B></a><br><p class="comment"> The commanded stare point. </p>
+<td class="field" align=center><a href="#CMASI_datatype_Location3D">Location3D</a></td>
+<td class="field" align=center>None</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_GimbalState"</a>GimbalState</td><td class="id">ID = 15</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">extends <a href="#CMASI_datatype_PayloadState">PayloadState</a></p>
+<p class="comment"> Describes the current state of a gimbal and the sensors mounted within it. </p>
+</td></tr>
+<tr><td class="fieldsection" colspan="3">Members inherited from <a href="#CMASI_datatype_PayloadState">PayloadState</a>: PayloadID, <br></td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_GimbalState_field_PointingMode"><B>PointingMode</B></a><br><p class="comment"> Current pointing mode of the gimbal </p>
+<p class="comment">Default Value = AirVehicleRelativeAngle</p></td>
+<td class="field" align=center><a href="#CMASI_enum_GimbalPointingMode">GimbalPointingMode</a></td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_GimbalState_field_Azimuth"><B>Azimuth</B></a><br><p class="comment"> Current azimuth angle of the gimbal boresight (positive from vehicle x-axis). </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_GimbalState_field_Elevation"><B>Elevation</B></a><br><p class="comment"> Current elevation angle of the gimbal boresight (positive from vehicle x-y plane). </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_GimbalState_field_Rotation"><B>Rotation</B></a><br><p class="comment"> Current rotation angle of the gimbal boresight (0 degrees aligned with aircraft normal, positive clockwise). </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_GoToWaypointAction"</a>GoToWaypointAction</td><td class="id">ID = 16</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">extends <a href="#CMASI_datatype_VehicleAction">VehicleAction</a></p>
+<p class="comment"> Commands an aircraft to start flying towards a given waypoint in its waypoint list.  This action depends on an        aircraft already having the given waypoint in its current list.  A <a href="detail.html#CMASI_datatype_MissionCommand">MissionCommand</a> should be sent if new waypoints        are required.  The aircraft will remain in waypoint mode and will continue to fly its linked-list waypoint route until        otherwise commanded.        </p>
+</td></tr>
+<tr><td class="fieldsection" colspan="3">Members inherited from <a href="#CMASI_datatype_VehicleAction">VehicleAction</a>: AssociatedTaskList, <br></td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_GoToWaypointAction_field_WaypointNumber"><B>WaypointNumber</B></a><br><p class="comment"> Waypoint number to which the aircraft should fly. </p>
+<td class="field" align=center>uint32</td>
+<td class="field" align=center>None</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_KeepInZone"</a>KeepInZone</td><td class="id">ID = 17</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">extends <a href="#CMASI_datatype_AbstractZone">AbstractZone</a></p>
+<p class="comment">            Describes the outer boundary of operations for the entire UAV team or a subset of the vehicle team.        </p>
+</td></tr>
+<tr><td class="fieldsection" colspan="3">Members inherited from <a href="#CMASI_datatype_AbstractZone">AbstractZone</a>: ZoneID, MinAltitude, MaxAltitude, AffectedAircraft, StartTime, EndTime, Padding, Label, Boundary, <br></td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_KeepOutZone"</a>KeepOutZone</td><td class="id">ID = 18</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">extends <a href="#CMASI_datatype_AbstractZone">AbstractZone</a></p>
+<p class="comment">            Defines a keep-out zone.  This describes a volume where vehicles are not allowed            to fly. For standard zones, this Struct defines lateral boundaries.        </p>
+</td></tr>
+<tr><td class="fieldsection" colspan="3">Members inherited from <a href="#CMASI_datatype_AbstractZone">AbstractZone</a>: ZoneID, MinAltitude, MaxAltitude, AffectedAircraft, StartTime, EndTime, Padding, Label, Boundary, <br></td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_KeepOutZone_field_ZoneType"><B>ZoneType</B></a><br><p class="comment">                The type of zone <br/>                Physical (physical boundary such as terrain or buildings) <br/>                Regulatory (fire control, flight corridor)  <br/>                Acoustic  Defines an area for acoustical avoidance <br/>                Threat  Defines an area where a threat is present.            </p>
+<p class="comment">Default Value = Physical</p></td>
+<td class="field" align=center><a href="#CMASI_enum_ZoneAvoidanceType">ZoneAvoidanceType</a></td>
+<td class="field" align=center>None</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_LineSearchTask"</a>LineSearchTask</td><td class="id">ID = 19</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">extends <a href="#CMASI_datatype_SearchTask">SearchTask</a></p>
+<p class="comment"> Defines a line search task.            A line search is a list of points that forms a polyline.  The ViewAngleList determines            from which direction the line may be viewed.  View angles are specified using the <a href="detail.html#CMASI_datatype_Wedge">Wedge</a> type. If the            UseInertialViewAngles option is true, then wedges are defined in terms of North-East coordinates, otherwise            wedges are defined relative to the line segment currently being viewed (a vector from point i through point i+1).            To be a valid look angle, the line segment must be viewed from an angle within the bounds of the wedge.        </p>
+</td></tr>
+<tr><td class="fieldsection" colspan="3">Members inherited from <a href="#CMASI_datatype_Task">Task</a>: TaskID, Label, RevisitRate, Parameters, Priority, Required, <br>Members inherited from <a href="#CMASI_datatype_SearchTask">SearchTask</a>: DesiredWavelengthBands, DwellTime, GroundSampleDistance, <br></td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_LineSearchTask_field_PointList"><B>PointList</B></a><br><p class="comment"> Line to search </p>
+<td class="field" align=center><a href="#CMASI_datatype_Location3D">Location3D</a>[]</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_LineSearchTask_field_ViewAngleList"><B>ViewAngleList</B></a><br><p class="comment"> Defines a list of acceptable look-angles for this task.  See the documentation above for details. </p>
+<td class="field" align=center><a href="#CMASI_datatype_Wedge">Wedge</a>[]</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_LineSearchTask_field_UseInertialViewAngles"><B>UseInertialViewAngles</B></a><br><p class="comment"> If true, the ViewAngleList specifies inertial (North-East) angles. See documentation above. </p>
+<p class="comment">Default Value = false</p></td>
+<td class="field" align=center>bool</td>
+<td class="field" align=center>None</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_Location2D"</a>Location2D</td><td class="id">ID = 20</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">Known Subtypes: <a href="detail.html#CMASI_datatype_Location3D">Location3D</a>, </p>
+<p class="id">field of: <a href="detail.html#CMASI_datatype_Circle">Circle</a>, <a href="detail.html#CMASI_datatype_Polygon">Polygon</a>, <a href="detail.html#CMASI_datatype_Rectangle">Rectangle</a>, <a href="detail.html#CMASI_datatype_VehicleInfo">VehicleInfo</a>, <a href="detail.html#ENTITIES_datatype_StopMovementAction">StopMovementAction</a>, </p>
+
+<p class="comment">            Location is defined as a point in the world using the WGS84 specification for latitude            and longitude.        </p>
+</td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_Location2D_field_Latitude"><B>Latitude</B></a><br><p class="comment"> Latitude </p>
+<td class="field" align=center>real64</td>
+<td class="field" align=center>degree</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_Location2D_field_Longitude"><B>Longitude</B></a><br><p class="comment"> Longitude </p>
+<td class="field" align=center>real64</td>
+<td class="field" align=center>degree</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_Location3D"</a>Location3D</td><td class="id">ID = 21</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">extends <a href="#CMASI_datatype_Location2D">Location2D</a></p><p class="id">Known Subtypes: <a href="detail.html#CMASI_datatype_Waypoint">Waypoint</a>, </p>
+<p class="id">field of: <a href="detail.html#CMASI_datatype_AirVehicleState">AirVehicleState</a>, <a href="detail.html#CMASI_datatype_CameraState">CameraState</a>, <a href="detail.html#CMASI_datatype_GimbalStareAction">GimbalStareAction</a>, <a href="detail.html#CMASI_datatype_LineSearchTask">LineSearchTask</a>, <a href="detail.html#CMASI_datatype_LoiterAction">LoiterAction</a>, <a href="detail.html#CMASI_datatype_MustFlyTask">MustFlyTask</a>, <a href="detail.html#CMASI_datatype_PointSearchTask">PointSearchTask</a>, <a href="detail.html#CMASI_datatype_VehicleInfo">VehicleInfo</a>, <a href="detail.html#ENTITIES_datatype_EntityState">EntityState</a>, <a href="detail.html#ENTITIES_datatype_EntityDetection">EntityDetection</a>, </p>
+
+<p class="comment">            Location is defined as a point in the world using the WGS84 specification for latitude            and longitude.        </p>
+</td></tr>
+<tr><td class="fieldsection" colspan="3">Members inherited from <a href="#CMASI_datatype_Location2D">Location2D</a>: Latitude, Longitude, <br></td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_Location3D_field_Altitude"><B>Altitude</B></a><br><p class="comment"> Altitude for this waypoint.  Altitude is height above mean sea level at the current location.  </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_LoiterAction"</a>LoiterAction</td><td class="id">ID = 22</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">extends <a href="#CMASI_datatype_VehicleAction">VehicleAction</a></p><p class="id">field of: <a href="detail.html#CMASI_datatype_LoiterTask">LoiterTask</a>, </p>
+
+<p class="comment">            Used to command a vehicle to go into a vehicle-specific hold pattern.        </p>
+</td></tr>
+<tr><td class="fieldsection" colspan="3">Members inherited from <a href="#CMASI_datatype_VehicleAction">VehicleAction</a>: AssociatedTaskList, <br></td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_LoiterAction_field_LoiterType"><B>LoiterType</B></a><br><p class="comment">                The loiter shape that the vehicle should fly            </p>
+<p class="comment">Default Value = VehicleDefault</p></td>
+<td class="field" align=center><a href="#CMASI_enum_LoiterType">LoiterType</a></td>
+<td class="field" align=center>none</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_LoiterAction_field_Radius"><B>Radius</B></a><br><p class="comment">                The radius for the loiter. May be used for any curvature parameter of the vehicle specific hold pattern.            </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_LoiterAction_field_Axis"><B>Axis</B></a><br><p class="comment">                Direction of the major axis of the vehicle specific hold pattern.  For Racetracks and Figure-Eights, this is the direction of                the long axis.  Hovering loiters, this is direction the aircraft should face in the loiter.            </p>
+<p class="comment">Default Value = 0</p></td>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_LoiterAction_field_Length"><B>Length</B></a><br><p class="comment"> Used in racetrack and figure-eight loiters. For figure-eight loiters, this is the length between the focii of                 the turn circles. For racetracks, this is the length of the straight-away. Both types have a total length of                 Length + 2 * Radius.  For figure-eight loiters, if Length is less than 2 * radius, then this field is ignored.            </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_LoiterAction_field_Direction"><B>Direction</B></a><br><p class="comment">                Direction of travel.             </p>
+<p class="comment">Default Value = VehicleDefault</p></td>
+<td class="field" align=center><a href="#CMASI_enum_LoiterDirection">LoiterDirection</a></td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_LoiterAction_field_Duration"><B>Duration</B></a><br><p class="comment">                The time to loiter at this point before continuing.  A negative time value denotes                perpetual orbit.            </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>seconds</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_LoiterAction_field_Airspeed"><B>Airspeed</B></a><br><p class="comment"> Commanded True Airspeed </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter/sec</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_LoiterAction_field_Location"><B>Location</B></a><br><p class="comment"> The geometric center point of the loiter. </p>
+<td class="field" align=center><a href="#CMASI_datatype_Location3D">Location3D</a></td>
+<td class="field" align=center>None</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_LoiterTask"</a>LoiterTask</td><td class="id">ID = 23</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">extends <a href="#CMASI_datatype_Task">Task</a></p>
+<p class="comment"> Used to define a loiter request from the automation service. </p>
+</td></tr>
+<tr><td class="fieldsection" colspan="3">Members inherited from <a href="#CMASI_datatype_Task">Task</a>: TaskID, Label, RevisitRate, Parameters, Priority, Required, <br></td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_LoiterTask_field_DesiredAction"><B>DesiredAction</B></a><br><p class="comment">                The desired loiter action to take            </p>
+<td class="field" align=center><a href="#CMASI_datatype_LoiterAction">LoiterAction</a></td>
+<td class="field" align=center>none</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_MissionCommand"</a>MissionCommand</td><td class="id">ID = 24</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">field of: <a href="detail.html#CMASI_datatype_AutomationResponse">AutomationResponse</a>, </p>
+
+<p class="comment">            A mission to be performed by a vehicle.  This sends a new list of waypoints to an aircraft and commands the aircraft            to start flying the mission starting at the specified "FirstWaypoint".  A Mission command is made up of a linked            list of waypoints.  However, the waypoint list may contain other waypoints that are not linked to the main route path            that begins with "FirstWaypoint".<br/>            <i>Note on end-of-mission behavior: </i> The last waypoint in the linked route list should include some terminal            behavior. For instance, the last waypoint should be directed with itself as the "Next Waypoint" or there should be            an indefinite loiter assigned in the last waypoint's "VehicleActionList".        </p>
+</td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_MissionCommand_field_CommandID"><B>CommandID</B></a><br><p class="comment"> A unique id for this command.  automation services should issue new ids with every new command </p>
+<td class="field" align=center>uint32</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_MissionCommand_field_VehicleID"><B>VehicleID</B></a><br><p class="comment"> The id of the vehicle assigned this mission plan. </p>
+<td class="field" align=center>uint32</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_MissionCommand_field_WaypointList"><B>WaypointList</B></a><br><p class="comment"> The list of waypoints associated with this mission task.  Waypoints are linked, but the waypoint list may            contain waypoints that are not necessarily linked.  Multiple linked routes may be sent in a single waypoint list.            Waypoints are not necessarily ordered in the list.            </p>
+<td class="field" align=center><a href="#CMASI_datatype_Waypoint">Waypoint</a>[]</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_MissionCommand_field_FirstWaypoint"><B>FirstWaypoint</B></a><br><p class="comment"> ID of the first waypoint to follow. </p>
+<td class="field" align=center>uint32</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_MissionCommand_field_Status"><B>Status</B></a><br><p class="comment"> Denotes the current execution status of this command. </p>
+<p class="comment">Default Value = Pending</p></td>
+<td class="field" align=center><a href="#CMASI_enum_CommandStatusType">CommandStatusType</a></td>
+<td class="field" align=center>None</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_MustFlyTask"</a>MustFlyTask</td><td class="id">ID = 25</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">extends <a href="#CMASI_datatype_Task">Task</a></p>
+<p class="comment">            Used to request a must-fly task with optional action list.        </p>
+</td></tr>
+<tr><td class="fieldsection" colspan="3">Members inherited from <a href="#CMASI_datatype_Task">Task</a>: TaskID, Label, RevisitRate, Parameters, Priority, Required, <br></td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_MustFlyTask_field_Position"><B>Position</B></a><br><p class="comment"> point that must vehicle must fly through </p>
+<td class="field" align=center><a href="#CMASI_datatype_Location3D">Location3D</a></td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_MustFlyTask_field_UseAltitude"><B>UseAltitude</B></a><br><p class="comment"> Denotes whether altitude should be used in this MustFlyTask. If false, the            aircraft should maintain altitude according to previous commands.            </p>
+<p class="comment">Default Value = true</p></td>
+<td class="field" align=center>bool</td>
+<td class="field" align=center>None</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_OperatorSignal"</a>OperatorSignal</td><td class="id">ID = 26</td></tr>
+<tr><td class="comment" colspan="3">
+<p class="comment">            Used to send operator interaction information to automation system during task execution        </p>
+</td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_OperatorSignal_field_Signals"><B>Signals</B></a><br><p class="comment"> Content of signal (e.g. button clicked) </p>
+<td class="field" align=center><a href="#CMASI_datatype_KeyValuePair">KeyValuePair</a>[]</td>
+<td class="field" align=center>None</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_PayloadAction"</a>PayloadAction</td><td class="id">ID = 27</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">extends <a href="#CMASI_datatype_VehicleAction">VehicleAction</a></p><p class="id">Known Subtypes: <a href="detail.html#CMASI_datatype_CameraAction">CameraAction</a>, <a href="detail.html#CMASI_datatype_GimbalAngleAction">GimbalAngleAction</a>, <a href="detail.html#CMASI_datatype_GimbalScanAction">GimbalScanAction</a>, <a href="detail.html#CMASI_datatype_GimbalStareAction">GimbalStareAction</a>, </p>
+
+<p class="comment">            An action for controlling a payload item (abstract).        </p>
+</td></tr>
+<tr><td class="fieldsection" colspan="3">Members inherited from <a href="#CMASI_datatype_VehicleAction">VehicleAction</a>: AssociatedTaskList, <br></td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_PayloadAction_field_PayloadID"><B>PayloadID</B></a><br><p class="comment"> A unique id for this payload item. </p>
+<td class="field" align=center>uint32</td>
+<td class="field" align=center>None</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_PayloadConfiguration"</a>PayloadConfiguration</td><td class="id">ID = 28</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">Known Subtypes: <a href="detail.html#CMASI_datatype_CameraConfiguration">CameraConfiguration</a>, <a href="detail.html#CMASI_datatype_GimbalConfiguration">GimbalConfiguration</a>, <a href="detail.html#CMASI_datatype_VideoStreamConfiguration">VideoStreamConfiguration</a>, </p>
+<p class="id">field of: <a href="detail.html#CMASI_datatype_AirVehicleConfiguration">AirVehicleConfiguration</a>, <a href="detail.html#ENTITIES_datatype_EntityConfiguration">EntityConfiguration</a>, </p>
+
+<p class="comment"> Base type for payloads </p>
+</td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_PayloadConfiguration_field_PayloadID"><B>PayloadID</B></a><br><p class="comment"> The unique id for this payload item. </p>
+<td class="field" align=center>uint32</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_PayloadConfiguration_field_PayloadKind"><B>PayloadKind</B></a><br><p class="comment"> A string uniquely identifying the kind of payload item (primarily to be used                 for debugging purposes). </p>
+<td class="field" align=center>string</td>
+<td class="field" align=center>None</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_PayloadState"</a>PayloadState</td><td class="id">ID = 29</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">Known Subtypes: <a href="detail.html#CMASI_datatype_CameraState">CameraState</a>, <a href="detail.html#CMASI_datatype_GimbalState">GimbalState</a>, <a href="detail.html#CMASI_datatype_VideoStreamState">VideoStreamState</a>, </p>
+<p class="id">field of: <a href="detail.html#CMASI_datatype_AirVehicleState">AirVehicleState</a>, <a href="detail.html#ENTITIES_datatype_EntityState">EntityState</a>, </p>
+
+<p class="comment"> Describes the current state of a payload item (abstract). </p>
+</td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_PayloadState_field_PayloadID"><B>PayloadID</B></a><br><p class="comment"> The unique id for this payload item. </p>
+<td class="field" align=center>uint32</td>
+<td class="field" align=center>None</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_AutomationRequest"</a>AutomationRequest</td><td class="id">ID = 30</td></tr>
+<tr><td class="comment" colspan="3">
+<p class="comment">            This is the primary message for requesting action from the automation service. The automation service is to use the list of            vehicles, tasks (with associated task relationships), keep-out zones, and keep-in zones to produce <a href="detail.html#CMASI_enum_MissionCommands">MissionCommands</a>            for the vehicles requested. The automation service should only produce commands for the vehicles requested, but is not            required to produce plans for all vehicles. If multiple <a href="detail.html#CMASI_datatype_AutomationRequest">AutomationRequest</a> messages are sent to the automation service, only            the last message will be considered, i.e. a new plan request supercedes all previous ones. To accomplish an 'append' behavior,            include all current tasks with the vehicles assigned to that task as the only eligible vehicles. For simultaneous separate            operations, consider mutliple instances of the automation service or include all tasks of all operations into the request            separated by vehicle eligibility.<br/>        </p>
+</td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_AutomationRequest_field_VehicleList"><B>VehicleList</B></a><br><p class="comment"> an array of vehicles (and constraints) to consider when planning. </p>
+<td class="field" align=center><a href="#CMASI_datatype_VehicleInfo">VehicleInfo</a>[]</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AutomationRequest_field_TaskList"><B>TaskList</B></a><br><p class="comment"> list of task IDs (defined by <a href="detail.html#CMASI_datatype_Task">Task</a> messages) to be planned for by the automation service </p>
+<td class="field" align=center>uint32[]</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AutomationRequest_field_TaskRelationships"><B>TaskRelationships</B></a><br><p class="comment"> string containing the relationship between requested tasks. If empty, all tasks are to be completed in any order. The                 format of the string is specific to the automation service. This relationship string is the mechanism for incorporating                 task precedence, priority, timing, etc. </p>
+<td class="field" align=center>string</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AutomationRequest_field_KeepOutZoneList"><B>KeepOutZoneList</B></a><br><p class="comment"> a list of keep-out zones (defined by <a href="detail.html#CMASI_datatype_KeepOutZone">KeepOutZone</a> messages) to be considered </p>
+<td class="field" align=center>uint32[]</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AutomationRequest_field_KeepInZoneList"><B>KeepInZoneList</B></a><br><p class="comment"> the keep-in zones (defined by <a href="detail.html#CMASI_datatype_KeepInZone">KeepInZone</a> messages) to consider for this planning cycle </p>
+<td class="field" align=center>uint32[]</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AutomationRequest_field_RedoAllTasks"><B>RedoAllTasks</B></a><br><p class="comment">                 Denotes that that the planner should restart any tasks that have been performed or are currently being performed.  This is useful in situations when a task                 request contains tasks that have been requested previously, and the operator wishes to restart the mission plans from the beginning.            </p>
+<p class="comment">Default Value = false</p></td>
+<td class="field" align=center>bool</td>
+<td class="field" align=center>None</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_PointSearchTask"</a>PointSearchTask</td><td class="id">ID = 31</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">extends <a href="#CMASI_datatype_SearchTask">SearchTask</a></p>
+<p class="comment"> Point search task </p>
+</td></tr>
+<tr><td class="fieldsection" colspan="3">Members inherited from <a href="#CMASI_datatype_Task">Task</a>: TaskID, Label, RevisitRate, Parameters, Priority, Required, <br>Members inherited from <a href="#CMASI_datatype_SearchTask">SearchTask</a>: DesiredWavelengthBands, DwellTime, GroundSampleDistance, <br></td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_PointSearchTask_field_SearchLocation"><B>SearchLocation</B></a><br><p class="comment"> Point to search </p>
+<td class="field" align=center><a href="#CMASI_datatype_Location3D">Location3D</a></td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_PointSearchTask_field_StandoffDistance"><B>StandoffDistance</B></a><br><p class="comment">Minimum distance that an aircraft must maintain from the point of interest. </p>
+<p class="comment">Default Value = 0</p></td>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_PointSearchTask_field_ViewAngleList"><B>ViewAngleList</B></a><br><p class="comment"> A list of acceptable look-angles for this task.  Each wedge is defined relative to true North. To be a valid                 look angle, a sensor must be looking from a direction within the bounds of the wedge.            </p>
+<td class="field" align=center><a href="#CMASI_datatype_Wedge">Wedge</a>[]</td>
+<td class="field" align=center>None</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_Polygon"</a>Polygon</td><td class="id">ID = 32</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">extends <a href="#CMASI_datatype_AbstractGeometry">AbstractGeometry</a></p>
+<p class="comment"> Describes a polygon defined by geographic locations. </p>
+</td></tr>
+<tr><td class="fieldsection" colspan="3">Members inherited from <a href="#CMASI_datatype_AbstractGeometry">AbstractGeometry</a>: <br></td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_Polygon_field_BoundaryPoints"><B>BoundaryPoints</B></a><br><p class="comment"> Boundary points for the polygon </p>
+<td class="field" align=center><a href="#CMASI_datatype_Location2D">Location2D</a>[]</td>
+<td class="field" align=center>None</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_Rectangle"</a>Rectangle</td><td class="id">ID = 33</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">extends <a href="#CMASI_datatype_AbstractGeometry">AbstractGeometry</a></p>
+<p class="comment"> Defines a rectangular shape based on a corner point, width, height, and rotation </p>
+</td></tr>
+<tr><td class="fieldsection" colspan="3">Members inherited from <a href="#CMASI_datatype_AbstractGeometry">AbstractGeometry</a>: <br></td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_Rectangle_field_CenterPoint"><B>CenterPoint</B></a><br><p class="comment"> Center point of the rectangle </p>
+<td class="field" align=center><a href="#CMASI_datatype_Location2D">Location2D</a></td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_Rectangle_field_Width"><B>Width</B></a><br><p class="comment"> Width of the rectangle </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_Rectangle_field_Height"><B>Height</B></a><br><p class="comment"> Height of the rectangle </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_Rectangle_field_Rotation"><B>Rotation</B></a><br><p class="comment"> Rotation of the rectangle around the center point (positive from north axis towards east) </p>
+<p class="comment">Default Value = 0</p></td>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_RemoveTasks"</a>RemoveTasks</td><td class="id">ID = 34</td></tr>
+<tr><td class="comment" colspan="3">
+<p class="comment">            Sent to denote that the target id numbers in the list are obsolete and will not be requested again. This can occur when the user            has replaced an old task with a new one, or has deleted a task permanently.  This is an optional message that automation services can ignore,            depending on how they manage tasks.        </p>
+</td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_RemoveTasks_field_TaskList"><B>TaskList</B></a><br><p class="comment"></p>
+<td class="field" align=center>uint32[]</td>
+<td class="field" align=center>None</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_SearchTask"</a>SearchTask</td><td class="id">ID = 35</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">extends <a href="#CMASI_datatype_Task">Task</a></p><p class="id">Known Subtypes: <a href="detail.html#CMASI_datatype_AreaSearchTask">AreaSearchTask</a>, <a href="detail.html#CMASI_datatype_LineSearchTask">LineSearchTask</a>, <a href="detail.html#CMASI_datatype_PointSearchTask">PointSearchTask</a>, </p>
+
+<p class="comment">            Used to request a search task allocation from the automation service.        </p>
+</td></tr>
+<tr><td class="fieldsection" colspan="3">Members inherited from <a href="#CMASI_datatype_Task">Task</a>: TaskID, Label, RevisitRate, Parameters, Priority, Required, <br></td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_SearchTask_field_DesiredWavelengthBands"><B>DesiredWavelengthBands</B></a><br><p class="comment"> The wavelength bands that should be used to complete the task.   </p>
+<p class="comment">Default Value = AllAny</p></td>
+<td class="field" align=center><a href="#CMASI_enum_WavelengthBand">WavelengthBand</a>[]</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_SearchTask_field_DwellTime"><B>DwellTime</B></a><br><p class="comment"> Minimum time that a sensor must look at any given point in this search task. </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>second</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_SearchTask_field_GroundSampleDistance"><B>GroundSampleDistance</B></a><br><p class="comment"> Average ground sample distance for locations in search area </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meters/pixel</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_ServiceStatus"</a>ServiceStatus</td><td class="id">ID = 36</td></tr>
+<tr><td class="comment" colspan="3">
+<p class="comment">            Provides information regarding automation service compuation percent complete.  The automation service should send this when the computation of a            mission plan may take more than a few seconds, or when an error occurs (such as the inability to create one or more            mission commands given the task set)        </p>
+</td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_ServiceStatus_field_PercentComplete"><B>PercentComplete</B></a><br><p class="comment"> The estimated percentage completed for an automation process. </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_ServiceStatus_field_Info"><B>Info</B></a><br><p class="comment"> Status from the automation service to the simulation regarding errors or conditions. </p>
+<td class="field" align=center><a href="#CMASI_datatype_KeyValuePair">KeyValuePair</a>[]</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_ServiceStatus_field_StatusType"><B>StatusType</B></a><br><p class="comment">                Describes the type of message conveyed. <br/>                Information.  Used to note normal progress updates <br/>                Warning.  Notes non-fatal problem(s) in data or processing <br/>                Error.  Notes fatal problem(s) <br/>            </p>
+<p class="comment">Default Value = Information</p></td>
+<td class="field" align=center><a href="#CMASI_enum_ServiceStatusType">ServiceStatusType</a></td>
+<td class="field" align=center>None</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_SessionStatus"</a>SessionStatus</td><td class="id">ID = 37</td></tr>
+<tr><td class="comment" colspan="3">
+<p class="comment">            Provides information regarding the state of a simulation or real-world.  <br/>        </p>
+</td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_SessionStatus_field_State"><B>State</B></a><br><p class="comment"> The current state of the session </p>
+<p class="comment">Default Value = Stopped</p></td>
+<td class="field" align=center><a href="#CMASI_enum_SimulationStatusType">SimulationStatusType</a></td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_SessionStatus_field_StartTime"><B>StartTime</B></a><br><p class="comment">                The simulation or scenario start time.  This is absolute time in seconds since epoch (1 Jan 1970 00:00 GMT).                If this field is zero, then no start time is specfied and each sim component is to use the first receipt of                this Struct with a SimStatus of "Running" as the start time.            </p>
+<td class="field" align=center>real64</td>
+<td class="field" align=center>second</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_SessionStatus_field_ScenarioTime"><B>ScenarioTime</B></a><br><p class="comment">                The current time in scenario time .  This is the internal time for the simulation, not the absolute time                since epoch, as in "StartTime".  The internal simualation time is based on the start time and the real-time                muiltiple, which can change throughout the simulation.            </p>
+<td class="field" align=center>real64</td>
+<td class="field" align=center>second</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_SessionStatus_field_RealTimeMultiple"><B>RealTimeMultiple</B></a><br><p class="comment">                The ratio of simulation time to real time.  Values greater than 1.0 denote faster than real-time.  Values                less than 0.0 have no meaning.            </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_SessionStatus_field_Parameters"><B>Parameters</B></a><br><p class="comment">                A field to store command-line style parameters used to initialize or modify an execution.              </p>
+<td class="field" align=center><a href="#CMASI_datatype_KeyValuePair">KeyValuePair</a>[]</td>
+<td class="field" align=center>None</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_Task"</a>Task</td><td class="id">ID = 38</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">Known Subtypes: <a href="detail.html#CMASI_datatype_LoiterTask">LoiterTask</a>, <a href="detail.html#CMASI_datatype_MustFlyTask">MustFlyTask</a>, <a href="detail.html#CMASI_datatype_SearchTask">SearchTask</a>, <a href="detail.html#ENTITIES_datatype_TrackTargetTask">TrackTargetTask</a>, </p>
+
+<p class="comment">            The base class for all task requests passed to the automation service.  Task requests are not assigned to a specific vehicle, but            allow the automation service to determine the best vehicle to complete the task. Note that if a specific vehicle is desired            for a certain task, the task eligibility field of <a href="detail.html#CMASI_datatype_VehicleInfo">VehicleInfo</a> can be used to indicate this to the automation service.        </p>
+</td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_Task_field_TaskID"><B>TaskID</B></a><br><p class="comment"> A unique identifier for this task. </p>
+<td class="field" align=center>uint32</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_Task_field_Label"><B>Label</B></a><br><p class="comment"> An optional text string for the task. This is not necesarily unique,             and is included for information only. TaskID should be used to uniquely            identify tasks. </p>
+<td class="field" align=center>string</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_Task_field_RevisitRate"><B>RevisitRate</B></a><br><p class="comment">                If a task is to be repeatedly done, this field indicates how often.                A value of zero means the task is complete on the first pass.            </p>
+<p class="comment">Default Value = 0</p></td>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>sec</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_Task_field_Parameters"><B>Parameters</B></a><br><p class="comment"> An optional text string for automation service task parameters. </p>
+<td class="field" align=center><a href="#CMASI_datatype_KeyValuePair">KeyValuePair</a>[]</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_Task_field_Priority"><B>Priority</B></a><br><p class="comment"> The priority value for this task.  Priority is a relative value of this task compared to other tasks in the scenario.  This                 field should be limited to the range[0..100], 100 being the highest level of priority.  The exact interpretation                 priority may vary depending on algorithm implementation. </p>
+<p class="comment">Default Value = 0</p></td>
+<td class="field" align=center>byte</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_Task_field_Required"><B>Required</B></a><br><p class="comment"> Indicates whether this task <i><b>must</b></i> be executed as part of a mission plan.  </p>
+<p class="comment">Default Value = true</p></td>
+<td class="field" align=center>bool</td>
+<td class="field" align=center>None</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_VehicleAction"</a>VehicleAction</td><td class="id">ID = 39</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">Known Subtypes: <a href="detail.html#CMASI_datatype_GoToWaypointAction">GoToWaypointAction</a>, <a href="detail.html#CMASI_datatype_LoiterAction">LoiterAction</a>, <a href="detail.html#CMASI_datatype_PayloadAction">PayloadAction</a>, <a href="detail.html#CMASI_datatype_VideoStreamAction">VideoStreamAction</a>, <a href="detail.html#CMASI_datatype_FlightDirectorAction">FlightDirectorAction</a>, <a href="detail.html#ENTITIES_datatype_TrackTargetAction">TrackTargetAction</a>, <a href="detail.html#ENTITIES_datatype_StopMovementAction">StopMovementAction</a>, </p>
+<p class="id">field of: <a href="detail.html#CMASI_datatype_VehicleActionCommand">VehicleActionCommand</a>, <a href="detail.html#CMASI_datatype_Waypoint">Waypoint</a>, </p>
+
+<p class="comment">            Base class for an action to be taken by a vehicle.  This is usually used as an object inside of            <a href="detail.html#CMASI_datatype_Waypoint">Waypoint</a> to describe the action that a vehicle is to take upon reaching a waypoint.  This is            used by child types to perform something meaningful.<br/>        </p>
+</td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_VehicleAction_field_AssociatedTaskList"><B>AssociatedTaskList</B></a><br><p class="comment">                A list of tasks that are associated with this action.  A length of zero denotes no associated tasks.                This field is for analysis purposes.  The automation service should associate a list of tasks with each action to enable                analysis of the allocation of tasks to vehicles.<br/>            </p>
+<td class="field" align=center>uint32[]</td>
+<td class="field" align=center>None</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_VehicleActionCommand"</a>VehicleActionCommand</td><td class="id">ID = 40</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">Known Subtypes: <a href="detail.html#ENTITIES_datatype_FollowPathCommand">FollowPathCommand</a>, </p>
+<p class="id">field of: <a href="detail.html#CMASI_datatype_AutomationResponse">AutomationResponse</a>, </p>
+
+<p class="comment">            A message that specifies actions that should be performed by the specified aircraft.  Actions can be navigational modes            or payload actions.        </p>
+</td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_VehicleActionCommand_field_CommandID"><B>CommandID</B></a><br><p class="comment"> A unique id for this command.  automation services should issue new ids with every new command </p>
+<td class="field" align=center>uint32</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_VehicleActionCommand_field_VehicleID"><B>VehicleID</B></a><br><p class="comment"> The id of the vehicle for this command. </p>
+<td class="field" align=center>uint32</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_VehicleActionCommand_field_VehicleActionList"><B>VehicleActionList</B></a><br><p class="comment"> a set of actions to be performed immediately by the vehicle. </p>
+<td class="field" align=center><a href="#CMASI_datatype_VehicleAction">VehicleAction</a>[]</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_VehicleActionCommand_field_Status"><B>Status</B></a><br><p class="comment"> Denotes the current execution status of this command. </p>
+<p class="comment">Default Value = Pending</p></td>
+<td class="field" align=center><a href="#CMASI_enum_CommandStatusType">CommandStatusType</a></td>
+<td class="field" align=center>None</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_VehicleInfo"</a>VehicleInfo</td><td class="id">ID = 41</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">field of: <a href="detail.html#CMASI_datatype_AutomationRequest">AutomationRequest</a>, </p>
+
+<p class="comment"> Describes contstraints for a given air vehicle </p>
+</td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_VehicleInfo_field_VehicleID"><B>VehicleID</B></a><br><p class="comment"> ID of the Vehicle that this object pertains to </p>
+<td class="field" align=center>uint32</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_VehicleInfo_field_TaskEligibility"><B>TaskEligibility</B></a><br><p class="comment"> List of eligible tasks for this vehicle to perform during this plan </p>
+<td class="field" align=center>uint32[]</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_VehicleInfo_field_UseTaskEligibility"><B>UseTaskEligibility</B></a><br><p class="comment"> Flag to denote that task eligibility should be considered. If false, then UAV is eligible to be assigned to all requested tasks </p>
+<p class="comment">Default Value = false</p></td>
+<td class="field" align=center>bool</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_VehicleInfo_field_Airspeed"><B>Airspeed</B></a><br><p class="comment"> Airspeed to use for planning, if UseAirspeed is true </p>
+<p class="comment">Default Value = 0</p></td>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter/sec</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_VehicleInfo_field_UseAirspeed"><B>UseAirspeed</B></a><br><p class="comment"> Flag to denote that the airspeed constraint should be used </p>
+<p class="comment">Default Value = false</p></td>
+<td class="field" align=center>bool</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_VehicleInfo_field_MaxAltitude"><B>MaxAltitude</B></a><br><p class="comment"> Value indicating the maximum altitude that this vehicle should be commanded to fly.  This does not override the            values set in <a href="detail.html#CMASI_datatype_AirVehicleConfiguration">AirVehicleConfiguration</a>. To specify a commanded altitude, set min and max altitude to the same value. </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_VehicleInfo_field_MinAltitude"><B>MinAltitude</B></a><br><p class="comment"> Value indicating the minimum altitude that this vehicle should be commanded to fly. This does not override the            values set in <a href="detail.html#CMASI_datatype_AirVehicleConfiguration">AirVehicleConfiguration</a>. To specify a commanded altitude, set min and max altitude to the same value. </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_VehicleInfo_field_UseAltitude"><B>UseAltitude</B></a><br><p class="comment"> Flag to denote that altitude constraints should be used. </p>
+<p class="comment">Default Value = false</p></td>
+<td class="field" align=center>bool</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_VehicleInfo_field_ContingencyPoint"><B>ContingencyPoint</B></a><br><p class="comment"> Waypoint to fly to in the case of lost communications or other contingency.  This is the final            point, but not necessarily the first point flown to in contingency mode.  If there are any actions to be             performed (e.g. loiter) at the contingency point, then they should be added to this waypoint.  It is             envisioned that MissionCommands will include information from this waypoint in the WaypointList.  This value            may be null. </p>
+<p class="comment">Default Value = null</p></td>
+<td class="field" align=center><a href="#CMASI_datatype_Waypoint">Waypoint</a></td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_VehicleInfo_field_WaypointLimit"><B>WaypointLimit</B></a><br><p class="comment">                Constrain how many waypoints can be assigned to this aircraft. If zero, then automation service may use any number of                waypoints.            </p>
+<p class="comment">Default Value = 0</p></td>
+<td class="field" align=center>uint32</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_VehicleInfo_field_StartPoint"><B>StartPoint</B></a><br><p class="comment"> Start location for generation of waypoint routes.  If this field is null, then the current aircraft                 location should be used instead.            </p>
+<p class="comment">Default Value = null</p></td>
+<td class="field" align=center><a href="#CMASI_datatype_Location3D">Location3D</a></td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_VehicleInfo_field_EndPoint"><B>EndPoint</B></a><br><p class="comment"> End location for generation of waypoint routes.  Ending altitude is based on the tasking and other constraints                 in the mission.            </p>
+<p class="comment">Default Value = null</p></td>
+<td class="field" align=center><a href="#CMASI_datatype_Location2D">Location2D</a></td>
+<td class="field" align=center>None</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_VideoStreamAction"</a>VideoStreamAction</td><td class="id">ID = 42</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">extends <a href="#CMASI_datatype_VehicleAction">VehicleAction</a></p>
+<p class="comment"> An action for controlling which sensor is being transmitted on a video stream. </p>
+</td></tr>
+<tr><td class="fieldsection" colspan="3">Members inherited from <a href="#CMASI_datatype_VehicleAction">VehicleAction</a>: AssociatedTaskList, <br></td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_VideoStreamAction_field_VideoStreamID"><B>VideoStreamID</B></a><br><p class="comment"> A unique id for the video stream. </p>
+<td class="field" align=center>int32</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_VideoStreamAction_field_ActiveSensor"><B>ActiveSensor</B></a><br><p class="comment"> The PayloadID of the sensor which should be activated on this video stream. </p>
+<td class="field" align=center>int32</td>
+<td class="field" align=center>None</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_VideoStreamConfiguration"</a>VideoStreamConfiguration</td><td class="id">ID = 43</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">extends <a href="#CMASI_datatype_PayloadConfiguration">PayloadConfiguration</a></p>
+<p class="comment">            Description of a video stream transmitted by the aircraft (specifically, what sensors            are available to be transmitted via the stream).        </p>
+</td></tr>
+<tr><td class="fieldsection" colspan="3">Members inherited from <a href="#CMASI_datatype_PayloadConfiguration">PayloadConfiguration</a>: PayloadID, PayloadKind, <br></td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_VideoStreamConfiguration_field_AvailableSensorList"><B>AvailableSensorList</B></a><br><p class="comment">                 List the PayloadID of each sensor that is multiplexed into this stream. The <a href="detail.html#CMASI_datatype_VideoStreamAction">VideoStreamAction</a> message                 selects which of these sensors is currently active on the stream.            </p>
+<td class="field" align=center>uint32[]</td>
+<td class="field" align=center>None</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_VideoStreamState"</a>VideoStreamState</td><td class="id">ID = 44</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">extends <a href="#CMASI_datatype_PayloadState">PayloadState</a></p>
+<p class="comment"> Describes the current state of a video stream. </p>
+</td></tr>
+<tr><td class="fieldsection" colspan="3">Members inherited from <a href="#CMASI_datatype_PayloadState">PayloadState</a>: PayloadID, <br></td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_VideoStreamState_field_ActiveSensor"><B>ActiveSensor</B></a><br><p class="comment"> The PayloadID of the sensor which is active on this video stream.. </p>
+<td class="field" align=center>uint32</td>
+<td class="field" align=center>None</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_Waypoint"</a>Waypoint</td><td class="id">ID = 45</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">extends <a href="#CMASI_datatype_Location3D">Location3D</a></p><p class="id">Known Subtypes: <a href="detail.html#ENTITIES_datatype_PathWaypoint">PathWaypoint</a>, </p>
+<p class="id">field of: <a href="detail.html#CMASI_datatype_MissionCommand">MissionCommand</a>, <a href="detail.html#CMASI_datatype_VehicleInfo">VehicleInfo</a>, </p>
+
+<p class="comment">            A simple waypoint class for vehicle routing        </p>
+</td></tr>
+<tr><td class="fieldsection" colspan="3">Members inherited from <a href="#CMASI_datatype_Location2D">Location2D</a>: Latitude, Longitude, <br>Members inherited from <a href="#CMASI_datatype_Location3D">Location3D</a>: Altitude, <br></td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_Waypoint_field_Number"><B>Number</B></a><br><p class="comment"> A unique waypoint number </p>
+<td class="field" align=center>uint32</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_Waypoint_field_NextWaypoint"><B>NextWaypoint</B></a><br><p class="comment">                The index of the next waypoint in the list. Consecutively numbered waypoints are <b>not</b> considered linked, the link must be explicitly stated in this field.            </p>
+<td class="field" align=center>uint32</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_Waypoint_field_Speed"><B>Speed</B></a><br><p class="comment"> Commanded speed for this waypoint.  See SpeedType for defintion of this field. </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter/sec</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_Waypoint_field_SpeedType"><B>SpeedType</B></a><br><p class="comment"> Type of commanded speed            </p>
+<p class="comment">Default Value = Airspeed</p></td>
+<td class="field" align=center><a href="#CMASI_enum_SpeedType">SpeedType</a></td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_Waypoint_field_ClimbRate"><B>ClimbRate</B></a><br><p class="comment"> The commanded climb rate </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter/sec</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_Waypoint_field_TurnType"><B>TurnType</B></a><br><p class="comment"> The type of turn to execute            </p>
+<p class="comment">Default Value = TurnShort</p></td>
+<td class="field" align=center><a href="#CMASI_enum_TurnType">TurnType</a></td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_Waypoint_field_VehicleActionList"><B>VehicleActionList</B></a><br><p class="comment"> A list of actions to perform at this waypoint </p>
+<td class="field" align=center><a href="#CMASI_datatype_VehicleAction">VehicleAction</a>[]</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_Waypoint_field_ContingencyWaypoint"><B>ContingencyWaypoint</B></a><br><p class="comment"> A waypoint for contingency (e.g. lost-comm, alternate mission) operations.  A value of zero denotes            that no contingency point is specified. </p>
+<p class="comment">Default Value = 0</p></td>
+<td class="field" align=center>uint32</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_Waypoint_field_AssociatedTasks"><B>AssociatedTasks</B></a><br><p class="comment">                A list of tasks that are associated with this waypoint.  A length of zero denotes no associated tasks.                This field is for analysis purposes.  The automation service should associate a list of tasks with each waypoint to enable                analysis of the allocation of tasks to vehicles.            </p>
+<td class="field" align=center>uint32[]</td>
+<td class="field" align=center>None</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_Wedge"</a>Wedge</td><td class="id">ID = 46</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">field of: <a href="detail.html#CMASI_datatype_AreaSearchTask">AreaSearchTask</a>, <a href="detail.html#CMASI_datatype_LineSearchTask">LineSearchTask</a>, <a href="detail.html#CMASI_datatype_PointSearchTask">PointSearchTask</a>, </p>
+
+<p class="comment">            Defines an angular range for use in setting constraints or desired approaches to tasks.  In most cases, wedges are            defined in the inertial sense, where azimuth is the angle between North and the center of the wedge, elevation is the            angle between the horizon and the center of the wedge.  In some instances, other coordinate systems are defined, such as            angles relative to a line.        </p>
+</td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_Wedge_field_AzimuthCenterline"><B>AzimuthCenterline</B></a><br><p class="comment"> Azimuthal centerline of the wedge. </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_Wedge_field_VerticalCenterline"><B>VerticalCenterline</B></a><br><p class="comment"> Vertical centerline of the wedge.  </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_Wedge_field_AzimuthExtent"><B>AzimuthExtent</B></a><br><p class="comment"> Azimuthal angular extent of the wedge.  The extent is centered around the centerline.            A value of zero denotes that this wedge is defined as a single angle. </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_Wedge_field_VerticalExtent"><B>VerticalExtent</B></a><br><p class="comment"> Vertical angular extent of the wedge.  The extent is centered around the centerline.            A value of zero denotes that this wedge is defined as a single angle. </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_AutomationResponse"</a>AutomationResponse</td><td class="id">ID = 47</td></tr>
+<tr><td class="comment" colspan="3">
+<p class="comment"> Encapsulates data from an automation service to a client.  The automation service may respond with        MissionCommands, VehicleActionCommands, or no commands at all.  This type is meant to serve as a single        container for commands that are a response to <a href="detail.html#CMASI_datatype_AutomationRequest">AutomationRequest</a>        </p>
+</td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_AutomationResponse_field_MissionCommandList"><B>MissionCommandList</B></a><br><p class="comment"> A list of MissionCommands issued by the automation service </p>
+<td class="field" align=center><a href="#CMASI_datatype_MissionCommand">MissionCommand</a>[]</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AutomationResponse_field_VehicleCommandList"><B>VehicleCommandList</B></a><br><p class="comment"> A list of VehicleActionCommands issued by the automation service </p>
+<td class="field" align=center><a href="#CMASI_datatype_VehicleActionCommand">VehicleActionCommand</a>[]</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_AutomationResponse_field_Info"><B>Info</B></a><br><p class="comment"> Status from the automation service to the simulation regarding errors or conditions. </p>
+<td class="field" align=center><a href="#CMASI_datatype_KeyValuePair">KeyValuePair</a>[]</td>
+<td class="field" align=center>None</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_RemoveZones"</a>RemoveZones</td><td class="id">ID = 48</td></tr>
+<tr><td class="comment" colspan="3">
+<p class="comment"> Denotes a list of zones that should be removed permanently from the scenario. </p>
+</td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_RemoveZones_field_ZoneList"><B>ZoneList</B></a><br><p class="comment"> List of zones to remove </p>
+<td class="field" align=center>uint32[]</td>
+<td class="field" align=center>None</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_RemoveAirVehicles"</a>RemoveAirVehicles</td><td class="id">ID = 49</td></tr>
+<tr><td class="comment" colspan="3">
+<p class="comment"> Denotes a list of aircraft that should be removed permanently from the scenario. </p>
+</td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_RemoveAirVehicles_field_VehicleList"><B>VehicleList</B></a><br><p class="comment"> List of aircraft to remove </p>
+<td class="field" align=center>uint32[]</td>
+<td class="field" align=center>None</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_FlightDirectorAction"</a>FlightDirectorAction</td><td class="id">ID = 50</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">extends <a href="#CMASI_datatype_VehicleAction">VehicleAction</a></p>
+<p class="comment"> A command to "direct" the aircraft on a particular vector. This can be passed directly to the            autopilot, or be directed to the operator as the current command to follow. </p>
+</td></tr>
+<tr><td class="fieldsection" colspan="3">Members inherited from <a href="#CMASI_datatype_VehicleAction">VehicleAction</a>: AssociatedTaskList, <br></td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_FlightDirectorAction_field_Speed"><B>Speed</B></a><br><p class="comment"> Speed to fly </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter/sec</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_FlightDirectorAction_field_SpeedType"><B>SpeedType</B></a><br><p class="comment"> type of speed to fly </p>
+<p class="comment">Default Value = Airspeed</p></td>
+<td class="field" align=center><a href="#CMASI_enum_SpeedType">SpeedType</a></td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_FlightDirectorAction_field_Heading"><B>Heading</B></a><br><p class="comment"> True heading to fly </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_FlightDirectorAction_field_Altitude"><B>Altitude</B></a><br><p class="comment"> altitude to maintain.  </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_FlightDirectorAction_field_ClimbRate"><B>ClimbRate</B></a><br><p class="comment"> target climb/descent rate for changing altitude </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter/sec</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_KeyValuePair"</a>KeyValuePair</td><td class="id">ID = 51</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">field of: <a href="detail.html#CMASI_datatype_OperatorSignal">OperatorSignal</a>, <a href="detail.html#CMASI_datatype_ServiceStatus">ServiceStatus</a>, <a href="detail.html#CMASI_datatype_SessionStatus">SessionStatus</a>, <a href="detail.html#CMASI_datatype_Task">Task</a>, <a href="detail.html#CMASI_datatype_AutomationResponse">AutomationResponse</a>, <a href="detail.html#ENTITIES_datatype_EntityConfiguration">EntityConfiguration</a>, <a href="detail.html#ENTITIES_datatype_EntityState">EntityState</a>, </p>
+
+<p class="comment"> A container for key/value pairs.  Keys and values can be any valid string. </p>
+</td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_KeyValuePair_field_Key"><B>Key</B></a><br><p class="comment"> A key (name) for the property </p>
+<td class="field" align=center>string</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_KeyValuePair_field_Value"><B>Value</B></a><br><p class="comment"> A value for the property </p>
+<td class="field" align=center>string</td>
+<td class="field" align=center>None</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="CMASI_datatype_WeatherReport"</a>WeatherReport</td><td class="id">ID = 52</td></tr>
+<tr><td class="comment" colspan="3">
+<p class="comment"> Reports current weather conditions.  A weather report can cover a given geographic area or             the entire scenario.  Multiple reports can be issued during a scenario to indicate             varying weather conditions over time or space. Mission planners can use weather reports             to plan or can read current wind conditions as reported by aircraft as part of             <a href="detail.html#CMASI_datatype_AirVehicleState">AirVehicleState</a>.        </p>
+</td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="CMASI_datatype_WeatherReport_field_Area"><B>Area</B></a><br><p class="comment"> The area for which this report pertains.  If this is null, then the report                 pertains to the entire area. </p>
+<p class="comment">Default Value = null</p></td>
+<td class="field" align=center><a href="#CMASI_datatype_AbstractZone">AbstractZone</a></td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_WeatherReport_field_WindSpeed"><B>WindSpeed</B></a><br><p class="comment"> Windspeed value for this area </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter/sec</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_WeatherReport_field_WindDirection"><B>WindDirection</B></a><br><p class="comment"> Wind direction.  Direction is the true heading from which the wind is blowing. </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>degree</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_WeatherReport_field_Visibility"><B>Visibility</B></a><br><p class="comment"> Visibility, according to the <a href="http://en.wikipedia.org/wiki/Visibility">ICAO definition</a>. </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_WeatherReport_field_CloudCeiling"><B>CloudCeiling</B></a><br><p class="comment"> Height of the bottom of a cloud layer, in MSL altitude. If there is more than one cloud layer, create                 WeatherReports for each zone that contains a cloud layer. A value of "0" denotes free-of-clouds </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter</td></tr>
+<tr><td class="field"><a name="CMASI_datatype_WeatherReport_field_CloudCoverage"><B>CloudCoverage</B></a><br><p class="comment"> Amount of cloud coverage for the given cloud layer.  Values should be 0..1, 0 denoting                 free-of-clouds, and 1 denoting overcast. </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>None</td></tr>
+</table>
+<h1>Series Name: ENTITIES</h1>
+<p> Provides a definition for entities. Entities can be ground, air, sea or space travelling objects, or     may be fixed structures.  <br/>     Entities may interact with other entities, or Air Vehicles (specified by <a href="detail.html#CMASI_datatype_AirVehicleConfiguration">AirVehicleConfiguration</a>) since     entities may carry payloads.  If using entities with CMASI-defined air vehicles, air vehicles and entities should be     maintain unique IDs in a scenario. (i.e. if an <a href="detail.html#CMASI_datatype_AirVehicleConfiguration">AirVehicleConfiguration</a> has an ID of 1,     there should not be an <a href="detail.html#ENTITIES_datatype_EntityConfiguration">EntityConfiguration</a> with an ID of 1.) <br/>     Similar to air vehicles, Entities report current states using <a href="detail.html#ENTITIES_datatype_EntityState">EntityState</a> objects          Entities can be commanded to perform actions using the <a href="detail.html#CMASI_datatype_VehicleAction">VehicleAction</a> object.  Both payload actions and      vehicle actions can be commanded in the same way as CMASI-defined air vehicles.     Requires the CMASI MDM, Version 2</p>
+<h2>Enumerations</h2>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="ENTITIES_enum_Health"</a>Health</td><tr><td class="comment" colspan="3">
+<p class="comment"> Describes the damage state of an entity. </p>
+</td></tr>
+<tr><td class="field"><a name="ENTITIES_enum_Health_field_Normal"><B>Normal</B></a> ( 0 )<p class="comment"> No damage </p></td></tr>
+<tr><td class="field"><a name="ENTITIES_enum_Health_field_MinorDamage"><B>MinorDamage</B></a> ( 1 )<p class="comment"> Some damage resulting in diminished functionality </p></td></tr>
+<tr><td class="field"><a name="ENTITIES_enum_Health_field_MajorDamage"><B>MajorDamage</B></a> ( 2 )<p class="comment"> Significant damage resulting in little or no functionality </p></td></tr>
+<tr><td class="field"><a name="ENTITIES_enum_Health_field_Destroyed"><B>Destroyed</B></a> ( 3 )<p class="comment"> No functionality. Severe visibile damage </p></td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="ENTITIES_enum_TravelMode"</a>TravelMode</td><tr><td class="comment" colspan="3">
+<p class="comment"> Designates how an entity should treat a path following command.  </p>
+</td></tr>
+<tr><td class="field"><a name="ENTITIES_enum_TravelMode_field_SinglePass"><B>SinglePass</B></a> ( 0 )<p class="comment"> A path is traversed from beginning to end, then the entity stops </p></td></tr>
+<tr><td class="field"><a name="ENTITIES_enum_TravelMode_field_ReverseCourse"><B>ReverseCourse</B></a> ( 1 )<p class="comment"> Upon reaching the end of a route, the entity travels the waypoint list in reverse-direction. </p></td></tr>
+<tr><td class="field"><a name="ENTITIES_enum_TravelMode_field_Loop"><B>Loop</B></a> ( 2 )<p class="comment"> Upon reaching the end of a route, the entity travels to the first point and repeats the route. </p></td></tr>
+</table>
+<h2>Structs</h2>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="ENTITIES_datatype_EntityConfiguration"</a>EntityConfiguration</td><td class="id">ID = 1</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">Known Subtypes: <a href="detail.html#ENTITIES_datatype_Aircraft">Aircraft</a>, <a href="detail.html#ENTITIES_datatype_GroundVehicle">GroundVehicle</a>, <a href="detail.html#ENTITIES_datatype_FixedEntity">FixedEntity</a>, <a href="detail.html#ENTITIES_datatype_Human">Human</a>, </p>
+
+<p class="comment"> Definition of a scenario entity.  Entities can be friends, neutral elements, or foes. Note        that this is an abstract struct.  Declared entities should use one of the derived struct types. </p>
+</td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="ENTITIES_datatype_EntityConfiguration_field_EntityID"><B>EntityID</B></a><br><p class="comment"> A scenario-unique ID for this entity. IDs should be greater than zero.  Entities should                 also not repeat IDs that are specified in <a href="detail.html#CMASI_datatype_AirVehicleConfiguration">AirVehicleConfiguration</a> objects. </p>
+<td class="field" align=center>uint32</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="ENTITIES_datatype_EntityConfiguration_field_Name"><B>Name</B></a><br><p class="comment"> A name used for referring to the entity.  This can be used by applications to assign a                  display-name, callsign, or some other identifier.  This is not necessarily unique. </p>
+<td class="field" align=center>string</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="ENTITIES_datatype_EntityConfiguration_field_Affiliation"><B>Affiliation</B></a><br><p class="comment"> the team or "side" that an entity belongs to.  This can be a name of a country, a "friend" or            "foe" designation, or a team name (e.g. "red team"). </p>
+<p class="comment">Default Value = Unknown</p></td>
+<td class="field" align=center>string</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="ENTITIES_datatype_EntityConfiguration_field_EntityType"><B>EntityType</B></a><br><p class="comment"> The type of this entity.  The content of this field is dependent on the session. The value                 of this field is not specifically defined, so it is up to the simulation/session components                 to define a type system. For a common entity definition, see MIL STD 2525 or use DIS enumerations.            </p>
+<td class="field" align=center>string</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="ENTITIES_datatype_EntityConfiguration_field_Dimensions"><B>Dimensions</B></a><br><p class="comment"> Physical dimensions of this entity.  Dimensions should be listed as the lengths of the entity                 in the body X-Y-Z directions (i.e. when the Euler angle attitude is [0, 0, 0], the x and y                 are parallel to the earth tangential plane, and z is normal to the plane.)            </p>
+<td class="field" align=center>real32[3]</td>
+<td class="field" align=center>meter</td></tr>
+<tr><td class="field"><a name="ENTITIES_datatype_EntityConfiguration_field_PayloadList"><B>PayloadList</B></a><br><p class="comment"> A list of payloads that this entity carries. </p>
+<td class="field" align=center><a href="#CMASI_datatype_PayloadConfiguration">PayloadConfiguration</a>[]</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="ENTITIES_datatype_EntityConfiguration_field_Info"><B>Info</B></a><br><p class="comment"> A list that maps keys to values for the inclusion of extra, custom information about this entity </p>
+<td class="field" align=center><a href="#CMASI_datatype_KeyValuePair">KeyValuePair</a>[]</td>
+<td class="field" align=center>None</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="ENTITIES_datatype_Aircraft"</a>Aircraft</td><td class="id">ID = 2</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">extends <a href="#ENTITIES_datatype_EntityConfiguration">EntityConfiguration</a></p>
+<p class="comment"> An aircraft entity. </p>
+</td></tr>
+<tr><td class="fieldsection" colspan="3">Members inherited from <a href="#ENTITIES_datatype_EntityConfiguration">EntityConfiguration</a>: EntityID, Name, Affiliation, EntityType, Dimensions, PayloadList, Info, <br></td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="ENTITIES_datatype_GroundVehicle"</a>GroundVehicle</td><td class="id">ID = 3</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">extends <a href="#ENTITIES_datatype_EntityConfiguration">EntityConfiguration</a></p>
+<p class="comment"> An entity that is capable of moving along the surface. </p>
+</td></tr>
+<tr><td class="fieldsection" colspan="3">Members inherited from <a href="#ENTITIES_datatype_EntityConfiguration">EntityConfiguration</a>: EntityID, Name, Affiliation, EntityType, Dimensions, PayloadList, Info, <br></td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="ENTITIES_datatype_GroundVehicle_field_MaxSpeed"><B>MaxSpeed</B></a><br><p class="comment"> maximum speed that this entity can travel on a level surface </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>m/s</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="ENTITIES_datatype_FixedEntity"</a>FixedEntity</td><td class="id">ID = 4</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">extends <a href="#ENTITIES_datatype_EntityConfiguration">EntityConfiguration</a></p>
+<p class="comment"> An entity that has a fixed location. </p>
+</td></tr>
+<tr><td class="fieldsection" colspan="3">Members inherited from <a href="#ENTITIES_datatype_EntityConfiguration">EntityConfiguration</a>: EntityID, Name, Affiliation, EntityType, Dimensions, PayloadList, Info, <br></td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="ENTITIES_datatype_Human"</a>Human</td><td class="id">ID = 5</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">extends <a href="#ENTITIES_datatype_EntityConfiguration">EntityConfiguration</a></p>
+<p class="comment"> Defines a human entity </p>
+</td></tr>
+<tr><td class="fieldsection" colspan="3">Members inherited from <a href="#ENTITIES_datatype_EntityConfiguration">EntityConfiguration</a>: EntityID, Name, Affiliation, EntityType, Dimensions, PayloadList, Info, <br></td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="ENTITIES_datatype_EntityState"</a>EntityState</td><td class="id">ID = 6</td></tr>
+<tr><td class="comment" colspan="3">
+<p class="comment"> A truth-state report for an entity.  This is the actual state of the entity.  </p>
+</td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="ENTITIES_datatype_EntityState_field_EntityID"><B>EntityID</B></a><br><p class="comment"> A scenario-unique ID for this entity. IDs should be greater than zero </p>
+<td class="field" align=center>uint32</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="ENTITIES_datatype_EntityState_field_Velocity"><B>Velocity</B></a><br><p class="comment"> The target velocity in three-dimensions.  The velocity should be stated                 in tangential-plane coordinates using the North-East-Down coordinate system.            </p>
+<td class="field" align=center>real32[3]</td>
+<td class="field" align=center>meter/sec</td></tr>
+<tr><td class="field"><a name="ENTITIES_datatype_EntityState_field_Attitude"><B>Attitude</B></a><br><p class="comment"> Euler angle tangential-plane attitude for this entity.  Should be stated as                 Psi-Theta-Phi.  For information on Euler coordinates, see                 <a href="http://en.wikipedia.org/wiki/Euler_angle">Euler Angles</a>            </p>
+<td class="field" align=center>real32[3]</td>
+<td class="field" align=center>degree</td></tr>
+<tr><td class="field"><a name="ENTITIES_datatype_EntityState_field_Location"><B>Location</B></a><br><p class="comment"> The perceived target location </p>
+<td class="field" align=center><a href="#CMASI_datatype_Location3D">Location3D</a></td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="ENTITIES_datatype_EntityState_field_Visible"><B>Visible</B></a><br><p class="comment"> Sets the visibility.  This is used to indicate the ability of this entity to be seen in a                  simulation.</p>
+<p class="comment">Default Value = true</p></td>
+<td class="field" align=center>bool</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="ENTITIES_datatype_EntityState_field_Health"><B>Health</B></a><br><p class="comment"> indicates the state of damage to the entity.  </p>
+<p class="comment">Default Value = Normal</p></td>
+<td class="field" align=center><a href="#ENTITIES_enum_Health">Health</a></td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="ENTITIES_datatype_EntityState_field_PayloadStateList"><B>PayloadStateList</B></a><br><p class="comment"> A list of states for any onboard payloads </p>
+<td class="field" align=center><a href="#CMASI_datatype_PayloadState">PayloadState</a>[]</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="ENTITIES_datatype_EntityState_field_Info"><B>Info</B></a><br><p class="comment"> A list that maps keys to values for the inclusion of extra, custom information about this entity </p>
+<td class="field" align=center><a href="#CMASI_datatype_KeyValuePair">KeyValuePair</a>[]</td>
+<td class="field" align=center>None</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="ENTITIES_datatype_EntityDetection"</a>EntityDetection</td><td class="id">ID = 7</td></tr>
+<tr><td class="comment" colspan="3">
+<p class="comment"> A report of a detection of an entity.  Detections are based on the perception received from a             given sensor or set of sensors.  Entities can be detected by scenario aircraft or other entities.        </p>
+</td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="ENTITIES_datatype_EntityDetection_field_EntityID"><B>EntityID</B></a><br><p class="comment"> A scenario-unique ID for this entity. IDs should be greater than zero.  Since this is a                 perception, the entity ID may not be known.  In that case, this field should be set to                 zero.            </p>
+<td class="field" align=center>uint32</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="ENTITIES_datatype_EntityDetection_field_DetectionSource"><B>DetectionSource</B></a><br><p class="comment"> ID of the entity or aircraft that produced this perception. </p>
+<td class="field" align=center>uint32</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="ENTITIES_datatype_EntityDetection_field_DetectionPayload"><B>DetectionPayload</B></a><br><p class="comment"> The ID of the payload that made this detection. </p>
+<td class="field" align=center>uint32</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="ENTITIES_datatype_EntityDetection_field_IsFused"><B>IsFused</B></a><br><p class="comment"> If true, denotes that this perception is a result of a fusion of multiple sources.                 In this case, the detection source and payload should be set to zero, and this perception                 should be treated as a scenario-wide perception.            </p>
+<p class="comment">Default Value = false</p></td>
+<td class="field" align=center>bool</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="ENTITIES_datatype_EntityDetection_field_Velocity"><B>Velocity</B></a><br><p class="comment"> The perceived target velocity in three-dimensions.  The velocity should be stated                 in tangential-plane coordinates using the North-East-Down coordinate system.            </p>
+<td class="field" align=center>real32[3]</td>
+<td class="field" align=center>meter/sec</td></tr>
+<tr><td class="field"><a name="ENTITIES_datatype_EntityDetection_field_VelocityError"><B>VelocityError</B></a><br><p class="comment"> Velocity error for this perception.  The error terms should be in the same                 coordinate system as the velocity.            </p>
+<td class="field" align=center>real32[3]</td>
+<td class="field" align=center>meter/sec</td></tr>
+<tr><td class="field"><a name="ENTITIES_datatype_EntityDetection_field_CanMeasureVelocity"><B>CanMeasureVelocity</B></a><br><p class="comment"> If true, denotes that the velocity and velocity error have meaning. </p>
+<p class="comment">Default Value = false</p></td>
+<td class="field" align=center>bool</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="ENTITIES_datatype_EntityDetection_field_Attitude"><B>Attitude</B></a><br><p class="comment"> Euler angle tangential-plane attitude for this entity.  Should be stated as                 Psi-Theta-Phi.  For information on Euler coordinates, see                 <a href="http://en.wikipedia.org/wiki/Euler_angle">Euler Angles</a>            </p>
+<td class="field" align=center>real32[3]</td>
+<td class="field" align=center>degree</td></tr>
+<tr><td class="field"><a name="ENTITIES_datatype_EntityDetection_field_AttitudeError"><B>AttitudeError</B></a><br><p class="comment"> Error in the perception of the entity attitude.  This should be in the same                 coordinate system as the attitude.            </p>
+<td class="field" align=center>real32[3]</td>
+<td class="field" align=center>degree</td></tr>
+<tr><td class="field"><a name="ENTITIES_datatype_EntityDetection_field_CanMeasureAttitude"><B>CanMeasureAttitude</B></a><br><p class="comment"> If true, denotes that the attitude and attitude error have meaning. </p>
+<p class="comment">Default Value = false</p></td>
+<td class="field" align=center>bool</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="ENTITIES_datatype_EntityDetection_field_Location"><B>Location</B></a><br><p class="comment"> The entity location </p>
+<td class="field" align=center><a href="#CMASI_datatype_Location3D">Location3D</a></td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="ENTITIES_datatype_EntityDetection_field_LocationError"><B>LocationError</B></a><br><p class="comment"> Error in the perception of the location of this entity.  The first index is North-South error, the second index                 is the East-West error, and the third index is the vertical error.  The result is an error cylinder.            </p>
+<td class="field" align=center>real32[3]</td>
+<td class="field" align=center>meter</td></tr>
+<tr><td class="field"><a name="ENTITIES_datatype_EntityDetection_field_TimeLastSeen"><B>TimeLastSeen</B></a><br><p class="comment"> Time that this entity was perceived since scenario start. </p>
+<td class="field" align=center>real64</td>
+<td class="field" align=center>second</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="ENTITIES_datatype_TrackTargetAction"</a>TrackTargetAction</td><td class="id">ID = 8</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">extends <a href="#CMASI_datatype_VehicleAction">VehicleAction</a></p>
+<p class="comment">             This puts an air vehicle into a "track" mode, where the vehicle commands itself and its onboard sensors to attempt to             keep a target in view.  For this mode to function, the vehicle is given a <a href="detail.html#ENTITIES_enum_FlightProfile">FlightProfile</a> to use when tracking,             and an entity id to track.        </p>
+</td></tr>
+<tr><td class="fieldsection" colspan="3">Members inherited from <a href="#CMASI_datatype_VehicleAction">VehicleAction</a>: AssociatedTaskList, <br></td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="ENTITIES_datatype_TrackTargetAction_field_EntityID"><B>EntityID</B></a><br><p class="comment"> The unique identifier of the target to be tracked. </p>
+<td class="field" align=center>uint32</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="ENTITIES_datatype_TrackTargetAction_field_SensorID"><B>SensorID</B></a><br><p class="comment"> The unique identifier of the sensor that is to be actively steered to track the target. </p>
+<td class="field" align=center>uint32</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="ENTITIES_datatype_TrackTargetAction_field_Altitude"><B>Altitude</B></a><br><p class="comment">                The commanded altitude for this vehicle.  The aircraft will climb or descend to reach this altitude based on the                values in the specified <a href="detail.html#ENTITIES_enum_FlightProfile">FlightProfile</a>.            </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter</td></tr>
+<tr><td class="field"><a name="ENTITIES_datatype_TrackTargetAction_field_ReturnToWaypoint"><B>ReturnToWaypoint</B></a><br><p class="comment"> The waypoint that this vehicle is to return to when complete (or lost track) </p>
+<td class="field" align=center>uint32</td>
+<td class="field" align=center>None</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="ENTITIES_datatype_TrackTargetTask"</a>TrackTargetTask</td><td class="id">ID = 9</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">extends <a href="#CMASI_datatype_Task">Task</a></p>
+<p class="comment">            A request to track a specific target.  It is assumed that this target can move at any time during the scenario.        </p>
+</td></tr>
+<tr><td class="fieldsection" colspan="3">Members inherited from <a href="#CMASI_datatype_Task">Task</a>: TaskID, Label, RevisitRate, Parameters, Priority, Required, <br></td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="ENTITIES_datatype_TrackTargetTask_field_EntityID"><B>EntityID</B></a><br><p class="comment"> The ID of the target to be tracked. </p>
+<td class="field" align=center>uint32</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="ENTITIES_datatype_TrackTargetTask_field_GroundSampleDistance"><B>GroundSampleDistance</B></a><br><p class="comment"> The minimum ground sample distance that should be maintained for this target track operation. </p>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>meter</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="ENTITIES_datatype_FollowPathCommand"</a>FollowPathCommand</td><td class="id">ID = 10</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">extends <a href="#CMASI_datatype_VehicleActionCommand">VehicleActionCommand</a></p>
+<p class="comment"> A command to follow a set of waypoints.  This is meant to be a low-fidelity action, resulting in the         entity proceeding between waypoints using a straight-line maneuver. </p>
+</td></tr>
+<tr><td class="fieldsection" colspan="3">Members inherited from <a href="#CMASI_datatype_VehicleActionCommand">VehicleActionCommand</a>: CommandID, VehicleID, VehicleActionList, Status, <br></td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="ENTITIES_datatype_FollowPathCommand_field_FirstWaypoint"><B>FirstWaypoint</B></a><br><p class="comment"> The first waypoint to follow.  This should correspond to the number of a waypoint in the             waypoint list. If this is zero, no waypoint will be followed. </p>
+<td class="field" align=center>uint32</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="ENTITIES_datatype_FollowPathCommand_field_WaypointList"><B>WaypointList</B></a><br><p class="comment"> A list of waypoints to follow </p>
+<td class="field" align=center><a href="#ENTITIES_datatype_PathWaypoint">PathWaypoint</a>[]</td>
+<td class="field" align=center>None</td></tr>
+<tr><td class="field"><a name="ENTITIES_datatype_FollowPathCommand_field_StartTime"><B>StartTime</B></a><br><p class="comment"> Describes the start time for this action, in scenario time.  If this field is zero, the action is            completed immediately. </p>
+<p class="comment">Default Value = 0</p></td>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>second</td></tr>
+<tr><td class="field"><a name="ENTITIES_datatype_FollowPathCommand_field_StopTime"><B>StopTime</B></a><br><p class="comment"> Describes the end time for this action, in scenario time.  If this field is zero, it should be ignored, otherwise            The entity will travel until the stop time is reached. </p>
+<p class="comment">Default Value = 0</p></td>
+<td class="field" align=center>real32</td>
+<td class="field" align=center>second</td></tr>
+<tr><td class="field"><a name="ENTITIES_datatype_FollowPathCommand_field_RepeatMode"><B>RepeatMode</B></a><br><p class="comment"> Describes how the entity should treat the end-of-path. Entities can complete the path once, or continuously.</p>
+<p class="comment">Default Value = SinglePass</p></td>
+<td class="field" align=center><a href="#ENTITIES_enum_TravelMode">TravelMode</a></td>
+<td class="field" align=center>None</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="ENTITIES_datatype_PathWaypoint"</a>PathWaypoint</td><td class="id">ID = 11</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">extends <a href="#CMASI_datatype_Waypoint">Waypoint</a></p><p class="id">field of: <a href="detail.html#ENTITIES_datatype_FollowPathCommand">FollowPathCommand</a>, </p>
+
+<p class="comment"> A waypoint that can be used as part of commanding entities' movement </p>
+</td></tr>
+<tr><td class="fieldsection" colspan="3">Members inherited from <a href="#CMASI_datatype_Location2D">Location2D</a>: Latitude, Longitude, <br>Members inherited from <a href="#CMASI_datatype_Location3D">Location3D</a>: Altitude, <br>Members inherited from <a href="#CMASI_datatype_Waypoint">Waypoint</a>: Number, NextWaypoint, Speed, SpeedType, ClimbRate, TurnType, VehicleActionList, ContingencyWaypoint, AssociatedTasks, <br></td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="ENTITIES_datatype_PathWaypoint_field_PauseTime"><B>PauseTime</B></a><br><p class="comment"> The amount of time that an entity should pause before moving to the next waypoint. </p>
+<p class="comment">Default Value = 0</p></td>
+<td class="field" align=center>uint32</td>
+<td class="field" align=center>second</td></tr>
+</table>
+<table class="st">
+<tr><td class="name" colspan="2"><a name="ENTITIES_datatype_StopMovementAction"</a>StopMovementAction</td><td class="id">ID = 12</td></tr>
+<tr><td class="comment" colspan="3"><p class="id">extends <a href="#CMASI_datatype_VehicleAction">VehicleAction</a></p>
+<p class="comment"> Tells the Entity to stop at the given location.  If the location is null, then the         entity will stop immediately. </p>
+</td></tr>
+<tr><td class="fieldsection" colspan="3">Members inherited from <a href="#CMASI_datatype_VehicleAction">VehicleAction</a>: AssociatedTaskList, <br></td></tr>
+<tr><td class="header" width=60%>Field</td>
+<td class="header" width=20%>Type</td>
+<td class="header" width=20%>Units</td>
+</tr>
+<tr><td class="field"><a name="ENTITIES_datatype_StopMovementAction_field_Location"><B>Location</B></a><br><p class="comment"> A location at which the entity should stop.  If this is null, the entity will stop immediately. </p>
+<p class="comment">Default Value = null</p></td>
+<td class="field" align=center><a href="#CMASI_datatype_Location2D">Location2D</a></td>
+<td class="field" align=center>None</td></tr>
+</table>
+
+
+
+</body>
+</html>

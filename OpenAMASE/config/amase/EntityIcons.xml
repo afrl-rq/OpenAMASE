@@ -1,0 +1,8 @@
+
+<EntityIcons>
+  <!--Stores a map of entity IDs to icons.  Icons should follow URL path rules.-->
+  <!--Icons can be referenced by entity Type, Name, or ID-->
+  <!--Example: <Entry ID="1" Path="/path/to/icon/file/in/classpath" />-->
+  <!--Example: <Entry Type="Car" Path="/path/to/icon/file/in/classpath" />-->
+  <IconMap></IconMap>
+</EntityIcons>

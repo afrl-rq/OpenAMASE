@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<EntityControl>
+    <DefaultAircraft>
+        <Module Class="avtas.amase.entity.modules.KinematicFlight"/>
+        <Module Class="avtas.amase.entity.modules.CameraManager"/>
+        <Module Class="avtas.amase.entity.modules.GimbalManager"/>
+        <Module Class="avtas.amase.entity.modules.WaypointFollower"/>
+        <Module Class="avtas.amase.entity.modules.LoiterControl"/>
+        <Module Class="avtas.amase.entity.modules.FlightDirector"/>
+        <Module Class="avtas.amase.entity.modules.TargetDetector">
+            <TrackTimeout>2.0</TrackTimeout>
+            <MinTimeInView>1.0</MinTimeInView>
+        </Module>
+        <Module Class="avtas.amase.entity.modules.TrackControl"/>
+        <Module Class="amase.examples.AutoZoneAvoidance"/>
+    </DefaultAircraft>
+    <DefaultEntity>
+        <Module Class="avtas.amase.entity.modules.EntityPathFollower"/>
+    </DefaultEntity>
+</EntityControl>

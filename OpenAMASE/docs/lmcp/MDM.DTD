@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--- The MDM Node should contain only the elements that follow -->
+<!ELEMENT MDM (SeriesName+, Namespace+, Comment?, EnumList?, StructList?)>
+
+<!--- This is a text value of less than 10 chars (ascii types) -->
+<!ELEMENT SeriesName (#PCDATA) >
+
+<!--- For autocoding purposes.  This is used by languages to set namespaces or directory paths -->
+<!ELEMENT Namespace (#PCDATA)>
+
+<!--- The starting number for messages (must be greater than 10) -->
+<!ELEMENT StartID (#PCDATA)>
+
+<!--Comments for the MDM, Struct, or Field -->
+<!ELEMENT Comment (#PCDATA)>
+
+<!-- List of enerations that can be used in structs -->
+<!ELEMENT EnumList (Enum)*>
+
+<!--- Field definition (used in structs) -->
+<!ELEMENT Field (Comment)?>
+<!ATTLIST Field
+    Default CDATA ''
+    Type CDATA 'byte'
+    Name CDATA #REQUIRED
+    Units CDATA 'None'
+  >
+
+<!--- The list of structs -->
+<!ELEMENT StructList (Struct)*>
+
+<!--- Struct definition -->
+<!ELEMENT Struct (Comment?, Field*)>
+<!ATTLIST Struct
+    Extends CDATA ''
+    Name CDATA #REQUIRED
+  >
+
+<!--- Enumeration definition -->
+<!ELEMENT Enum (Comment?, Entry*)>
+<!ATTLIST Enum
+    Name CDATA #REQUIRED
+  >
+
+<!--- Struct entry definition -->
+<!ELEMENT Entry (Comment?)>
+<!ATTLIST Entry
+    Name CDATA ''
+    Value CDATA ''
+  >

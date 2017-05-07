@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE MDM SYSTEM 'MDM.DTD'>
+
+
+<!-- Provides a definition for entities. Entities can be ground, air, sea or space travelling objects, or
+     may be fixed structures.  <br/>
+
+     Entities may interact with other entities, or Air Vehicles (specified by {@link CMASI/AirVehicleConfiguration}) since
+     entities may carry payloads.  If using entities with CMASI-defined air vehicles, air vehicles and entities should be
+     maintain unique IDs in a scenario. (i.e. if an {@link CMASI/AirVehicleConfiguration} has an ID of 1,
+     there should not be an {@link EntityConfiguration} with an ID of 1.) <br/>
+
+     Similar to air vehicles, Entities report current states using {@link EntityState} objects
+     
+     Entities can be commanded to perform actions using the {@link CMASI/VehicleAction} object.  Both payload actions and 
+     vehicle actions can be commanded in the same way as CMASI-defined air vehicles.
+
+     Requires the CMASI MDM, Version 2
+-->
+<MDM>
+    <SeriesName>ENTITIES</SeriesName>
+    <Namespace>afrl/entity</Namespace>
+    <Version>1</Version>
+
+    <EnumList>
+        <!-- Describes the damage state of an entity. -->
+        <Enum Name="Health">
+            <!-- No damage -->
+            <Entry Name="Normal"/>
+            <!-- Some damage resulting in diminished functionality -->
+            <Entry Name="MinorDamage"/>
+            <!-- Significant damage resulting in little or no functionality -->
+            <Entry Name="MajorDamage"/>
+            <!-- No functionality. Severe visibile damage -->
+            <Entry Name="Destroyed"/>
+        </Enum>
+        
+        <!-- Designates how an entity should treat a path following command.  -->
+        <Enum Name="TravelMode">
+            <!-- A path is traversed from beginning to end, then the entity stops -->
+            <Entry Name="SinglePass"/>
+            <!-- Upon reaching the end of a route, the entity travels the waypoint list in reverse-direction. -->
+            <Entry Name="ReverseCourse"/>
+            <!-- Upon reaching the end of a route, the entity travels to the first point and repeats the route. -->
+            <Entry Name="Loop"/>
+        </Enum>
+
+    </EnumList>
+    
+    
+    <StructList>
+
+        <!-- Definition of a scenario entity.  Entities can be friends, neutral elements, or foes. Note
+        that this is an abstract struct.  Declared entities should use one of the derived struct types. -->
+        <Struct Name="EntityConfiguration">
+            <!-- A scenario-unique ID for this entity. IDs should be greater than zero.  Entities should
+                 also not repeat IDs that are specified in {@link CMASI/AirVehicleConfiguration} objects. -->
+            <Field Name="EntityID" Type="uint32"/>
+            
+            <!-- A name used for referring to the entity.  This can be used by applications to assign a 
+                 display-name, callsign, or some other identifier.  This is not necessarily unique. -->
+            <Field Name="Name" Type="string"/>
+
+            <!-- the team or "side" that an entity belongs to.  This can be a name of a country, a "friend" or
+            "foe" designation, or a team name (e.g. "red team"). -->
+            <Field Name="Affiliation" Type="string" Default="Unknown"/>
+
+            <!-- The type of this entity.  The content of this field is dependent on the session. The value
+                 of this field is not specifically defined, so it is up to the simulation/session components
+                 to define a type system. For a common entity definition, see MIL STD 2525 or use DIS enumerations.
+            -->
+            <Field Name="EntityType" Type="string"/>
+
+            <!-- Physical dimensions of this entity.  Dimensions should be listed as the lengths of the entity
+                 in the body X-Y-Z directions (i.e. when the Euler angle attitude is [0, 0, 0], the x and y
+                 are parallel to the earth tangential plane, and z is normal to the plane.)
+            -->
+            <Field Name="Dimensions" Type="real32[3]" Units="meter"/>
+
+            <!-- A list of payloads that this entity carries. -->
+            <Field Name="PayloadList" Type="PayloadConfiguration[]" Series="CMASI"/>
+            
+            <!-- A list that maps keys to values for the inclusion of extra, custom information about this entity -->
+            <Field Name="Info" Type="KeyValuePair[]" Series="CMASI"/>
+
+        </Struct>
+        
+        <!-- An aircraft entity. -->
+        <Struct Name="Aircraft" Extends="EntityConfiguration">
+        </Struct>
+        
+        <!-- An entity that is capable of moving along the surface. -->
+        <Struct Name="GroundVehicle" Extends="EntityConfiguration">
+            <!-- maximum speed that this entity can travel on a level surface -->
+            <Field Name="MaxSpeed" Type="real32" Units="m/s"/>
+        </Struct>
+        
+        <!-- An entity that has a fixed location. -->
+        <Struct Name="FixedEntity" Extends="EntityConfiguration">
+        </Struct>
+        
+        <!-- Defines a human entity -->
+        <Struct Name="Human" Extends="EntityConfiguration">
+        </Struct>
+
+        <!-- A truth-state report for an entity.  This is the actual state of the entity.  -->
+        <Struct Name="EntityState">
+            <!-- A scenario-unique ID for this entity. IDs should be greater than zero -->
+            <Field Name="EntityID" Type="uint32"/>
+
+            <!-- The target velocity in three-dimensions.  The velocity should be stated
+                 in tangential-plane coordinates using the North-East-Down coordinate system.
+            -->
+            <Field Name="Velocity" Type="real32[3]" Units="meter/sec" />
+
+            <!-- Euler angle tangential-plane attitude for this entity.  Should be stated as
+                 Psi-Theta-Phi.  For information on Euler coordinates, see
+                 <a href="http://en.wikipedia.org/wiki/Euler_angle">Euler Angles</a>
+            -->
+            <Field Name="Attitude" Type="real32[3]" Units="degree"/>
+
+            <!-- The perceived target location -->
+            <Field Name="Location" Type="Location3D" Series="CMASI"/>
+            
+            <!-- Sets the visibility.  This is used to indicate the ability of this entity to be seen in a 
+                 simulation.-->
+            <Field Name="Visible" Type="bool" Default="true"/>
+            
+            <!-- indicates the state of damage to the entity.  -->
+            <Field Name="Health" Type="Health" Default="Normal"/>
+
+            <!-- A list of states for any onboard payloads -->
+            <Field Name="PayloadStateList" Type="PayloadState[]" Series="CMASI"/>
+            
+            <!-- A list that maps keys to values for the inclusion of extra, custom information about this entity -->
+            <Field Name="Info" Type="KeyValuePair[]" Series="CMASI"/>
+
+        </Struct>
+
+        <!-- A report of a detection of an entity.  Detections are based on the perception received from a
+             given sensor or set of sensors.  Entities can be detected by scenario aircraft or other entities.
+        -->
+        <Struct Name="EntityDetection">
+            <!-- A scenario-unique ID for this entity. IDs should be greater than zero.  Since this is a
+                 perception, the entity ID may not be known.  In that case, this field should be set to
+                 zero.
+            -->
+            <Field Name="EntityID" Type="uint32"/>
+
+            <!-- ID of the entity or aircraft that produced this perception. -->
+            <Field Name="DetectionSource" Type="uint32"/>
+
+            <!-- The ID of the payload that made this detection. -->
+            <Field Name="DetectionPayload" Type="uint32"/>
+
+            <!-- If true, denotes that this perception is a result of a fusion of multiple sources.
+                 In this case, the detection source and payload should be set to zero, and this perception
+                 should be treated as a scenario-wide perception.
+            -->
+            <Field Name="IsFused" Type="bool" Default="false"/>
+
+            <!-- The perceived target velocity in three-dimensions.  The velocity should be stated
+                 in tangential-plane coordinates using the North-East-Down coordinate system.
+            -->
+            <Field Name="Velocity" Type="real32[3]" Units="meter/sec" />
+
+            <!-- Velocity error for this perception.  The error terms should be in the same
+                 coordinate system as the velocity.
+            -->
+            <Field Name="VelocityError" Type="real32[3]" Units="meter/sec" />
+
+            <!-- If true, denotes that the velocity and velocity error have meaning. -->
+            <Field Name="CanMeasureVelocity" Type="bool" Default="false"/>
+
+            <!-- Euler angle tangential-plane attitude for this entity.  Should be stated as
+                 Psi-Theta-Phi.  For information on Euler coordinates, see
+                 <a href="http://en.wikipedia.org/wiki/Euler_angle">Euler Angles</a>
+            -->
+            <Field Name="Attitude" Type="real32[3]" Units="degree"/>
+
+            <!-- Error in the perception of the entity attitude.  This should be in the same
+                 coordinate system as the attitude.
+            -->
+            <Field Name="AttitudeError" Type="real32[3]" Units="degree"/>
+
+            <!-- If true, denotes that the attitude and attitude error have meaning. -->
+            <Field Name="CanMeasureAttitude" Type="bool" Default="false"/>
+
+            <!-- The entity location -->
+            <Field Name="Location" Type="Location3D" Series="CMASI"/>
+
+            <!-- Error in the perception of the location of this entity.  The first index is North-South error, the second index
+                 is the East-West error, and the third index is the vertical error.  The result is an error cylinder.
+            -->
+            <Field Name="LocationError" Type="real32[3]" Units="meter"/>
+
+            <!-- Time that this entity was perceived since scenario start. -->
+            <Field Name="TimeLastSeen" Type="real64" Units="second"/>
+
+        </Struct>
+        
+        
+        
+        <!--
+             This puts an air vehicle into a "track" mode, where the vehicle commands itself and its onboard sensors to attempt to
+             keep a target in view.  For this mode to function, the vehicle is given a {@link FlightProfile} to use when tracking,
+             and an entity id to track.
+        -->
+        <Struct Name="TrackTargetAction" Extends="VehicleAction" Series="CMASI">
+
+            <!-- The unique identifier of the target to be tracked. -->
+            <Field Name="EntityID" Type="uint32"  />
+
+            <!-- The unique identifier of the sensor that is to be actively steered to track the target. -->
+            <Field Name="SensorID" Type="uint32" />
+
+            <!--
+                The commanded altitude for this vehicle.  The aircraft will climb or descend to reach this altitude based on the
+                values in the specified {@link FlightProfile}.
+            -->
+            <Field Name="Altitude" Type="real32" Units="meter" />
+            
+            <!-- The waypoint that this vehicle is to return to when complete (or lost track) -->
+            <Field Name="ReturnToWaypoint" Type="uint32"/>
+
+        </Struct>
+        
+        <!--
+            A request to track a specific target.  It is assumed that this target can move at any time during the scenario.
+        -->
+        <Struct Name="TrackTargetTask" Extends="Task" Series="CMASI">
+            <!-- The ID of the target to be tracked. -->
+            <Field Name="EntityID" Type="uint32" Units="None" />
+            
+            <!-- The minimum ground sample distance that should be maintained for this target track operation. -->
+            <Field Name="GroundSampleDistance" Type="real32" Units="meter"/>
+        </Struct>
+        
+        <!-- A command to follow a set of waypoints.  This is meant to be a low-fidelity action, resulting in the 
+        entity proceeding between waypoints using a straight-line maneuver. -->
+        <Struct Name="FollowPathCommand" Extends="VehicleActionCommand" Series="CMASI">
+            
+            <!-- The first waypoint to follow.  This should correspond to the number of a waypoint in the 
+            waypoint list. If this is zero, no waypoint will be followed. -->
+            <Field Name="FirstWaypoint" Type="uint32"/>
+            
+            <!-- A list of waypoints to follow -->
+            <Field Name="WaypointList" Type="PathWaypoint[]"/>
+            
+            <!-- Describes the start time for this action, in scenario time.  If this field is zero, the action is
+            completed immediately. -->
+            <Field Name="StartTime" Type="real32" Units="second" Default="0"/>
+            
+            <!-- Describes the end time for this action, in scenario time.  If this field is zero, it should be ignored, otherwise
+            The entity will travel until the stop time is reached. -->
+            <Field Name="StopTime" Type="real32" Units="second" Default="0"/>
+            
+            <!-- Describes how the entity should treat the end-of-path. Entities can complete the path once, or continuously.-->
+            <Field Name="RepeatMode" Type="TravelMode" Default="SinglePass"/>
+        </Struct>
+        
+        <!-- A waypoint that can be used as part of commanding entities' movement -->
+        <Struct Name="PathWaypoint" Extends="Waypoint" Series="CMASI">
+            <!-- The amount of time that an entity should pause before moving to the next waypoint. -->
+            <Field Name="PauseTime" Type="uint32" Units="second" Default="0"/>         
+        </Struct>
+        
+        <!-- Tells the Entity to stop at the given location.  If the location is null, then the 
+        entity will stop immediately. -->
+        <Struct Name="StopMovementAction" Extends="VehicleAction" Series="CMASI">
+            <!-- A location at which the entity should stop.  If this is null, the entity will stop immediately. -->
+            <Field Name="Location" Type="Location2D" Series="CMASI" Default="null"/>
+        </Struct>
+    
+    </StructList>
+    
+</MDM>

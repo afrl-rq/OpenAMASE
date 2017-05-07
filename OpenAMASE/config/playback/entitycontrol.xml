@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<EntityControl>
+        <EntitySetup Class="afrl.entity.EntityConfiguration">
+            <Module Class="avtas.amase.entity.EntityPathFollower"/>
+        </EntitySetup>
+</EntityControl>

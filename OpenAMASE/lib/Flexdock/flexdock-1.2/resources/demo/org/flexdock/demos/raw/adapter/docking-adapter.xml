@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<adapters>
+	<adapter class="org.flexdock.demos.util.Titlepane">
+		<method flexdock="persistentId" client="getTitle" />
+		<method flexdock="dragSource" client="getTitlebar" />
+		<method flexdock="frameDragSource" client="getTitlebar" />
+		<method flexdock="tabText" client="getTitle" />
+	</adapter>
+</adapters>

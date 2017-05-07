@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flexview-themes>
+
+	<!-- Map the PLAFs to specific themes -->
+	<plaf name="javax.swing.plaf.metal.MetalLookAndFeel" ref="metal" />
+	<plaf name="apple.laf.AquaLookAndFeel" ref="default" />
+	<plaf name="com.sun.java.swing.plaf.gtk.GTKLookAndFeel" ref="default" />
+	<plaf name="com.sun.java.swing.plaf.windows.WindowsLookAndFeel" ref="win32" />
+	<plaf name="com.sun.java.swing.plaf.motif.MotifLookAndFeel" ref="default" />
+	<plaf name="com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel" ref="eclipse2" />
+	<plaf name="com.l2fprod.gui.plaf.skin.SkinLookAndFeel" ref="default"
+				handler="org.flexdock.plaf.mappings.SkinLFResolver" />
+
+	<plaf name="com.jgoodies.plaf.plastic.PlasticLookAndFeel" ref="eclipse2" />
+	<plaf name="com.jgoodies.plaf.plastic.Plastic3DLookAndFeel" ref="eclipse2"/>
+	<plaf name="com.jgoodies.plaf.plastic.PlasticXPLookAndFeel" ref="eclipse2"/>
+
+	<plaf name="com.jgoodies.looks.plastic.PlasticLookAndFeel" ref="eclipse2" />
+	<plaf name="com.jgoodies.looks.plastic.Plastic3DLookAndFeel" ref="eclipse2"/>
+	<plaf name="com.jgoodies.looks.plastic.PlasticXPLookAndFeel" ref="eclipse2"/>
+
+	<!-- Create a set of resource handlers -->
+	<handler name="color" value="org.flexdock.plaf.resources.ColorResourceHandler" />
+	<handler name="font" value="org.flexdock.plaf.resources.FontResourceHandler" />
+	<handler name="image" value="org.flexdock.plaf.resources.ImageResourceHandler" />
+	<handler name="icon" value="org.flexdock.plaf.resources.ImageIconResourceHandler" />
+	<handler name="plaf" value="org.flexdock.plaf.resources.PlafResourceHandler" />
+	<handler name="square-bevel-border" value="org.flexdock.plaf.resources.border.SquareBevelBorderResource" />
+	<handler name="paint" value="org.flexdock.plaf.resources.PainterResourceHandler" />
+	<handler name="insets" value="org.flexdock.plaf.resources.InsetsResourceHandler" />
+	<handler name="rounded-border" value="org.flexdock.plaf.resources.border.RoundedBorderResource" />
+	<handler name="raised-border" value="org.flexdock.plaf.resources.border.RaisedBorderResource" />
+	<handler name="action" value="org.flexdock.plaf.resources.ActionResourceHandler" />
+	<handler name="string" value="org.flexdock.plaf.resources.StringResourceHandler" />
+	
+	<!-- Specify a set of default property handlers for specific tags. -->
+	<!-- For instance, a <prop-handler> with name="icon-resource" and  -->
+	<!-- value="icon" will apply the "icon" resource handler as the    -->
+	<!-- default handler for all properties inside of any              -->
+	<!-- <icon-resource> tag.                                          -->
+	<prop-handler name="icon-resource" value="icon"/>
+	
+	<!-- Point the default theme to windows classic -->
+	<theme name="default" description="Default Theme" view-ui="default">
+		<view-ui name="default">
+			<property name="titlebar-ui" value="default"/>
+		</view-ui>
+	
+		<!-- List the various titlebars that are available -->
+		<titlebar-ui name="default">
+			<property name="button-ui" value="default"/>
+			<property name="button.margin" value="2"/>
+			<property name="default.height" value="20" />
+			<property name="font" value="Dialog, 0, 11" handler="font"/>
+			<property name="font.color" value="#000000" handler="color"/>
+			<property name="font.color.active" value="#FFFFFF" handler="color"/>
+			<property name="painter" value="defaultPainter" handler="paint"/>
+		</titlebar-ui>
+		
+		<!-- List the various painters available -->
+		<painter-resource name="defaultPainter">
+			<property name="classname" value="org.flexdock.plaf.resources.paint.DefaultPainter"/>
+			<property name="bgcolor" value="#D4D0C8" handler="color"/>
+		</painter-resource>
+
+		<painter-resource name="gradientPainter">
+			<property name="classname" value="org.flexdock.plaf.resources.paint.GradientPainter"/>
+			<property name="bgcolor" value="#D4D0C8" handler="color"/>
+			<property name="bgcolor.active" value="#D4D0C8" handler="color"/>
+			<property name="grayscale" value="1"/>
+		</painter-resource>
+		
+		<!-- List the various action button types available -->
+		<button-ui name="empty" />
+		
+		<button-ui name="default">
+			<property name="border.hover" value="1, #ffffff, #000000" handler="square-bevel-border" />
+			<property name="border.active.hover" value="1, #ffffff, #000000" handler="square-bevel-border" />
+			<property name="border.pressed" value="1, #0000000, #ffffff" handler="square-bevel-border" />
+		</button-ui>
+		
+		<button-ui name="rounded">
+			<property name="border.hover" value="#808080" handler="rounded-border" />
+			<property name="border.active.hover" value="#808080" handler="rounded-border" />
+			<property name="border.pressed" value="#0C0C0C" handler="rounded-border" />
+		</button-ui>
+		
+		<icon-resource name="default.close">
+			<property name="action" value="org.flexdock.view.actions.DefaultCloseAction" handler="action" />
+			<property name="tooltip" value="Close" handler="string" />
+		</icon-resource>
+		<icon-resource name="default.pin">
+			<property name="action" value="org.flexdock.view.actions.DefaultPinAction" handler="action" />
+			<property name="tooltip" value="Unpin" handler="string" />
+			<property name="tooltip.selected" value="Pin" handler="string" />
+		</icon-resource>
+	</theme>
+
+	<!-- Begin Windows Classic -->
+	<theme name="win32" description="Windows Classic" view-ui="win32">
+		<view-ui name="win32">
+			<property name="titlebar-ui" value="win32"/>
+		</view-ui>
+	
+		<!-- List the various titlebars that are available -->
+		<titlebar-ui name="win32" extends="default">
+			<property name="default.height" value="22" />
+			<property name="icon-map" value="win32" />
+			<property name="icon.insets" value="0,0,0,4" handler="insets"/> 
+			<property name="button.margin" value="1"/>
+			<property name="font" value="Tahoma, 0, 11" handler="font"/>
+			<property name="border" value="#808080" handler="rounded-border"/>			
+			<property name="painter" value="win32Painter" handler="paint"/> 
+			<property name="insets" value="2,0,4,0" handler="insets"/> 
+		</titlebar-ui>
+		
+		<!-- List the various painters available -->
+		<painter-resource name="win32Painter" extends="defaultPainter">
+			<property name="bgcolor" value="#C4C1BC" handler="color"/>
+			<property name="bgcolor.active" value="#0A246A" handler="color"/>
+		</painter-resource>
+		
+	
+		<!-- List the available icon maps -->	
+		<icon-map name="win32">
+			<property name="close" value="win32.close" />
+			<property name="pin" value="win32.pin" />
+		</icon-map>
+		
+		<!-- List available icons -->
+		<icon-resource name="win32.close" extends="default.close">
+			<property name="default" value="org/flexdock/plaf/titlebar/win32/close_default.png" />
+			<property name="active" value="org/flexdock/plaf/titlebar/win32/close_active.png" />
+			<property name="disabled" value="org/flexdock/plaf/titlebar/win32/close_disabled_default.png" />
+			<property name="active.disabled" value="org/flexdock/plaf/titlebar/win32/close_disabled_active.png" />
+		</icon-resource>
+		<icon-resource name="win32.pin" extends="default.pin">
+			<property name="default" value="org/flexdock/plaf/titlebar/win32/pin_default.png" />
+			<property name="disabled" value="org/flexdock/plaf/titlebar/win32/pin_disabled_default.png" />
+			<property name="default.selected" value="org/flexdock/plaf/titlebar/win32/pin_default_selected.png" />
+			<property name="active" value="org/flexdock/plaf/titlebar/win32/pin_active.png" />
+			<property name="active.disabled" value="org/flexdock/plaf/titlebar/win32/pin_disabled_active.png" />
+			<property name="active.selected" value="org/flexdock/plaf/titlebar/win32/pin_active_selected.png" />
+			<property name="disabled.selected" value="org/flexdock/plaf/titlebar/win32/pin_disabled_default_selected.png" />
+			<property name="active.disabled.selected" value="org/flexdock/plaf/titlebar/win32/pin_disabled_active_selected.png" />
+		</icon-resource>
+	</theme>
+	<!-- End Windows Classic -->
+	
+	<!-- Begin Office XP -->
+	<theme name="officeXP" description="Office XP" view-ui="officeXP">
+		<view-ui name="officeXP">
+			<property name="titlebar-ui" value="officeXP"/>
+		</view-ui>
+	
+		<!-- List the various titlebars that are available -->
+		<titlebar-ui name="officeXP" extends="win32">
+			<property name="default.height" value="25"/>	
+			<property name="font.color.active" value="#000000" handler="color"/>	
+			<property name="border" value="#7FA7E1" handler="rounded-border"/>
+			<property name="border.active" value="#FFAD55" handler="rounded-border"/>
+			<property name="painter" value="officeXPPainter" handler="paint"/> 
+			<property name="insets" value="0,0,2,0" handler="insets"/>
+		</titlebar-ui>
+		
+		<painter-resource name="officeXPPainter">
+			<property name="classname" value="org.flexdock.plaf.theme.officexp.OfficeXPPainter"/>
+			<property name="bgcolor" value="#DAEAFD" handler="color"/>
+			<property name="bgcolor.active" value="#FFD289" handler="color"/>
+			<property name="gradient.color" value="#7FA7E1" handler="color"/>
+			<property name="gradient.color.active" value="#FFAD55" handler="color"/>
+		</painter-resource>		
+	</theme>
+	<!-- End Office XP -->
+	
+	<!-- Begin Eclipse 2.0 -->
+	<theme name="eclipse2" description="Eclipse 2.0" view-ui="eclipse2">
+		<view-ui name="eclipse2">
+			<property name="titlebar-ui" value="eclipse2"/>
+		</view-ui>
+	
+		<!-- List the various titlebars that are available -->
+		<titlebar-ui name="eclipse2" extends="default">
+			<property name="icon-map" value="eclipse2" />
+			<property name="icon.insets" value="0,0,0,4" handler="insets"/>
+			<property name="default.height" value="25"/>
+			<property name="border" value="" handler="raised-border"/>
+			<property name="border.active" value="" handler="raised-border"/>
+			<property name="font.color.active" value="#FFFFFF" handler="color"/>
+			
+			<property name="painter" value="eclipsePainter" handler="paint"/> 
+		</titlebar-ui>
+		
+		<painter-resource name="eclipsePainter">
+			<property name="classname" value="org.flexdock.plaf.theme.eclipse2.EclipseGradientPainter"/>
+			<property name="bgcolor.active" value="#0054E3" handler="color"/>
+		</painter-resource>
+	
+		<!-- List the available icon maps -->	
+		<icon-map name="eclipse2">
+			<property name="close" value="gradient.close" />
+			<property name="pin" value="gradient.pin" />
+		</icon-map>
+		
+		<!-- List available icons -->
+		<icon-resource name="gradient.close" extends="default.close">
+			<property name="default" value="org/flexdock/plaf/titlebar/eclipse2/close_default.gif" />
+			<property name="active" value="org/flexdock/plaf/titlebar/eclipse2/close_default.gif" />
+		</icon-resource>
+		<icon-resource name="gradient.pin" extends="default.pin">
+			<property name="default" value="org/flexdock/plaf/titlebar/eclipse2/pin_default.gif" />
+			<property name="active" value="org/flexdock/plaf/titlebar/eclipse2/pin_default.gif" />
+		</icon-resource>
+	</theme>
+	<!-- End Eclipse 2.0 -->
+	
+	
+	<!-- Begin Metal Look -->
+	<theme name="metal" description="Metal Look" view-ui="metal">
+		<view-ui name="metal">
+			<property name="titlebar-ui" value="metal"/>
+		</view-ui>
+	
+		<!-- List the various titlebars that are available -->
+		<titlebar-ui name="metal" extends="default">
+			<property name="classname" value="org.flexdock.plaf.theme.metal.MetalTitlebarUI" />
+			<property name="icon-map" value="eclipse2" />
+			<property name="icon.insets" value="0,0,0,4" handler="insets"/>
+			<property name="default.height" value="24"/>
+			<property name="border" value="" handler="raised-border"/>
+			<property name="border.active" value="" handler="raised-border"/>
+			<property name="font" value="Tahoma, 1, 12" handler="font"/>
+			<property name="font.color.active" value="#000000" handler="color"/>	
+			<property name="painter" value="metalPainter" handler="paint"/> 
+		</titlebar-ui>
+		
+		<painter-resource name="metalPainter">
+			<property name="classname" value="org.flexdock.plaf.theme.metal.MetalPainter"/>
+		</painter-resource>
+	</theme>
+	<!-- End Metal Look -->
+	
+	<!-- Skin Look And Feel -->
+	<theme name="skinlf" description="Skin LookAndFeel" view-ui="skinlf">
+		<view-ui name="skinlf">
+			<property name="titlebar-ui" value="skinlf"/>
+		</view-ui>
+	
+		<!-- List the various titlebars that are available -->
+		<titlebar-ui name="skinlf" extends="default">
+			<property name="classname" value="org.flexdock.plaf.theme.skinlf.SkinLFTitlebarUI" />
+			<property name="icon-map" value="eclipse2" />	
+			<property name="painter" value="skinlf" handler="paint"/> 
+		</titlebar-ui>
+				
+		<painter-resource name="skinlf">
+			<property name="classname" value="org.flexdock.plaf.theme.skinlf.SkinLFPainter"/>
+		</painter-resource>	
+	</theme>
+	<!-- Skin Look And Feel -->
+
+</flexview-themes>

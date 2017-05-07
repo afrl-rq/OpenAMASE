@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Configuration file for AMASE simulation -->
+
+
+<Plugins>
+        
+    <Plugin Class="avtas.amase.scenario.ScenarioManager"/>      
+
+    <Plugin Class="avtas.amase.window.WindowService"/>
+
+    <Plugin Class="avtas.amase.scenario.ScenarioEventViewer"/>
+
+    <Plugin Class="avtas.amase.ui.IconManager"/>
+    
+    <Plugin Class="amase.examples.SamplePlugin">
+        <AnyParameter>value</AnyParameter>
+    </Plugin>
+        
+</Plugins>
+

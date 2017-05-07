@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<system-info>
+	<os-info>
+		<os name="unix">
+			<os name="aix" />
+			<os name="digital unix" />
+			<os name="freebsd" />
+			<os name="hp-ux" />
+			<os name="irix" />
+			<os name="linux" />
+			<os name="solaris" />
+			<os name="sunos" />
+			<os name="unix_sv" />
+		</os>
+		<os name="mac">
+			<os name="mac_os_x" />
+			<os name="macos">
+				<os name="mac_os" />
+			</os>
+			<os name="rhapsody" />
+		</os>
+		<os name="os/2" />
+		<os name="windows">
+			<os name="windows_2000" />
+			<os name="windows_95" />
+			<os name="windows_98" />
+			<os name="windows_ce" />
+			<os name="windows_me" />
+			<os name="windows_nt" />
+			<os name="windows_xp" />
+		</os>
+	</os-info>
+	<arch-info>
+		<arch name="alpha" />
+		<arch name="arm" />
+		<arch name="mips" />
+		<arch name="pa-risc">
+			<arch name="pa_risc" />
+		</arch>
+		<arch name="power" />
+		<arch name="ppc">
+			<arch name="powerpc" />
+		</arch>
+		<arch name="sparc" />
+		<arch name="x86">
+			<arch name="i386" />
+			<arch name="i686" />
+			<arch name="ia32" />
+			<arch name="pentium" />
+		</arch>
+	</arch-info>
+</system-info>

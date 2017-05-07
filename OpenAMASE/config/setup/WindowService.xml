@@ -1,0 +1,55 @@
+<?xml version="1.0" ?>
+
+<WindowService>
+  <Window>
+    <!--Shows the menu bar.-->
+    <showMenuBar>true</showMenuBar>
+    <!--Shows a toolbar.-->
+    <showToolBar>false</showToolBar>
+    <!--Sets the orientation of the toolbar.  [North, West, East]-->
+    <toolbarPlacement>North</toolbarPlacement>
+    <!--Shows a status bar at the bottom of the window.-->
+    <showStatusBar>true</showStatusBar>
+    <!--The baseline title that is shown in the title bar.-->
+    <baseTitle>AMASE</baseTitle>
+    <!--Preferred Width of window.-->
+    <width>1202</width>
+    <!--Preferred Height of window.-->
+    <height>835</height>
+    <!--An Icon to show.  Specify the path using java classpath URL conventions.-->
+    <icon>/resources/amase_setup.png</icon>
+    <!--x coordinate of the top left corner of the window.-->
+    <x>290</x>
+    <!--y coordinate of the top left corner of the window.-->
+    <y>118</y>
+    <!--If true, the window fills the screen-->
+    <fullscreen>false</fullscreen>
+  </Window>
+  <!--Automatically generated layout information.  Do not edit by hand.-->
+  <Layout>
+    <PerspectiveModel currentPerspectiveId="default" defaultPerspectiveId="default">
+      <Perspective id="default" name="default">
+        <Layout>
+          <DockingPortNode>
+            <SplitNode dockingRegion="north" orientation="vertical" percentage="0.7887517" region="left">
+              <DockingPortNode>
+                <SplitNode dockingRegion="east" orientation="horizontal" percentage="0.6457438" region="left">
+                  <DockingPortNode>
+                    <DockableNode dockableId="avtas.amase.setup.XMLEditorPlugin"></DockableNode>
+                    <DockableNode dockableId="avtas.amase.setup.map.SetupMapPlugin"></DockableNode>
+                  </DockingPortNode>
+                  <DockingPortNode>
+                    <DockableNode dockableId="avtas.amase.setup.EventEditorPlugin"></DockableNode>
+                  </DockingPortNode>
+                </SplitNode>
+              </DockingPortNode>
+              <DockingPortNode>
+                <DockableNode dockableId="avtas.amase.validator.ValidatorPlugin"></DockableNode>
+              </DockingPortNode>
+            </SplitNode>
+          </DockingPortNode>
+        </Layout>
+      </Perspective>
+    </PerspectiveModel>
+  </Layout>
+</WindowService>

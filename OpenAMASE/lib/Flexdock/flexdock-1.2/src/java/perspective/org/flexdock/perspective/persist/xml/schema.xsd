@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: schema.xsd,v 1.5 2005-08-07 20:33:39 winnetou25 Exp $ -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.flexdock.org" xmlns="http://www.flexdock.org">
+
+	<xs:simpleType name="dockingRegionType">
+    	<xs:restriction base="xs:string">
+        	<xs:enumeration value="north"/>
+            <xs:enumeration value="south"/>
+            <xs:enumeration value="east"/>
+            <xs:enumeration value="west"/>
+    	</xs:restriction>
+    </xs:simpleType>
+
+	<xs:simpleType name="stateType">
+    	<xs:restriction base="xs:string">
+        	<xs:enumeration value="opened"/>
+            <xs:enumeration value="minimized"/>
+            <xs:enumeration value="floating"/>
+    	</xs:restriction>
+    </xs:simpleType>
+
+	<xs:simpleType name="minimizeConstraintType">
+    	<xs:restriction base="xs:string">
+        	<xs:enumeration value="left"/>
+            <xs:enumeration value="bottom"/>
+            <xs:enumeration value="center"/>
+            <xs:enumeration value="right"/>
+            <xs:enumeration value="top"/>
+    	</xs:restriction>
+    </xs:simpleType>
+
+	<xs:simpleType name="orientationType">
+    	<xs:restriction base="xs:string">
+        	<xs:enumeration value="vertical"/>
+            <xs:enumeration value="horizontal"/>
+    	</xs:restriction>
+    </xs:simpleType>
+
+	<xs:simpleType name="regionType">
+    	<xs:restriction base="xs:string">
+        	<xs:enumeration value="top"/>
+            <xs:enumeration value="bottom"/>
+            <xs:enumeration value="right"/>
+            <xs:enumeration value="left"/>
+    	</xs:restriction>
+    </xs:simpleType>
+
+	<xs:element name="DockingState">
+	    <xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Point" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="SplitNode" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="dockableId" type="xs:string" use="required"/>
+			<xs:attribute name="dockingRegion" type="dockingRegionType" use="required"/>
+			<xs:attribute name="state" type="stateType" use="required"/>
+			<xs:attribute name="relativeParentId" type="xs:string" use="optional"/>
+			<xs:attribute name="splitRatio" type="xs:float" use="optional"/>
+			<xs:attribute name="floatingGroupName" type="xs:string" use="optional"/>
+			<xs:attribute name="minimizeConstraint" type="minimizeConstraintType" use="optional"/>
+	    </xs:complexType>
+	</xs:element>
+
+	<xs:element name="Point">
+	    <xs:complexType>
+			<xs:attribute name="x" type="xs:nonNegativeInteger" use="required"/>
+			<xs:attribute name="y" type="xs:nonNegativeInteger" use="required"/>
+	    </xs:complexType>
+	</xs:element>
+
+	<xs:element name="DockingPath">
+	    <xs:complexType>
+			<xs:sequence>
+				<xs:element ref="SplitNode" minOccurs="0" maxOccurs="1"/>
+			</xs:sequence>
+			<xs:attribute name="isTabbed" type="xs:boolean" use="optional"/>
+			<xs:attribute name="rootPortId" type="xs:string" use="required"/>
+			<xs:attribute name="siblingId" type="xs:string" use="optional"/>
+	    </xs:complexType>
+	</xs:element>
+
+	<xs:element name="SplitNode">
+	    <xs:complexType>
+	    	<xs:sequence>
+				<xs:element ref="DockingPortNode" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="DockableNode" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="siblingId" type="xs:string" use="optional"/>
+			<xs:attribute name="orientation" type="orientationType" use="required"/>
+			<xs:attribute name="percentage" type="xs:float" use="required"/>
+			<xs:attribute name="region" type="regionType" use="required"/>
+			<xs:attribute name="dockingRegion" type="dockingRegionType" use="optional"/>
+	    </xs:complexType>
+	</xs:element>
+
+	<xs:element name="DockingPortNode">
+	    <xs:complexType>
+	    	<xs:sequence>
+				<xs:element ref="SplitNode" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="DockableNode" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+	    </xs:complexType>
+	</xs:element>
+
+	<xs:element name="DockableNode">
+	    <xs:complexType>
+			<xs:attribute name="dockableId" type="xs:string" use="required"/>
+	    </xs:complexType>
+	</xs:element>
+
+	<xs:element name="FloatingGroup">
+		<xs:complexType>
+	    	<xs:sequence>
+				<xs:element name="Rectangle">
+		    		<xs:complexType>
+				    	<xs:sequence>
+							<xs:element ref="Point"/>
+							<xs:element name="Dimension">
+					    		<xs:complexType>
+									<xs:attribute name="height" type="xs:nonNegativeInteger" use="required"/>
+									<xs:attribute name="width" type="xs:nonNegativeInteger" use="required"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+			    	</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:string" use="required"/>
+	    </xs:complexType>
+	</xs:element>
+
+	<xs:element name="PerspectiveModel">
+        <xs:complexType>
+			<xs:sequence>
+	            <xs:element name="Perspective" minOccurs="1" maxOccurs="unbounded">
+	       			<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Layout" minOccurs="1" maxOccurs="1">
+									<xs:element ref="DockingState" minOccurs="0" maxOccurs="unbounded"/>
+									<xs:element ref="FloatingGroup" minOccurs="0" maxOccurs="unbounded"/>
+								    <xsd:choice>
+										<xs:element ref="SplitNode"/>
+										<xs:element ref="DockingPortNode"/>
+										<xs:element ref="DockableNode"/>
+								    </xsd:choice>
+				            </xs:element>
+							<xs:element name="LayoutSequence" minOccurs="0" maxOccurs="1">
+								<xs:sequence>
+									<xs:element ref="DockingState" minOccurs="0" maxOccurs="unbounded"/>
+								</xs:sequence>
+							</xs:element>
+				    		<xs:attribute name="id" type="xs:string" use="required"/>
+			    		    <xs:attribute name="name" type="xs:string" use="required"/>
+						</xs:sequence>
+			        </xs:complexType>
+				</xs:element>
+			</xs:sequence>
+    		<xs:attribute name="currentPerspectiveId" type="xs:string" use="required"/>
+	        <xs:attribute name="defaultPerspectiveId" type="xs:string" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

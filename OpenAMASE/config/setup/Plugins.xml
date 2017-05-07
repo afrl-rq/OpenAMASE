@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Configuration file for AMASE Setup Tool -->
+
+    <Plugins>
+        
+        
+        <Plugin Class="avtas.amase.setup.SetupScenarioManager"/>
+        <Plugin Class="avtas.amase.setup.SetupEventBridge"/>
+        <Plugin Class="avtas.amase.setup.DataImport"/>
+        <Plugin Class="avtas.amase.setup.DataExport"/>
+        <Plugin Class="avtas.amase.setup.UndoManager"/>
+        <Plugin Class="avtas.amase.setup.LinkedFileMenu"/>
+        <Plugin Class="avtas.amase.window.WindowService"/>
+        
+        <Plugin Class="avtas.amase.setup.map.SetupMapPlugin">
+            <Map>
+                <Layers>
+                    <Layer Class="avtas.amase.setup.map.LocationCopyTool"/>
+                    <Layer Class="avtas.map.layers.WorldLayer">
+                        <image>data/world_image_small.jpg</image>
+                    </Layer>
+                    <Layer Class="avtas.map.layers.WorldImageLayer">
+                        <Directory>data/overlay</Directory>
+                    </Layer>
+                    <Layer Class="avtas.map.layers.EsriShapeLayer">
+                        <Directory>data/overlay</Directory>
+                    </Layer>
+                    <Layer Class="avtas.map.layers.MaskLayer">
+                        <Opacity>0.5</Opacity>
+                    </Layer>
+                    <Layer Class="avtas.amase.setup.map.EntityLayer"/>
+                    <Layer Class="avtas.amase.setup.map.TaskLayer"/>
+                    <Layer Class="avtas.amase.setup.map.MissionCommandLayer"/>
+                    <Layer Class="avtas.amase.setup.map.EntityPathLayer"/>
+                    <Layer Class="avtas.map.layers.Distance"/>
+                    <Layer Class="avtas.map.layers.MapScale">
+                        <ScaleType>Metric</ScaleType>
+                    </Layer>
+                    <Layer Class="avtas.amase.setup.map.ScenarioToolbarLayer"/>
+
+                </Layers>
+            </Map>
+        </Plugin>
+        
+        <!--Plugin Class="avtas.amase.setup.ScenarioToolbar"/-->
+        <Plugin Class="avtas.amase.setup.EventEditorPlugin" />
+        <Plugin Class="avtas.amase.setup.ScenarioDetailsEditor"/>
+        <Plugin Class="avtas.amase.setup.PlanRequestPanel"/>
+        <Plugin Class="avtas.amase.setup.XMLEditorPlugin"/>
+        <!--Plugin Class="avtas.amase.setup.XMLTreePlugin" /-->
+        <Plugin Class="avtas.amase.validator.ValidatorPlugin"/>
+        <Plugin Class="avtas.amase.setup.UnitConverterPlugin"/>
+        <Plugin Class="avtas.amase.setup.ScenarioMover"/>
+        
+        
+        <Plugin Class="avtas.amase.ui.IconManager"/>
+        <Plugin Class="avtas.amase.setup.EnduranceEnergyTool"/>
+        
+        <Plugin Class="avtas.terrain.TerrainConfigurator">
+        <DTED>
+            <Directory>data/dted</Directory>
+        </DTED>
+    </Plugin>
+    </Plugins>
+
+
+

@@ -1,0 +1,436 @@
+<?xml version="1.0"?>
+<project name="flexdock" basedir="." default="jar">
+
+   <property name="version" value="1.2.3" />
+
+   <property file="workingcopy.properties" />
+
+   <!-- build-source properties -->
+   <property name="java.src" value="${basedir}/src/java" />
+   <property name="webstart.src" value="${basedir}/src/webstart" />
+   <property name="lib.dir" value="${basedir}/lib" />
+   <property name="java.src.core" value="${java.src}/core" />
+   <property name="java.src.demo" value="${java.src}/demo" />
+   <property name="java.src.dockbar" value="${java.src}/dockbar" />
+   <property name="java.src.drag" value="${java.src}/drag" />
+   <property name="java.src.perspective" value="${java.src}/perspective" />
+   <property name="java.src.plaf" value="${java.src}/plaf" />
+   <property name="java.src.test" value="${java.src}/test" />
+   <property name="java.src.view" value="${java.src}/view" />
+
+   <property name="resource.dir" value="${basedir}/resources" />
+
+   <!-- build-output properties -->
+   <property name="build.dir" value="${basedir}/build" />
+   <property name="doc.dir" value="${build.dir}/docs" />
+   <property name="doc.api.dir" value="${doc.dir}/api" />
+   <property name="bin.dir" value="${build.dir}/bin" />
+   <property name="bin.dir.demo" value="${build.dir}/bin-demo" />
+   <property name="bin.dir.test" value="${build.dir}/bin-test" />
+   <property name="bin.dir.webstart" value="${build.dir}/webstart" />
+   <property name="dist.dir" value="${build.dir}/dist" />
+   <property name="dist.jar.basename" value="${ant.project.name}-${version}" />
+   <property name="dist.demo.jar.basename" value="${ant.project.name}-demo-${version}" />
+
+   <!-- sourcepaths -->
+   <path id="sourcepath">
+      <pathelement location="${java.src.core}" />
+      <pathelement location="${java.src.dockbar}" />
+      <pathelement location="${java.src.drag}" />
+      <pathelement location="${java.src.perspective}" />
+      <pathelement location="${java.src.plaf}" />
+      <pathelement location="${java.src.view}" />
+   </path>
+
+   <!-- classpaths -->
+   <path id="javac.classpath">
+      <pathelement location="${bin.dir}" />
+      <fileset dir="${lib.dir}" includes="skinlf*.jar" />
+   </path>
+   <path id="javac.classpath.demo">
+      <path refid="javac.classpath" />
+      <pathelement location="${lib.dir}/jmf/lib/jmf.jar" />
+      <pathelement location="${lib.dir}/looks-2.1.1.jar" />
+   </path>
+   <path id="javac.classpath.test">
+      <path refid="javac.classpath" />
+      <pathelement location="${bin.dir.demo}" />
+   </path>
+
+   <path id="rt.classpath">
+      <pathelement location="${bin.dir}"/>
+   </path>
+   <path id="rt.classpath.demo">
+      <pathelement location="${bin.dir.demo}"/>
+      <pathelement location="${lib.dir}/jmf.jar"/><!-- needed only for JMF demo -->
+      <pathelement location="${bin.dir}"/>
+   </path>
+   <path id="rt.classpath.test">
+      <pathelement location="${bin.dir.test}"/>
+      <pathelement location="${bin.dir}"/>
+      <pathelement location="${bin.dir.demo}"/> <!-- needed for a couple of the tests -->
+	  <pathelement location="${lib.dir}/skinlf.jar"/>
+   </path>
+
+   <target name="clean" description="Remove all derived files">
+      <!-- This way of deleting will not fail if run repeatedly, will delete the dirs,
+           and will also fail if we are unable to delete a file or dir too. -->
+      <delete includeemptydirs="true" failonerror="true">
+         <fileset dir="${basedir}" defaultexcludes="no">
+            <include name="build/**"/>
+         </fileset>
+      </delete>
+   </target>
+
+   <target name="init">
+      <mkdir dir="${bin.dir}" />
+      <mkdir dir="${bin.dir.demo}" />
+      <mkdir dir="${bin.dir.test}" />
+      <mkdir dir="${dist.dir}" />
+
+      <condition property="os.windows">
+         <os family="windows"/>
+      </condition>
+      <condition property="os.unixWithXlib">
+         <and>
+            <os family="unix"/>
+            <available file="/usr/X11R6/include/X11/Xlib.h"/>
+         </and>
+      </condition>
+   </target>
+
+   <target name="resources" depends="init"
+           description="Copy non-compiled files from resource dirs to binXXX dirs">
+      <copy todir="${bin.dir}">
+         <fileset dir="${resource.dir}/core" excludes="org/flexdock/util/dev-props.properties" />
+         <fileset dir="${resource.dir}/plaf" />
+      </copy>
+      <copy todir="${bin.dir.demo}">
+         <fileset dir="${resource.dir}/demo" />
+      </copy>
+   </target>
+
+   <target name="compile" depends="init, resources"
+           description="Compile java sources for the framework, demos, and tests">
+      <javac classpathref="javac.classpath" destdir="${bin.dir}" debug="true" source="1.5" target="1.5" includeAntRuntime="no">
+         <compilerarg value="-Xlint"/>
+         <src path="${java.src.core}" />
+         <!-- the next 3 are interdependent -->
+         <src path="${java.src.view}"/>
+         <src path="${java.src.plaf}"/>
+         <src path="${java.src.dockbar}"/>
+         <src path="${java.src.drag}"/>
+         <src path="${java.src.perspective}"/>
+      </javac>
+      <javac classpathref="javac.classpath.demo" srcdir="${java.src.demo}" destdir="${bin.dir.demo}" debug="true" source="1.5" target="1.5" includeAntRuntime="no"/>
+      <javac classpathref="javac.classpath.test" srcdir="${java.src.test}" destdir="${bin.dir.test}" debug="true" source="1.5" target="1.5"  includeAntRuntime="no"/>
+   </target>
+
+
+   <target name="showOsLibraryKeychain"
+           description="Demonstrates the lookup order for .so libraries by listing the suffix appended to the base file name when attempting to locate the most appropriate library." >
+      <java fork="yes" dir="${bin.dir}" classpathref="rt.classpath" classname="org.flexdock.util.OsInfo"/>
+   </target>
+   
+   <macrodef name="getprefixlibrarykey" description="Invokes org.flexdock.util.OsInfo then parses the default library key from the output into the property named in the property attribute of this macro.">
+      <!--
+          This macro could be done via an ant task, but I opted to
+          do it this way to cut down on the complexity by not creating an
+          ant source dir, having to compile it, and run the task in process,
+          not to mention deal with the issues of getting it to build cleanly
+          in a variety of different eclipse versions. -->
+      <attribute name="property"/>
+      <sequential>
+         <tempfile property="@{property}~temp.file" destdir="${build.dir}" prefix=".osinfo-"/>
+         <java fork="yes"
+               dir="${bin.dir}" classpathref="rt.classpath"
+               classname="org.flexdock.util.OsInfo"
+               output="${@{property}~temp.file}" failonerror="true"/>
+         <loadfile property="@{property}" srcFile="${@{property}~temp.file}">
+            <filterchain>
+               <linecontains>
+                  <contains value="Default Library Key"/>
+               </linecontains>
+               <tokenfilter>
+                  <filetokenizer/>
+                  <replaceregex pattern=".*Key:\s+(.+)[\n\r]+" replace="-\1" flags="s"/>
+               </tokenfilter>
+            </filterchain>
+         </loadfile>
+         <delete file="${@{property}~temp.file}"/>
+      </sequential>
+   </macrodef>
+
+   <target name="jar" depends="init, resources, compile"
+           description="Produce a jar usable in the classpath of an app using the flexdock framework">
+
+      <condition property="jar.suffix" value="-generic">
+         <isset property="generic.jar"/>
+      </condition>
+      <property name="jar.suffix" value=""/>
+      <property name="jar.excludes" value=""/>
+
+
+      <!-- after this method is called, other targets can use these props -->
+      <property name="dist.jar.name"
+                value="${dist.jar.basename}${jar.suffix}.jar"/>
+      <property name="dist.demo.jar.name"
+                value="${dist.demo.jar.basename}.jar"/>
+
+
+
+      <jar jarfile="${build.dir}/${dist.jar.name}" basedir="${bin.dir}" excludes="${jar.excludes}"/>
+
+      <!-- Don't try to make a generic demo jar, 
+           here shouldn't be native code in the demos. -->
+      <jar jarfile="${build.dir}/${dist.demo.jar.name}" basedir="${bin.dir.demo}" excludes="${jar.excludes}">
+         <!-- NOTE: don't use index="true", the classpath lookup of the other jar will not work.
+              See: http://forum.java.sun.com/thread.jspa?forumID=22&threadID=568620,
+              I believe this BUG is the cause: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4490798 -->
+         <manifest>
+            <!-- matches core jar name -->
+            <attribute name="Class-Path" value="${dist.jar.name} lib/jmf/lib/jmf.jar lib/looks-2.1.1.jar"/> 
+            <attribute name="Main-Class" value="org.flexdock.demos.AllDemos"/>
+         </manifest>
+      </jar>
+
+      <mkdir dir="${build.dir}/lib"/>
+      <copy todir="${build.dir}/lib">
+         <fileset dir="${lib.dir}"/>
+      </copy>
+   </target>
+
+   <target name="doc" depends="init, javadoc"
+           description="Copy distributable docs to output docs dir and generate javadocs">
+      <copy todir="${doc.dir}">
+         <fileset dir="docs" includes="**/*.pdf"/>
+      </copy>
+      <copy todir="${build.dir}" file="${basedir}/LICENSE.txt"/>
+   </target>
+
+   <target name="javadoc" depends="init" unless="javadoc.skip"
+           description="Generate javadoc for the framework">
+      <javadoc destdir="${doc.api.dir}" sourcepathref="sourcepath" classpathref="javac.classpath">
+         <packageset dir="${java.src.core}" />
+         <packageset dir="${java.src.dockbar}" />
+         <packageset dir="${java.src.drag}" />
+         <packageset dir="${java.src.perspective}" />
+         <packageset dir="${java.src.view}" />
+         <link href="http://java.sun.com/j2se/1.5.0/docs/api/" />
+         <!-- add links to the j2se 1.4 docs -->
+      </javadoc>
+   </target>
+
+   <target name="dist" depends="dist.src,dist.bin"
+           description="Builds the binary and source distributions"/>
+
+   <!-- creates a source distribution -->
+   <target name="dist.src" depends="init"
+           description="Produce a zip containing all sources necessary to build the project">
+      <zip destfile="${dist.dir}/${dist.jar.basename}-src.zip">
+         <fileset dir="${basedir}">
+            <exclude name="build/**"/>
+            <exclude name="bin/**"/>
+            <exclude name="bin-demo/**"/>
+            <exclude name="bin-test/**"/>
+            <exclude name="dist/**"/>
+            <exclude name="docs/api/**"/>
+            <exclude name="workingcopy.properties"/>
+            <exclude name="signing.properties"/>
+            <exclude name="www/**"/>
+         </fileset>
+      </zip>
+      <!-- TODO: ensure that ZIP has DOS EOLs if not built on Windows -->
+      <!-- TODO: build *NIX tar.gz -->
+   </target>
+
+   <target name="dist.bin" depends="init,jar,doc"
+           description="Produce a zip containing the built library, docs, javadocs, and license">
+      <zip destfile="${dist.dir}/${dist.jar.basename}.zip">
+         <fileset dir="${basedir}">
+            <include name="LICENSE.txt"/>
+            <include name="README"/>
+         	<include name="release-notes.txt"/>
+      		<include name="lib/**"/> 
+         </fileset>
+         <fileset dir="${build.dir}">
+            <include name="${dist.jar.basename}.jar"/>
+            <include name="${dist.demo.jar.basename}.jar"/>
+            <include name="docs/**" />
+         </fileset>
+      </zip>
+      <!-- TODO: ensure that ZIP has DOS EOLs if not built on Windows -->
+      <!-- TODO: build *NIX tar.gz -->
+   </target>
+
+
+   <!-- define a java task preset to run demos forked from the demo bin dir with the right stuff in the classpath -->
+   <presetdef name="java.demo">
+      <java fork="yes" dir="${bin.dir.demo}" classpathref="rt.classpath.demo" />
+   </presetdef>
+
+   <!-- Targets to run demos -->
+
+   <target name="demo" depends="resources,compile" description="Run org.flexdock.demos.AllDemos">
+      <java.demo classname="org.flexdock.demos.AllDemos" />
+   </target>
+
+   <target name="demo.maximizing" depends="resources,compile" description="Run org.flexdock.demos.maximizing.MaximizationDemo">
+      <java.demo classname="org.flexdock.demos.perspective.MaximizationDemo" />
+   </target>
+
+   <target name="demo.perspectives" depends="resources,compile" description="Run org.flexdock.demos.perspective.PerspectivesDemo">
+      <java.demo classname="org.flexdock.demos.perspective.PerspectivesDemo" />
+   </target>
+
+   <target name="demo.xmlperspectives" depends="resources,compile" description="Run org.flexdock.demos.perspective.XMLPerspectivesDemo">
+      <java.demo classname="org.flexdock.demos.perspective.XMLPerspectivesDemo" />
+   </target>
+
+   <target name="demo.adapter" depends="resources,compile" description="Run org.flexdock.demos.raw.adapter.AdapterDemo">
+      <java.demo classname="org.flexdock.demos.raw.adapter.AdapterDemo" />
+   </target>
+
+   <target name="demo.border" depends="resources,compile" description="Run org.flexdock.demos.raw.border.BorderDemo">
+      <java.demo classname="org.flexdock.demos.raw.border.BorderDemo" />
+   </target>
+
+   <target name="demo.compound" depends="resources,compile" description="Run org.flexdock.demos.raw.CompoundDemo">
+      <java.demo classname="org.flexdock.demos.raw.CompoundDemo" />
+   </target>
+
+   <target name="demo.elegant" depends="resources,compile" description="Run org.flexdock.demos.raw.elegant.ElegantDemo">
+      <java.demo classname="org.flexdock.demos.raw.elegant.ElegantDemo" />
+   </target>
+
+   <target name="demo.jmf" depends="resources,compile" description="Run org.flexdock.demos.raw.jmf.JMFDemo">
+      <java.demo classname="org.flexdock.demos.raw.jmf.JMFDemo" />
+   </target>
+
+   <target name="demo.simple" depends="resources,compile" description="Run org.flexdock.demos.raw.SimpleDemo">
+      <java.demo classname="org.flexdock.demos.raw.SimpleDemo" />
+   </target>
+
+   <target name="demo.splitpane" depends="resources,compile" description="Run org.flexdock.demos.raw.SplitPaneDemo">
+      <java.demo classname="org.flexdock.demos.raw.SplitPaneDemo" />
+   </target>
+
+   <target name="demo.tabbedpane" depends="resources,compile" description="Run org.flexdock.demos.raw.TabbedPaneDemo">
+      <java.demo classname="org.flexdock.demos.raw.TabbedPaneDemo" />
+   </target>
+
+   <target name="demo.view" depends="resources,compile" description="Run org.flexdock.demos.view.ViewDemo">
+      <java.demo classname="org.flexdock.demos.view.ViewDemo" />
+   </target>
+
+
+   <!-- define a java task preset to run tests forked from the test bin dir with the right stuff in the classpath -->
+   <presetdef name="java.test">
+      <java fork="yes" dir="${bin.dir.test}" classpathref="rt.classpath.test" />
+   </presetdef>
+
+   <!-- Targets to run tests -->
+
+   <target name="test.rubberband" depends="resources,compile" description="Run org.flexdock.test.drag.RubberBandTest">
+      <java.test classname="org.flexdock.test.drag.RubberBandTest" />
+   </target>
+
+   <target name="test.basicdockbar" depends="resources,compile" description="Run org.flexdock.test.dockbar.BasicDockbarTest">
+      <java.test classname="org.flexdock.test.dockbar.BasicDockbarTest" />
+   </target>
+
+   <target name="test.complexdockbar" depends="resources,compile" description="Run org.flexdock.test.dockbar.ComplexDockbarTest">
+      <java.test classname="org.flexdock.test.dockbar.ComplexDockbarTest" />
+   </target>
+
+   <target name="test.viewrestoration" depends="resources,compile" description="Run org.flexdock.test.perspective.ViewRestorationTest">
+      <java.test classname="org.flexdock.test.perspective.ViewRestorationTest" />
+   </target>
+
+   <target name="test.sibling" depends="resources,compile" description="Run org.flexdock.test.SiblingTest">
+      <java.test classname="org.flexdock.test.SiblingTest" />
+   </target>
+
+   <target name="test.viewframe" depends="resources,compile" description="Run org.flexdock.test.view.ViewFrameTest">
+      <java.test classname="org.flexdock.test.view.ViewFrameTest" />
+   </target>
+
+   <target name="test.view" depends="resources,compile" description="Run org.flexdock.test.view.ViewTest">
+      <java.test classname="org.flexdock.test.view.ViewTest" />
+   </target>
+
+
+   <target name="cvs.up">
+      <cvs command="up -d -P"/>
+   </target>
+
+
+
+
+   
+   <macrodef name="mysignjar">
+      <attribute name="jarname"/>
+      <attribute name="sjarname"/>
+      <sequential>
+         <available file="signing.properties"
+                    property="signing.properties.available"/>
+         <fail unless="signing.properties.available">The file signing.properties must exist in order to sign jar files.</fail>
+
+         <property file="signing.properties" prefix="signing"/>
+         <condition property="signing.properties.allPropsDefined">
+            <and>
+               <isset property="signing.alias"/>
+               <isset property="signing.keystore.file"/>
+               <isset property="signing.keystore.passwd"/>
+               <isset property="signing.key.passwd"/>
+            </and>
+         </condition>
+         <fail unless="signing.properties.allPropsDefined">
+The signing.properties file must specify all of the following properties:
+
+  alias=[the alias to sign the jar with]
+  keystore.file=[the location of the keystore]
+  keystore.passwd=[the password for accessing the keystore]
+  key.passwd=[the password of the private key in the keystore]
+         </fail>
+
+         <signjar
+            alias="${signing.alias}"
+            jar="@{jarname}"
+            signedjar="@{sjarname}"
+            keystore="${signing.keystore.file}"
+            storepass="${signing.keystore.passwd}"
+            keypass="${signing.key.passwd}"
+            lazy="true"/>
+      </sequential>
+   </macrodef>
+
+   <target name="webstartapp" depends="init,jar" description="Create Web Start Version">
+      <copy todir="${bin.dir.webstart}">
+         <fileset dir="${webstart.src}"/>
+         <filterset begintoken="@" endtoken="@">
+            <filter token="VERSION" value="${version}"/>
+            <filter token="DEMO_JAR_NAME" value="${dist.demo.jar.name}"/>
+            <filter token="FRAMEWORK_JAR_NAME" value="${dist.jar.name}"/>
+            <filter token="JMF_JAR_NAME" value="jmf.jar"/>
+            <filter token="LOOKS" value="looks-2.1.1.jar"/>
+            <filter token="SKIN_LF" value="skinlf.jar"/>
+         </filterset>
+      </copy>
+      <mysignjar
+          jarname="${build.dir}/${dist.jar.name}"
+          sjarname="${bin.dir.webstart}/${dist.jar.name}"/>
+      <mysignjar
+          jarname="${build.dir}/${dist.demo.jar.name}"
+          sjarname="${bin.dir.webstart}/${dist.demo.jar.name}"/>
+      <mysignjar
+          jarname="${build.dir}/lib/jmf/lib/jmf.jar"
+          sjarname="${bin.dir.webstart}/jmf.jar"/>
+    <mysignjar
+        jarname="${build.dir}/lib/looks-2.1.1.jar"
+        sjarname="${bin.dir.webstart}/looks-2.1.1.jar"/>
+    <mysignjar
+        jarname="${build.dir}/lib/skinlf.jar"
+        sjarname="${bin.dir.webstart}/skinlf.jar"/>
+   </target>
+</project>
