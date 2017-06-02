@@ -6,7 +6,6 @@
 // the Secretary of the Air Force.  No copyright is claimed in the United States under
 // Title 17, U.S. Code.  All Other Rights Reserved.
 // ===============================================================================
-
 package avtas.amase.entity.modules;
 
 import afrl.cmasi.GimbalAngleAction;
@@ -28,7 +27,7 @@ import afrl.cmasi.GimbalAngleAction;
 public class EntityNetworkModule extends EntityModule implements AppEventListener {
 
     private int tcpPort;
-    private EntityTcpServer entityServer;
+    private EntityTcpServer entityServer = null;
 
     public EntityNetworkModule() {
         super();
@@ -56,7 +55,9 @@ public class EntityNetworkModule extends EntityModule implements AppEventListene
         if (event instanceof GimbalAngleAction) {  //// getting swamped by GimbalAngleAction
         } else if (event instanceof MissionCommand) {  //dont send mission commands back
         } else if (event instanceof LMCPObject) {
-            entityServer.sendMessage((LMCPObject) event);
+            if (entityServer != null) {
+                entityServer.sendMessage((LMCPObject) event);
+            }
         }
     }
 
