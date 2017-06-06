@@ -194,6 +194,7 @@ public class KinematicFlight extends EntityModule {
             AirVehicleState avs = (AirVehicleState) object;
             double groundspeed = Math.hypot(data.vnorth.asDouble() - northWind, data.veast.asDouble() - eastWind);
             avs.setGroundspeed((float) groundspeed);
+            avs.setAirspeed( (float) data.u.asDouble());
             avs.setCourse((float) Math.toDegrees(Math.atan2(data.veast.asDouble() - eastWind, data.vnorth.asDouble() - northWind)));
         }
     }
