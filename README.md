@@ -1,3 +1,10 @@
+# License
+
+*OpenAMASE* is developed by the Air Force Research Laboratory, Aerospace System Directorate, Power and Control Division.
+All source code for *OpenAMASE* is publicaly released under the Air Force Open Source Agreement
+Version 1.0. See LICENSE.md for complete details. The Air Force Open Source Agreement closely follows the NASA Open Source
+Agreement Verion 1.3. **NOTE the terms of the license include registering use of the software by emailing <a href="mailto:afrl.rq.opensource@us.af.mil?subject=OpenAMASE Registration&body=Please register me for use of OpenAMASE. Name: ____________">afrl.rq.opensource@us.af.mil</a>.**
+
 # Introduction
 
 The development of UAV command and control technologies can be aided greatly through the use of simulation. The AMASE simulation (AVTAS Multi-agent Simulation Environment) aims to provide a basic simulation environment for the demonstration and testing of UAV control technologies. AMASE brings several vehicle motion, systems, and control models together to form a single, basic-fidelity model for UAV simulation. It is designed to allow for command and control of multiple UAVs using control algorithms within the simulation as well as external control via a network interface.
@@ -24,13 +31,6 @@ documentation is provided in the `docs` directory.
 
 To run *OpenAMASE* without building from source, the entire source must still be downloaded (due to dependancies on multiple
 libraries). The release version of `OpenAMASE.jar` should then be placed in the `dist` directory.
-
-# License
-
-*OpenAMASE* is developed by the Air Force Research Laboratory, Aerospace System Directorate, Power and Control Division.
-All source code for *OpenAMASE* is publicaly released under the Air Force Open Source Agreement
-Version 1.0. See LICENSE.md for complete details. The Air Force Open Source Agreement closely follows the NASA Open Source
-Agreement Verion 1.3.
 
 ## 3rd Party Licenses
 AMASE uses several 3rd party libraries distributed under open source licenses. The binary libraries are included in the `lib` folder. The original source, data, and applicable license files can be found in the subfolders of `lib`.
