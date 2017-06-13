@@ -1,0 +1,1 @@
+call Common.bat "--config" "config/amase_headless" %*

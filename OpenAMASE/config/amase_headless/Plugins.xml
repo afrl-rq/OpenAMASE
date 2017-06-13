@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Configuration file for AMASE simulation -->
+
+
+<Plugins>
+        
+    <Plugin Class="avtas.amase.scenario.ScenarioManager"/>      
+        
+    <Plugin Class="avtas.amase.util.SimTimer">
+        <!-- Sets the rate for the internal simulation timer -->
+        <FrameRate>30</FrameRate>
+        <!-- Sets the rate for publication of CMASI SessionStatus messages -->
+        <PublishRate>2</PublishRate>
+    </Plugin>
+
+    <Plugin Class="avtas.amase.entity.EntityControl"/>
+        
+    <!--Plugin Class="avtas.amase.window.WindowService"/-->
+    <Plugin Class="avtas.amase.scenario.ConstructiveControl"/>
+        
+        
+    <!--Plugin Class="avtas.amase.map.MapPlugin">
+        <Map>
+            <Layers>
+                <Layer Class="avtas.map.layers.WorldLayer">
+                    <image>./data/world_image_small.jpg</image>
+                </Layer>
+                <Layer Class="avtas.map.layers.WorldImageLayer">
+                    <Directory>./data/overlay</Directory>
+                </Layer>
+                <Layer Class="avtas.map.layers.EsriShapeLayer">
+                    <Directory>./data/overlay</Directory>
+                </Layer>
+                <Layer Class="avtas.amase.map.CommandLayer" Buffered="True"/>
+                <Layer Class="avtas.amase.map.TaskLayer"/>
+                <Layer Class="avtas.amase.map.ZoneLayer"/>
+                <Layer Class="avtas.amase.map.EntityLayer"/>
+                <Layer Class="avtas.map.layers.MapScale">
+                    <ScaleType>Metric</ScaleType>
+                </Layer>
+                <Layer Class="avtas.amase.analysis.SearchAnalysisLayer"/>
+                <Layer Class="avtas.map.layers.Distance"/>
+            </Layers>
+        </Map>
+    </Plugin-->
+        
+    <Plugin Class="avtas.amase.analysis.AnalysisManager">
+        <Analysis>
+            <PluginList>
+                <Plugin>avtas.amase.analysis.KeepOutZoneAnalysis</Plugin>
+                <Plugin>avtas.amase.analysis.KeepInZoneAnalysis</Plugin>
+                <Plugin>avtas.amase.analysis.SearchTaskAnalysis</Plugin>
+                <Plugin>avtas.amase.analysis.MissionStatAnalysis</Plugin>
+                <Plugin>avtas.amase.analysis.ServiceAnalysis</Plugin>
+            </PluginList>
+            <SearchTaskAnalysis>
+                <GridResolution>20</GridResolution>
+            </SearchTaskAnalysis>
+        </Analysis>
+    </Plugin >
+        
+    <!--Plugin Class="avtas.amase.ui.SimControls"/-->
+    <!--Object Class="avtas.amase.gui.DataDisplayGUI"/-->
+    <!--Plugin Class="avtas.amase.scenario.ScenarioEventViewer"/-->
+    <!--Plugin Class="avtas.amase.ui.VehicleStateDisplay"/-->
+    <Plugin Class="avtas.amase.scenario.ScenarioOutput"/>
+        
+        
+    <Plugin Class="avtas.amase.network.TcpServer">
+        <TCPServer Port="5555"/>
+    </Plugin >
+        
+        
+    <Plugin Class="avtas.terrain.TerrainConfigurator"/>
+    <!--Plugin Class="avtas.amase.ui.IconManager"/-->
+        
+</Plugins>
+

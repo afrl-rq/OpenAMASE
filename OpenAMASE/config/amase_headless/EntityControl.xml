@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<EntityControl>
+    <DefaultAircraft>
+        <Module Class="avtas.amase.entity.modules.KinematicFlight"/>
+        <Module Class="avtas.amase.entity.modules.CameraManager"/>
+        <Module Class="avtas.amase.entity.modules.GimbalManager"/>
+        <Module Class="avtas.amase.entity.modules.WaypointFollower"/>
+        <Module Class="avtas.amase.entity.modules.LoiterControl"/>
+        <Module Class="avtas.amase.entity.modules.FlightDirector"/>
+        <Module Class="avtas.amase.entity.modules.TargetDetector">
+            <TrackTimeout>2.0</TrackTimeout>
+            <MinTimeInView>1.0</MinTimeInView>
+        </Module>
+        <Module Class="avtas.amase.entity.modules.TrackControl"/>
+        <Module Class="avtas.amase.entity.modules.EntityNetworkModule">
+            <TcpConnection Id="100" Port="9100" />
+            <TcpConnection Id="400" Port="9400" />
+            <TcpConnection Id="500" Port="9500" />
+            <TcpConnection Id="600" Port="9600" />
+            <TcpConnection Id="700" Port="9700" />
+            <TcpConnection Id="4208" Port="4208" />
+            <TcpConnection Id="5140" Port="5140" />
+            <TcpConnection Id="6050" Port="6050" />
+            <TcpConnection Id="6051" Port="6051" />
+        </Module>
+    </DefaultAircraft>
+    <DefaultEntity>
+        <Module Class="avtas.amase.entity.modules.EntityPathFollower"/>
+    </DefaultEntity>
+</EntityControl>
