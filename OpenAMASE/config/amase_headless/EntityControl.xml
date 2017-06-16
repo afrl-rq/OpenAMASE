@@ -19,6 +19,8 @@
             <TcpConnection Id="500" Port="9500" />
             <TcpConnection Id="600" Port="9600" />
             <TcpConnection Id="700" Port="9700" />
+            <TcpConnection Id="1000" Port="9800" />
+            <TcpConnection Id="2000" Port="9900" />
             <TcpConnection Id="4208" Port="4208" />
             <TcpConnection Id="5140" Port="5140" />
             <TcpConnection Id="6050" Port="6050" />
