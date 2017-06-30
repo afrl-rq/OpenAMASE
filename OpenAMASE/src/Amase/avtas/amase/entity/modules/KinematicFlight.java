@@ -189,6 +189,10 @@ public class KinematicFlight extends EntityModule {
             WeatherReport wr = (WeatherReport) object;
             northWind = wr.getWindSpeed() * cos(Math.toRadians(wr.getWindDirection()));
             eastWind = wr.getWindSpeed() * sin(Math.toRadians(wr.getWindDirection()));
+            System.out.println("AMASE Kinematic Model - Adding Wind Disturbances");
+            System.out.println("North: " + northWind);
+            System.out.println("East: " + eastWind);
+
         }
         else if (object instanceof AirVehicleState) {
             AirVehicleState avs = (AirVehicleState) object;
