@@ -136,7 +136,7 @@ public class EntityTcpServer {
                     //setRunning(false);
                     //try {
                     System.out.println("Exception during run. [" + ex.getMessage() + "]");
-                    ex.printStackTrace();
+                    ex.printStackTrace(); System.exit(1);
                     //socket.close();
                     //} catch (IOException ex1) {
                     //    Logger.getLogger(TcpServer.class.getName()).log(Level.SEVERE, null, ex1);
@@ -154,7 +154,7 @@ public class EntityTcpServer {
 //        isRunning = false;
 //        try {
                 System.out.println("Exception during send. [" + ex.getMessage() + "]");
-                ex.printStackTrace();
+                ex.printStackTrace(); System.exit(1);
 //          socket.close();
 //        } catch (IOException ex1) {
 //        }

@@ -185,7 +185,7 @@ public class ImageCache {
                 reader.setInput(ImageIO.createImageInputStream(imageSrc));
                 return new int[]{reader.getWidth(0), reader.getHeight(0)};
             } catch (Exception ex) {
-                ex.printStackTrace();
+                ex.printStackTrace(); System.exit(1);
             }
         }
         return new int[]{0, 0};

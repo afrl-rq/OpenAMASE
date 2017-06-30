@@ -85,7 +85,7 @@ public class ScenarioReader {
             return n;
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            ex.printStackTrace(); System.exit(1);
             return null;
         }
 
@@ -104,7 +104,7 @@ public class ScenarioReader {
                     }
                     return src;
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    ex.printStackTrace(); System.exit(1);
                     return null;
                 }
             }

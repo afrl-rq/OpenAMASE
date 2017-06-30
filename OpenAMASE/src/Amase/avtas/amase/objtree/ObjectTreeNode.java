@@ -114,7 +114,7 @@ public abstract class ObjectTreeNode extends DefaultMutableTreeNode {
                 }
 
             } catch (Exception ex) {
-                ex.printStackTrace();
+                ex.printStackTrace(); System.exit(1);
             }
         }
     }

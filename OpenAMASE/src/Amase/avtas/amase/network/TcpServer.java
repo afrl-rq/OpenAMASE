@@ -85,7 +85,7 @@ public class TcpServer extends AmasePlugin {
                 }
             }.start();
         } catch (IOException ex) {
-            ex.printStackTrace();
+            ex.printStackTrace(); System.exit(1);
         }
     }
 

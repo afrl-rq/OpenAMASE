@@ -143,7 +143,7 @@ public class TcpClient extends AmasePlugin {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException ex1) {
-                    ex1.printStackTrace();
+                    ex1.printStackTrace(); System.exit(1);
                 }
                 if (!stopExec) {
                     connect();

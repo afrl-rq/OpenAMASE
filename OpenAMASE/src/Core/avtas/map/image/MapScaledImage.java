@@ -117,7 +117,7 @@ public class MapScaledImage extends MapGraphic {
                     this.imgWidth = image.getWidth(null);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                e.printStackTrace(); System.exit(1);
                 return null;
             }
         }

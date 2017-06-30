@@ -43,7 +43,7 @@ public class UdpSender extends AmasePlugin {
         try {
             socket = new DatagramSocket();
         } catch (SocketException ex) {
-            ex.printStackTrace();
+            ex.printStackTrace(); System.exit(1);
         }
     }
 
@@ -84,7 +84,7 @@ public class UdpSender extends AmasePlugin {
                     UDPConnection c = new UDPConnection(addr, port);
                     connectionList.add(c);
                 } catch (UnknownHostException ex) {
-                    ex.printStackTrace();
+                    ex.printStackTrace(); System.exit(1);
                 }
             }
         }

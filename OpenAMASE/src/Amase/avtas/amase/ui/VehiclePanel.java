@@ -111,7 +111,7 @@ public class VehiclePanel extends JPanel {
             f.pack();
             f.setVisible(true);
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(); System.exit(1);
         }
     }
 

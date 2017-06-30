@@ -79,7 +79,7 @@ public class WeatherPanel extends AmasePlugin {
                 img = ImageIO.read(getClass().getResource("/resources/arrow.png"));
                 img = img.getScaledInstance(size / 2, size - 2, Image.SCALE_SMOOTH);
             } catch (IOException ex) {
-                ex.printStackTrace();
+                ex.printStackTrace(); System.exit(1);
             }
 
         }

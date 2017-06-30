@@ -64,7 +64,7 @@ public class ScenarioOutput extends AmasePlugin {
                 scenData = new Element("ScenarioData");
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            ex.printStackTrace(); System.exit(1);
         }
     }
 
@@ -143,7 +143,7 @@ public class ScenarioOutput extends AmasePlugin {
                     try {
                         outWriter.write(str + "\n");
                     } catch (IOException ex) {
-                        ex.printStackTrace();
+                        ex.printStackTrace(); System.exit(1);
                     }
                 }
             }

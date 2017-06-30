@@ -531,7 +531,7 @@ public class Element extends XmlNode implements Cloneable {
             XmlWriter.writeToFile(file, this);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(); System.exit(1);
         }
     }
     

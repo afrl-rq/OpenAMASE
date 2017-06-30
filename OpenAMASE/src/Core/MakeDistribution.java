@@ -164,7 +164,7 @@ public class MakeDistribution {
 
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(); System.exit(1);
         }
     }
 

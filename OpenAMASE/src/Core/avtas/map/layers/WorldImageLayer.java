@@ -89,7 +89,7 @@ public class WorldImageLayer extends ImageLayer {
 
 
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(); System.exit(1);
         }
     }
 
@@ -124,7 +124,7 @@ public class WorldImageLayer extends ImageLayer {
             }
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            ex.printStackTrace(); System.exit(1);
         }
     }
 
@@ -141,7 +141,7 @@ public class WorldImageLayer extends ImageLayer {
                 rawvals[i] = Float.valueOf(tmp);
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            ex.printStackTrace(); System.exit(1);
             return rawvals;
         }
 
