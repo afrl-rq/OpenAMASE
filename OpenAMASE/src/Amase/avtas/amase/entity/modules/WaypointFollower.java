@@ -20,6 +20,7 @@ import avtas.util.NavUtils;
 import static java.lang.Math.*;
 import avtas.xml.Element;
 import avtas.xml.XMLUtil;
+import java.util.Random;
 
 /**
  * Implements a set of simple waypoint following routines. The Waypoint Follower
@@ -62,7 +63,17 @@ public class WaypointFollower extends EntityModule {
     double curr_wp_lat = 0, curr_wp_lon = 0, next_wp_lat = 0, next_wp_lon = 0,
             past_wp_lat = 0, past_wp_lon = 0;
 
+    /* Sriram Sankaranarayanan: Can we add GPS uncertainty to this controller?
+     */
+    boolean gps_fuzz_enabled;
+    Random r;
+    boolean debug_messages;
+
     public WaypointFollower() {
+        /* Sriram Sankaranarayanan: Setting this to true. We will add roughly 10 meters or so according to a Gaussian random variable. */
+        this.gps_fuzz_enabled = true;
+        this.debug_messages=false;
+        r = new Random();
     }
 
     @Override
@@ -91,23 +102,48 @@ public class WaypointFollower extends EntityModule {
             return;
         }
 
-        double dist = NavUtils.distance(data.lat.asDouble(), data.lon.asDouble(), curr_wp_lat, curr_wp_lon);
+        double entity_lat = data.lat.asDouble();
+        double entity_long = data.lon.asDouble();
+
+        if (this.gps_fuzz_enabled) {
+            /* --
+                Sriram Sankaranarayanan:
+                Add a gaussian offset to the latitute and longitude
+                  We will assume a standard deviation of 4 meters for the error in latitude and longitude.
+                  We will also assume that these errors are independent. Both of these are questionable
+                  and if at all GPS fuzzing matters, we can change these assumptions to be more realistic.
+             */
+
+            double w1 = 4.0 * r.nextGaussian();
+            double w2 = 4.0 * r.nextGaussian();
+            double alt = data.alt.asDouble();
+
+            entity_long = NavUtils.getLon(entity_lat, entity_long, w2, alt);
+            entity_lat = NavUtils.getLat(entity_lat, w1, alt);
+            if (this.debug_messages) {
+                System.out.println(" Fuzzing Latitute : " + data.lat.asDouble() + "---> " + entity_lat);
+                System.out.println(" Fuzzing Longitude: " + data.lon.asDouble() + "---> " + entity_long);
+            }
+        }
+
+
+        double dist = NavUtils.distance(entity_lat, entity_long, curr_wp_lat, curr_wp_lon);
 
         // factor the altitude into the distance
         dist = Math.hypot(dist, currentWp.getAltitude() - data.alt.asDouble());
 
-        double az = NavUtils.headingBetween(data.lat.asDouble(), data.lon.asDouble(), curr_wp_lat, curr_wp_lon);
+        double az = NavUtils.headingBetween(entity_lat, entity_long, curr_wp_lat, curr_wp_lon);
         
         // estimated nominal turn radius based on speed, bank angle
         turnRadiusMeter = pow(data.u.asDouble(), 2) / (GRAVITY * tan(data.autopilotCommands.maxBank.asDouble()));
 
         if (currentWp.getTurnType() == TurnType.FlyOver) {
             computeTurnPast(dist, az);
-            computeReturnToRoute(az);
+            computeReturnToRoute(az, entity_lat, entity_long);
         }
         else {
             computeTurnShort(dist, az);
-            computeReturnToRoute(az);
+            computeReturnToRoute(az, entity_lat, entity_long);
         }
 
         // compute the commanded alt to acheive a smooth transition through the waypoint
@@ -207,7 +243,7 @@ public class WaypointFollower extends EntityModule {
      * @param az azimuth from current vehicle location to current waypoint
      * (radians)
      */
-    public void computeReturnToRoute(double az) {
+    public void computeReturnToRoute(double az, double entity_lat, double entity_long) {
         if (pastWp != null && currentWp != null) {
 
             // limit for distance to perform a route-tracking maneuver.
@@ -221,7 +257,7 @@ public class WaypointFollower extends EntityModule {
 
             // current distance and azimuth to the route line.
             double[] distAz = NavUtils.distanceToLine(past_wp_lat, past_wp_lon, curr_wp_lat, curr_wp_lon,
-                    data.lat.asDouble(), data.lon.asDouble());
+                    entity_lat, entity_long);
 
 
             // if the vehicle is greater than turn limit away from the route line, fly a perpendicular
