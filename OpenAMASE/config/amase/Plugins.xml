@@ -73,6 +73,6 @@
         
     <Plugin Class="avtas.terrain.TerrainConfigurator"/>
     <Plugin Class="avtas.amase.ui.IconManager"/>
-        
+    <Plugin Class="amase.examples.StochasticWindGenerator"/>
 </Plugins>
 
