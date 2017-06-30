@@ -233,6 +233,13 @@ public class Application {
      * @param args The configuration strings.
      */
     public static void main(final String[] args) {
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.
+         UncaughtExceptionHandler() {
+         public void uncaughtException(Thread t, Throwable e) {
+            System.out.println(t + " throws exception: " + e);
+            System.exit(1);
+         }});
+                    
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             SwingUtilities.invokeLater(new Runnable() {
@@ -242,6 +249,7 @@ public class Application {
             });
         } catch (Exception ex) {
             ex.printStackTrace();
+            System.exit(1);
         }
 
     }
