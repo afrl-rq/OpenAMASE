@@ -134,6 +134,7 @@ public class CameraControl extends EntityModule {
                 state.setHorizontalFieldOfView(cameraConfig.getMinHorizontalFieldOfView());
             }
         }
+        state.setVerticalFieldOfView((float) (state.getHorizontalFieldOfView() / aspectRatio));
     }
 
     @Override
@@ -165,6 +166,7 @@ public class CameraControl extends EntityModule {
 
             if (cameraState != null) {
                 checkBounds(cameraState);
+                cameraState.setCenterpoint(null); //forces update of computed centerpoint
                 updateFootprint(cameraState, gimbalState, (AirVehicleState) object, aspectRatio);
             }
 
@@ -190,6 +192,11 @@ public class CameraControl extends EntityModule {
         if (gimbalState == null || cameraState == null) {
             return;
         }
+        // copy values from Gimbal State into CameraState
+        cameraState.setAzimuth(gimbalState.getAzimuth());
+        cameraState.setElevation(gimbalState.getElevation());
+        cameraState.setRotation(gimbalState.getRotation());
+        cameraState.setPointingMode(gimbalState.getPointingMode());
 
         double meterAlt = vehicleState.getLocation().getAltitude();
         double phi = Math.toRadians(vehicleState.getRoll());
@@ -233,7 +240,9 @@ public class CameraControl extends EntityModule {
         meterAlt = meterAlt - lla[2];
 
         //perceived location of the camera footprint center
-        cameraState.setCenterpoint(new Location3D(lla[0], lla[1], (float) lla[2], AltitudeType.MSL));
+        if (cameraState.getCenterpoint() == null) {
+        	cameraState.setCenterpoint(new Location3D(lla[0], lla[1], (float) lla[2], AltitudeType.MSL));
+        }
 
         cameraState.getFootprint().clear();
         cameraState.getFootprint().add(getLocation(center, radLat, radLon, meterAlt, -fovX, -fovY, maxDist));
