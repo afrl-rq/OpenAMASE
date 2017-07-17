@@ -37,6 +37,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import avtas.xml.Element;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.ListIterator;
 import javax.swing.JMenuBar;
@@ -199,13 +200,16 @@ public class TcpServer extends AmasePlugin {
         public void run() {
             try {
                 while (isRunning()) {
-                    byte[] bytes = LMCPFactory.getMessageBytes(getSocket().getInputStream());
+                    InputStream stream = getSocket().getInputStream();
+                    byte[] bytes = LMCPFactory.getMessageBytes(stream);
+                    System.out.println("Amase got " + bytes.length + " bytes");
                     avtas.lmcp.LMCPObject o = LMCPFactory.getObject(bytes);
 
                     messageReceived(o, bytes, this);
                 }
             } catch (Exception ex) {
                 setRunning(false);
+                System.out.println(ex.getMessage());
                 try {
                     socket.close();
                 } catch (IOException ex1) {
