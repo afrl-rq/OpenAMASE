@@ -12,6 +12,8 @@
 
 package avtas.amase.entity;
 
+import afrl.cmasi.EntityConfiguration;
+import afrl.cmasi.EntityState;
 import afrl.cmasi.PayloadConfiguration;
 import afrl.cmasi.PayloadState;
 import avtas.data.Property;
@@ -134,8 +136,8 @@ public class EntityData extends PropertyMap {
     
     private final HashMap<Long, PayloadConfiguration> payloadConfigurations = new HashMap<>();
     private final HashMap<Long, PayloadState> payloadStates = new HashMap<>();
-    public LMCPObject config = null;
-    public LMCPObject currentState = null;
+    public EntityConfiguration config = null;
+    public EntityState currentState = null;
 
     /*  creates a new EntityData object and initializes all of the data references */
     public EntityData() {

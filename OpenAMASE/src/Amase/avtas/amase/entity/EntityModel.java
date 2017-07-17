@@ -50,9 +50,7 @@ public class EntityModel {
     protected long entityId;
     // if set to false, then the model does not update
     protected boolean calculate = false;
-    protected EntityState internalState = null;
     private AppEventManager eventManager = null;
-    private EntityConfiguration configuration = null;
     ArrayDeque<AppEventManager.EventWrapper> eventQueue = new ArrayDeque<>();
     boolean isDispatching = false;
     AppEventManager modelEventManager = new AppEventManager();
@@ -66,7 +64,7 @@ public class EntityModel {
         data = new EntityData();
         this.entityId = entity.getID();
         data.id.setValue(entityId);
-        this.configuration = entity;
+        data.config = entity;
 
         fireModelEvent(entity);
 
@@ -86,7 +84,8 @@ public class EntityModel {
      * @param state The state to set for this vehicle.
      */
     public void setInitialState(EntityState state) {
-        internalState = state.clone();
+        EntityState internalState = state.clone();
+        data.currentState = internalState;
 
         EntityState es = (EntityState) state;
 
@@ -204,9 +203,10 @@ public class EntityModel {
      */
     public EntityState getState() {
 
-        if (internalState == null) {
+        if (data.currentState == null) {
             return null;
         }
+        EntityState internalState = data.currentState;
 
         if (internalState instanceof EntityState) {
             EntityState es = (EntityState) internalState;
@@ -308,7 +308,7 @@ public class EntityModel {
      * {@link AirVehicleConfiguration}.
      */
     public EntityConfiguration getConfiguration() {
-        return configuration;
+        return data.config;
     }
 }
 
