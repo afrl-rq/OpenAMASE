@@ -49,7 +49,7 @@ public class ConstructiveControl extends AmasePlugin {
     protected File outputFile = null;
     public static String optionStr;
     
-    protected double sim_rate = 100000;
+    protected double sim_rate = 1; // realtime as default
 
     static {
         StringBuffer buf = new StringBuffer();
