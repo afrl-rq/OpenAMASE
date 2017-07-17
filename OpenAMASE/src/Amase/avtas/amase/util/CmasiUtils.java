@@ -463,6 +463,17 @@ public class CmasiUtils {
         return NavUtils.distance(Math.toRadians(pt1.getLatitude()), Math.toRadians(pt1.getLongitude()),
                 Math.toRadians(pt2.getLatitude()), Math.toRadians(pt2.getLongitude()) );
     }
+
+    /**
+     * Calculates slant distance between two points using great-circle Earth approximation and
+     * change in altitude.
+     * @param pt1 first point considered.
+     * @param pt2 second point considered.
+     * @return 3D distance in meters.
+     */
+    public static double getDistance3D(Location3D pt1, Location3D pt2) {
+        return Math.hypot(getDistance(pt1, pt2), pt1.getAltitude() - pt2.getAltitude());
+    }
 }
 
 /* Distribution A. Approved for public release. 
