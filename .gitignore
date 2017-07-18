@@ -2,3 +2,5 @@ build
 OpenAMASE.jar
 OpenAMASE/lib/LMCP
 OpenAMASE/nbproject/private/
+/OpenAMASE/dist/
+*.class
