@@ -47,7 +47,7 @@ public class WellClearLayer extends GraphicsLayer<MapGraphic> implements AppEven
 
             assert state.isConfigured();
 
-            state.setBands((WellClearViolationIntervals) event);
+            state.setBands((WellClearViolationIntervals) event, ScenarioState.getTime());
             idToVehicleState.put(id, state);
         } else if (event instanceof SessionStatus) {
             clear(); // remove all prior graphic objects
@@ -74,14 +74,17 @@ public class WellClearLayer extends GraphicsLayer<MapGraphic> implements AppEven
                 getList().add(line);
 
                 // TODO: consider dropping 'expired' bands based on stored time
-                // TODO: overlay green arc covering angular range being considered (i.e. [left_track, right_track])
+                if ((ScenarioState.getTime() - wellClearState.getMsgTime()) < 1) {
+                    
+                    // TODO: overlay green arc covering angular range being considered (i.e. [left_track, right_track])
 
-                for (BandIntervals.Band band : wellClearState.getBands(BandType.HEADING)) {
-                    // TODO: check whether band enclosing true north is possible, and if handle correctly
-                    MapArc arc = new MapArc(location.getLatitude(), location.getLongitude(), band.lower,
-                            band.upper - band.lower, radius_m);
-                    arc.setPainter(band.getColor(), 3);
-                    getList().add(arc);
+                    for (BandIntervals.Band band : wellClearState.getBands(BandType.HEADING)) {
+                        // TODO: check whether band enclosing true north is possible, and if handle correctly
+                        MapArc arc = new MapArc(location.getLatitude(), location.getLongitude(), band.lower,
+                                band.upper - band.lower, radius_m);
+                        arc.setPainter(band.getColor(), 3);
+                        getList().add(arc);
+                    }
                 }
             }
 

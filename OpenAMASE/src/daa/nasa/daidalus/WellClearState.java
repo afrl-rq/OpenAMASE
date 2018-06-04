@@ -9,6 +9,7 @@ public class WellClearState {
     private boolean isConfigured = false;
     private DAIDALUSConfiguration config;
     private Map<BandType, BandIntervals> typeToBands = new HashMap<>();
+    private double msgArrivalTime;
 
     public boolean isConfigured() {
         return isConfigured;
@@ -25,13 +26,17 @@ public class WellClearState {
 
         return new ArrayList<>();
     }
-
+    
     public double getCurrent(BandType type) {
         if (typeToBands.containsKey(type)) {
             return typeToBands.get(type).getCurrent();
         }
 
         return 0;
+    }
+
+    public double getMsgTime() {
+        return msgArrivalTime;
     }
 
     public void setDAIDALUSConfiguration(DAIDALUSConfiguration config) {
@@ -43,11 +48,12 @@ public class WellClearState {
         }
     }
 
-    public void setBands(WellClearViolationIntervals wcv) {
+    public void setBands(WellClearViolationIntervals wcv, double msgTime) {
         typeToBands.clear();
         List<BandIntervals.Band> bands;
 
         // TODO: store timestamp on receive
+        msgArrivalTime = msgTime;
 
         // heading
         assert wcv.getWCVGroundHeadingIntervals().size() == wcv.getWCVGroundHeadingRegions().size();
