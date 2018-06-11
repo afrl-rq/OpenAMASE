@@ -40,12 +40,10 @@ public class WellClearState {
     }
 
     public void setDAIDALUSConfiguration(DAIDALUSConfiguration config) {
-        assert !isConfigured;
-
-        if (!isConfigured) {
+//        if (!isConfigured) {
             this.config = config;
             this.isConfigured = true;
-        }
+//        }
     }
 
     public void setBands(WellClearViolationIntervals wcv, double msgTime) {
