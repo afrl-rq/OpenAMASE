@@ -25,6 +25,8 @@
             <TcpConnection Id="5140" Port="5140" />
             <TcpConnection Id="6050" Port="6050" />
             <TcpConnection Id="6051" Port="6051" />
+            <TcpConnection Id="7056" Port="7056" />
+            <TcpConnection Id="7057" Port="7057" />
         </Module>
     </DefaultAircraft>
     <DefaultEntity>

@@ -13,6 +13,7 @@
 package avtas.amase.entity.modules;
 
 import afrl.cmasi.*;
+import uxas.messages.uxnative.*;
 import avtas.amase.entity.EntityModule;
 import avtas.amase.util.CmasiUtils;
 import avtas.data.Unit;
@@ -117,10 +118,9 @@ public class WaypointFollower extends EntityModule {
         }
 
         // make sure alt and speed are set
-        data.autopilotCommands.cmdAlt.setValue(currentWp.getAltitude());
-        data.autopilotCommands.cmdSpeed.setValue(currentWp.getSpeed());
-        data.autopilotCommands.speedCmdType.setValue(SpeedType.Airspeed);
-
+        //data.autopilotCommands.cmdAlt.setValue(currentWp.getAltitude());
+        //data.autopilotCommands.cmdSpeed.setValue(currentWp.getSpeed());
+        //data.autopilotCommands.speedCmdType.setValue(SpeedType.Airspeed);
     }
 
     /**
@@ -131,6 +131,18 @@ public class WaypointFollower extends EntityModule {
      */
     public void setWpFollow(boolean isEnabled) {
         data.autopilotCommands.navMode.setValue(NavigationMode.Waypoint);
+    }
+    
+    /**
+     * Overwrites current speed commanded value with desired speed value.
+     * Used in combination with Loiter or Waypoint mode to immediately change
+     * speed, disregarding original speed command.
+     *
+     * @param speed value to which commanded speed should be assigned.
+     */
+    public void setSpeed(double speed) {
+        //System.out.println("Setting speed to " + speed);
+        data.autopilotCommands.cmdSpeed.setValue(speed);
     }
 
     /**
@@ -356,6 +368,10 @@ public class WaypointFollower extends EntityModule {
                         incrementWaypoint(wa.getWaypointNumber());
                     }
                 }
+                else if (va instanceof SpeedOverrideAction) {
+                    SpeedOverrideAction sa = (SpeedOverrideAction) va;
+                    setSpeed(sa.getSpeed());
+                }
 
             }
         }
@@ -366,6 +382,10 @@ public class WaypointFollower extends EntityModule {
                 setWpFollow(true);
                 incrementWaypoint(wa.getWaypointNumber());
             }
+        }
+        else if (object instanceof SpeedOverrideAction) {
+            SpeedOverrideAction sa = (SpeedOverrideAction) object;
+            setSpeed(sa.getSpeed());
         }
     }
 }
