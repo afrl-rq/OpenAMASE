@@ -112,14 +112,15 @@ public class TcpServer extends AmasePlugin {
      * sends data to sockets that are connected other than the socket which
      * produced the data.
      */
-    protected void sendToOthers(byte[] bytes, SocketThread src) {
+    protected void sendToOthers(LMCPObject o, SocketThread src) {
+
         for (ListIterator<SocketThread> it = socketList.listIterator(); it.hasNext();) {
             SocketThread s = it.next();
             if (!s.isRunning()) {
                 it.remove();
             }
             if (s != src) {
-                s.sendMessage(bytes);
+                s.sendMessage(o);
             }
         }
     }
@@ -128,10 +129,9 @@ public class TcpServer extends AmasePlugin {
      * Called when an LMCP object is read from a socket.
      *
      * @param o object read in
-     * @param srcBytes source bytes for the object
      * @param fromSocket socket from which the object was read
      */
-    protected void messageReceived(LMCPObject o, byte[] srcBytes, SocketThread fromSocket) {
+    protected void messageReceived(LMCPObject o, SocketThread fromSocket) {
         if (o instanceof AutomationResponse) {
             AutomationResponse ar = (AutomationResponse) o;
             for (MissionCommand mc : ar.getMissionCommandList()) {
@@ -144,8 +144,8 @@ public class TcpServer extends AmasePlugin {
         } else if (o != null) {
             dataManager.fireEvent(o, TcpServer.this);
         }
-
-        sendToOthers(srcBytes, fromSocket);
+        
+        sendToOthers(o, fromSocket);
         statusPanel.incrementIncomingMsgs();
     }
 
@@ -154,20 +154,10 @@ public class TcpServer extends AmasePlugin {
      */
     protected void sendMessage(LMCPObject obj) {
         if (!socketList.isEmpty()) {
-            try {
-                byte[] bytes = LMCPFactory.packMessage(obj, true);
-                statusPanel.incrementOutGoingMsgs();
-                statusPanel.updateActivity(bytes.length);
-
-                for (SocketThread s : socketList) {
-                    s.sendMessage(bytes);
-                }
-
-            } catch (Exception ex) {
-                Logger.getLogger(TcpServer.class.getName()).log(Level.SEVERE, null, ex);
+            for (SocketThread s : socketList) {
+                s.sendMessage(obj);
             }
         }
-
     }
 
     @Override
@@ -202,7 +192,7 @@ public class TcpServer extends AmasePlugin {
                     byte[] bytes = LMCPFactory.getMessageBytes(getSocket().getInputStream());
                     avtas.lmcp.LMCPObject o = LMCPFactory.getObject(bytes);
 
-                    messageReceived(o, bytes, this);
+                    messageReceived(o, this);
                 }
             } catch (Exception ex) {
                 setRunning(false);
@@ -215,19 +205,29 @@ public class TcpServer extends AmasePlugin {
             }
         }
 
-        public boolean sendMessage(byte[] bytes) {
+        public boolean sendMessage(LMCPObject o) {
+
             try {
-                socket.getOutputStream().write(bytes);
-                return true;
-            } catch (IOException ex) {
-                setRunning(false);
+                byte[] bytes = LMCPFactory.packMessage(o, true);
                 try {
-                    socket.close();
-                } catch (IOException ex1) {
+                    statusPanel.incrementOutGoingMsgs();
+                    statusPanel.updateActivity(bytes.length);
+                    socket.getOutputStream().write(bytes);
+                    return true;
+                } catch (IOException ex) {
+                    setRunning(false);
+                    try {
+                        socket.close();
+                    } catch (IOException ex1) {
+                    }
+                    statusPanel.removeSocket(socket);
+                    return false;
                 }
-                statusPanel.removeSocket(socket);
+            } catch (Exception ex) {
+                Logger.getLogger(TcpServer.class.getName()).log(Level.SEVERE, null, ex);
                 return false;
             }
+
         }
 
         public boolean isRunning() {
