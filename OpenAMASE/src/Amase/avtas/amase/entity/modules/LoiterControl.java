@@ -13,6 +13,7 @@
 package avtas.amase.entity.modules;
 
 import afrl.cmasi.*;
+import uxas.messages.uxnative.*;
 import avtas.amase.entity.EntityModule;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -106,7 +107,7 @@ public class LoiterControl extends EntityModule {
                     currentCommandID = vc.getCommandID();
                     break;
                 }
-                else if ( !(a instanceof PayloadAction) ) {
+                else if ( !(a instanceof PayloadAction) && !(a instanceof SpeedOverrideAction) ) {
                     loiterList.clear();
                     currentLoiter = null;
                     data.autopilotCommands.navMode.setValue(NavigationMode.Loiter);
