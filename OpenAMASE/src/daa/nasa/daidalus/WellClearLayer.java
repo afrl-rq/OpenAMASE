@@ -65,37 +65,38 @@ public class WellClearLayer extends GraphicsLayer<MapGraphic> implements AppEven
                 WellClearState wellClearState = entry.getValue();
                 if (wellClearState.isConfigured()) {
                     AirVehicleState airVehicleState = ScenarioState.getAirVehicleState(entry.getKey());
-                    Location3D location = airVehicleState.getLocation();
 
-                    // show circle at DTRH
-                    final double radius_m = wellClearState.getConfig().getMinHorizontalRecovery(); // DTHR m
-                    MapCircle circle = new MapCircle(location.getLatitude(), location.getLongitude(), radius_m);
-                    circle.setPainter(Color.WHITE, 1);
-                    getList().add(circle);
+                    if (airVehicleState != null) {
+	                    Location3D location = airVehicleState.getLocation();
 
-                    // show current heading
-                    Location3D endPoint = CmasiNavUtils.getPoint(location, radius_m, wellClearState.getCurrent(BandType.HEADING));
-                    MapLine line = new MapLine(location.getLatitude(), location.getLongitude(),
-                            endPoint.getLatitude(), endPoint.getLongitude());
-                    line.setPainter(Color.WHITE, 1);
-                    getList().add(line);
+	                    // show circle at DTRH
+	                    final double radius_m = wellClearState.getConfig().getMinHorizontalRecovery(); // DTHR m
+	                    MapCircle circle = new MapCircle(location.getLatitude(), location.getLongitude(), radius_m);
+	                    circle.setPainter(Color.WHITE, 1);
+	                    getList().add(circle);
 
-                    // TODO: consider dropping 'expired' bands based on stored time
-                    if ((ScenarioState.getTime() - wellClearState.getMsgTime()) < 1) {
+	                    // show current heading
+	                    Location3D endPoint = CmasiNavUtils.getPoint(location, radius_m, wellClearState.getCurrent(BandType.HEADING));
+	                    MapLine line = new MapLine(location.getLatitude(), location.getLongitude(),
+	                            endPoint.getLatitude(), endPoint.getLongitude());
+	                    line.setPainter(Color.WHITE, 1);
+	                    getList().add(line);
 
-                        // TODO: overlay green arc covering angular range being considered (i.e. [left_track, right_track])
+	                    // TODO: consider dropping 'expired' bands based on stored time
+	                    if ((ScenarioState.getTime() - wellClearState.getMsgTime()) < 1) {
 
-                        for (BandIntervals.Band band : wellClearState.getBands(BandType.HEADING)) {
-                            // TODO: check whether band enclosing true north is possible, and if handle correctly
-                            MapArc arc = new MapArc(location.getLatitude(), location.getLongitude(), band.lower,
-                                    band.upper - band.lower, radius_m);
-                            arc.setPainter(band.getColor(), 3);
-                            getList().add(arc);
-                        }
+	                        // TODO: overlay green arc covering angular range being considered (i.e. [left_track, right_track])
+
+	                        for (BandIntervals.Band band : wellClearState.getBands(BandType.HEADING)) {
+	                            // TODO: check whether band enclosing true north is possible, and if handle correctly
+	                            MapArc arc = new MapArc(location.getLatitude(), location.getLongitude(), band.lower,
+	                                    band.upper - band.lower, radius_m);
+	                            arc.setPainter(band.getColor(), 3);
+	                            getList().add(arc);
+	                        }
+	                    }
                     }
                 }
-
-                
             }
 
             // TODO: displays for other band types
