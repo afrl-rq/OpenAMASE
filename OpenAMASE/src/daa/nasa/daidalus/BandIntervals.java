@@ -49,8 +49,10 @@ public class BandIntervals {
                 case NEAR: // warning
                     return Color.RED;
                 case MID: // corrective
-                case FAR: // preventive
                     return Color.YELLOW;
+                case FAR: // preventive
+                    // return Color.YELLOW;
+                    return Color.CYAN;
                 default:
                     return Color.WHITE;
             }
