@@ -69,6 +69,17 @@ public class WellClearState {
 
         typeToBands.put(BandType.HEADING, new BandIntervals(wcv.getCurrentHeading(), bands));
 
+        // Heading Recovery Bands -------------------------------------------------------------------------------------
+        final Iterator<larcfm.DAIDALUS.GroundHeadingRecoveryInterval> itGHR = wcv.getRecoveryGroundHeadingIntervals().iterator();
+
+        bands = new ArrayList<>();
+        while (itGHR.hasNext()) {
+            double[] interval = itGHR.next().getRecoveryGroundHeadings();
+            bands.add(new BandIntervals.Band(interval[0], interval[1]));
+        }
+        typeToBands.put(BandType.RECOVERY_HEADING, new BandIntervals(wcv.getCurrentHeading(), bands));
+
+
         // Altitude ---------------------------------------------------------------------------------------------------
         // There should be an altitude interval for every region. This is a critical failure if this doesn't hold.
         assert wcv.getWCVAlitudeIntervals().size() == wcv.getWCVAltitudeRegions().size();
@@ -85,6 +96,17 @@ public class WellClearState {
         }
 
         typeToBands.put(BandType.ALTITUDE, new BandIntervals(wcv.getCurrentAltitude(), bands));
+
+        // Altitude Recovery Bands ------------------------------------------------------------------------------------
+        final Iterator<larcfm.DAIDALUS.AltitudeRecoveryInterval> itAltR = wcv.getRecoveryAltitudeIntervals().iterator();
+
+        bands = new ArrayList<>();
+        while (itAltR.hasNext()) {
+            double[] interval = itAltR.next().getRecoveryAltitude();
+            bands.add(new BandIntervals.Band(interval[0], interval[1]));
+        }
+        typeToBands.put(BandType.RECOVERY_ALTITUDE, new BandIntervals(wcv.getCurrentAltitude(), bands));
+
 
         // Ground Speed -----------------------------------------------------------------------------------------------
         // There should be an ground speed interval for every region. This is a critical failure if this doesn't hold.
@@ -103,6 +125,16 @@ public class WellClearState {
 
         typeToBands.put(BandType.GROUND_SPEED, new BandIntervals(wcv.getCurrentGoundSpeed(), bands));
 
+        // Ground Speed Recovery Bands --------------------------------------------------------------------------------
+        final Iterator<larcfm.DAIDALUS.GroundSpeedRecoveryInterval> itGSR = wcv.getRecoveryGroundSpeedIntervals().iterator();
+
+        bands = new ArrayList<>();
+        while (itGSR.hasNext()) {
+            double[] interval = itGSR.next().getRecoveryGroundSpeeds();
+            bands.add(new BandIntervals.Band(interval[0], interval[1]));
+        }
+        typeToBands.put(BandType.RECOVERY_GROUND_SPEED, new BandIntervals(wcv.getCurrentGoundSpeed(), bands));
+
         // Vertical Speed ---------------------------------------------------------------------------------------------
         // There should be an vertical speed interval for every region. This is a critical failure if this doesn't hold.
         assert wcv.getWCVVerticalSpeedIntervals().size() == wcv.getWCVVerticalSpeedRegions().size();
@@ -119,6 +151,16 @@ public class WellClearState {
         }
 
         typeToBands.put(BandType.VERTICAL_SPEED, new BandIntervals(wcv.getCurrentVerticalSpeed(), bands));
+
+        // Vertical Speed Recovery Bands ------------------------------------------------------------------------------
+        final Iterator<larcfm.DAIDALUS.VerticalSpeedRecoveryInterval> itVSR = wcv.getRecoveryVerticalSpeedIntervals().iterator();
+
+        bands = new ArrayList<>();
+        while (itVSR.hasNext()) {
+            double[] interval = itVSR.next().getRecoveryVerticalSpeed();
+            bands.add(new BandIntervals.Band(interval[0], interval[1]));
+        }
+        typeToBands.put(BandType.RECOVERY_VERTICAL_SPEED, new BandIntervals(wcv.getCurrentVerticalSpeed(), bands));
 
     }
 }

@@ -29,6 +29,7 @@ public class WellClearLayer extends GraphicsLayer<MapGraphic> implements AppEven
     private static final double FIRST_BAR_OFFSET_HDG_DEG = 50;
     private static final double SECOND_BAR_OFFSET_HDG_DEG = 55;
     private static final double TICK_BAR_LENGTH_M = 100;
+    private static final double BAND_WIDTH = 3; 
 
     // This function finds the distance from the bar anchor point to the given point.
     // -> It is used to get the Location3D point for drawing in world coordinates.
@@ -216,15 +217,12 @@ public class WellClearLayer extends GraphicsLayer<MapGraphic> implements AppEven
                         // - The default draw color in maintained, stale bands are not drawn.
                         if ((ScenarioState.getTime() - wellClearState.getMsgTime()) < 1) {
 
-                            // TODO: overlay green arc covering angular range being considered (i.e. [left_track, right_track])                  
-
                             for (BandIntervals.Band band : wellClearState.getBands(BandType.HEADING)) {
-                                // System.out.println(ScenarioState.getTime() + ": Entered into BandType.HEADING");
                                 
                                 // TODO: check whether band enclosing true north is possible, and if handle correctly
                                 MapArc arc = new MapArc(location.getLatitude(), location.getLongitude(), band.lower,
                                         band.upper - band.lower, radius_m);
-                                arc.setPainter(band.getColor(), 3);
+                                arc.setPainter(band.getColor(), BAND_WIDTH);
                                 getList().add(arc);
                             }
 
@@ -232,7 +230,7 @@ public class WellClearLayer extends GraphicsLayer<MapGraphic> implements AppEven
                                 // System.out.println(ScenarioState.getTime() + ": Entered into BandType.ALTITUDE");
 
                                 MapLine altIntLine = drawIntervalLine(altBtmPt, tmpMaxAltitude_m, tmpMinAltitude_m, altLineDist_m, band);
-                                altIntLine.setPainter(band.getColor(), 3);
+                                altIntLine.setPainter(band.getColor(), BAND_WIDTH);
                                 getList().add(altIntLine);
 
                             }
@@ -241,7 +239,7 @@ public class WellClearLayer extends GraphicsLayer<MapGraphic> implements AppEven
                                 // System.out.println(ScenarioState.getTime() + ": Entered into BandType.GROUND_SPEED");
 
                                 MapLine grdSpdIntLine = drawIntervalLine(grdSpdBtmPt, tmpMaxGrdSpd, tmpMinGrdSpd, grdSpdLineDist_m, band);
-                                grdSpdIntLine.setPainter(band.getColor(), 3);
+                                grdSpdIntLine.setPainter(band.getColor(), BAND_WIDTH);
                                 getList().add(grdSpdIntLine);
                             }
 
@@ -249,9 +247,40 @@ public class WellClearLayer extends GraphicsLayer<MapGraphic> implements AppEven
                                 // System.out.println(ScenarioState.getTime() + ": Entered into BandType.VERTICAL_SPEED");
 
                                 MapLine vertSpdIntLine = drawIntervalLine(vertSpdBtmPt, tmpMaxVertSpd, tmpMinVertSpd, vertSpdLineDist_m, band);
-                                vertSpdIntLine.setPainter(band.getColor(), 3);
+                                vertSpdIntLine.setPainter(band.getColor(), BAND_WIDTH);
                                 getList().add(vertSpdIntLine);
                             }
+
+                            // Draw the Recovery Bands ----------------------------------------------------------------
+                            // Recovery Heading
+                            for (BandIntervals.Band band : wellClearState.getBands(BandType.RECOVERY_HEADING)) {
+                                MapArc arc = new MapArc(location.getLatitude(), location.getLongitude(), band.lower,
+                                                        band.upper - band.lower, (radius_m*0.95));
+                                arc.setPainter(band.getColor(), BAND_WIDTH);
+                                getList().add(arc);
+                            }
+
+                            // Recovery Altitude
+                            for (BandIntervals.Band band : wellClearState.getBands(BandType.RECOVERY_ALTITUDE)) {
+                                MapLine altIntLine = drawIntervalLine(altBtmPt, tmpMaxAltitude_m, tmpMinAltitude_m, altLineDist_m, band);
+                                altIntLine.setPainter(band.getColor(), BAND_WIDTH);
+                                getList().add(altIntLine);
+                            }
+
+                            //Recovery Ground Speed
+                            for (BandIntervals.Band band : wellClearState.getBands(BandType.RECOVERY_GROUND_SPEED)) {
+                                MapLine grdSpdIntLine = drawIntervalLine(grdSpdBtmPt, tmpMaxGrdSpd, tmpMinGrdSpd, grdSpdLineDist_m, band);
+                                grdSpdIntLine.setPainter(band.getColor(), BAND_WIDTH);
+                                getList().add(grdSpdIntLine);
+                            }
+
+                            //Recovery Vertical Speed
+                            for (BandIntervals.Band band : wellClearState.getBands(BandType.RECOVERY_VERTICAL_SPEED)) {
+                                MapLine vertSpdIntLine = drawIntervalLine(vertSpdBtmPt, tmpMaxVertSpd, tmpMinVertSpd, vertSpdLineDist_m, band);
+                                vertSpdIntLine.setPainter(band.getColor(), BAND_WIDTH);
+                                getList().add(vertSpdIntLine);
+                            }
+
                         }
                     }   
                 }

@@ -35,16 +35,28 @@ public class BandIntervals {
         public double lower;
         public double upper;
         public BandsRegion region;
+        private boolean isRecovery;
 
         public Band(double lower, double upper, BandsRegion region) {
             this.lower = lower;
             this.upper = upper;
             this.region = region;
+            this.isRecovery = false;
+        }
+
+        public Band(double lower, double upper) {
+            this.lower = lower;
+            this.upper = upper;
+            this.isRecovery = true;
         }
 
         public Color getColor() {
             // Colors are as prescribed by SC-228 RTCA DO-365 MOPS for DAA Systems
             // TODO: dashed lines as allowed to help distinguish preventive (Painter instead of just Color)
+            if (isRecovery) {
+                return Color.GREEN;
+            }
+
             switch (region) {
                 case NEAR: // warning
                     return Color.RED;
