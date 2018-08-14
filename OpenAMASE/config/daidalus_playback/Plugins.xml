@@ -61,6 +61,7 @@
     <Plugin Class="avtas.amase.scenario.ScenarioEventViewer"/>
     <Plugin Class="avtas.amase.ui.VehicleStateDisplay"/>
     <Plugin Class="avtas.amase.scenario.ScenarioOutput"/>
+    <Plugin Class="nasa.daidalus.WellClearStateDisplay"/>
 
     <Plugin Class="avtas.terrain.TerrainConfigurator"/>
     <Plugin Class="avtas.amase.ui.IconManager"/>

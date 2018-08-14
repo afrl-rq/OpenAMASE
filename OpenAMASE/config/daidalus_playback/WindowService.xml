@@ -1,6 +1,7 @@
 <?xml version="1.0" ?>
 
 <WindowService>
+  <ShowTitlebars>true</ShowTitlebars>
   <Window>
     <!--Shows the menu bar.-->
     <showMenuBar>true</showMenuBar>
@@ -13,17 +14,17 @@
     <!--The baseline title that is shown in the title bar.-->
     <baseTitle>AMASE Playback Tool</baseTitle>
     <!--Preferred Width of window.-->
-    <width>1088</width>
+    <width>1855</width>
     <!--Preferred Height of window.-->
-    <height>703</height>
+    <height>960</height>
     <!--An Icon to show.  Specify the path using java classpath URL conventions.-->
     <icon>/resources/amase_playback.png</icon>
     <!--x coordinate of the top left corner of the window.-->
-    <x>120</x>
+    <x>65</x>
     <!--y coordinate of the top left corner of the window.-->
-    <y>69</y>
+    <y>24</y>
     <!--If true, the window fills the screen-->
-    <fullscreen>false</fullscreen>
+    <fullscreen>true</fullscreen>
   </Window>
   <!--Automatically generated layout information.  Do not edit by hand.-->
   <Layout>
@@ -31,25 +32,27 @@
       <Perspective id="default" name="default">
         <Layout>
           <DockingPortNode>
-            <SplitNode dockingRegion="south" orientation="vertical" percentage="1.0" region="left">
+            <SplitNode dockingRegion="north" orientation="vertical" percentage="0.44994375" region="left">
               <DockingPortNode>
-                <SplitNode dockingRegion="south" orientation="vertical" percentage="0.86026937" region="left">
+                <SplitNode dockingRegion="east" orientation="horizontal" percentage="0.1260917" region="left">
                   <DockingPortNode>
-                    <SplitNode dockingRegion="west" orientation="horizontal" percentage="0.60247856" region="left">
+                    <DockableNode dockableId="avtas.amase.ui.SimControls"/>
+                  </DockingPortNode>
+                  <DockingPortNode>
+                    <SplitNode dockingRegion="east" orientation="horizontal" percentage="0.6927409" region="left">
                       <DockingPortNode>
-                        <DockableNode dockableId="avtas.amase.map.MapPlugin"></DockableNode>
+                        <DockableNode dockableId="avtas.amase.map.MapPlugin"/>
                       </DockingPortNode>
                       <DockingPortNode>
-                        <DockableNode dockableId="avtas.amase.ui.VehicleStateDisplay"></DockableNode>
+                        <DockableNode dockableId="avtas.amase.ui.VehicleStateDisplay"/>
                       </DockingPortNode>
                     </SplitNode>
                   </DockingPortNode>
-                  <DockingPortNode>
-                    <DockableNode dockableId="avtas.amase.ui.SimControls"></DockableNode>
-                  </DockingPortNode>
                 </SplitNode>
               </DockingPortNode>
-              <DockingPortNode></DockingPortNode>
+              <DockingPortNode>
+                <DockableNode dockableId="nasa.daidalus.WellClearStateDisplay"/>
+              </DockingPortNode>
             </SplitNode>
           </DockingPortNode>
         </Layout>
