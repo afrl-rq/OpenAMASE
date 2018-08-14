@@ -206,8 +206,8 @@ public class WellClearPanel extends JPanel {
     public void update(WellClearState wcState) {
         this.vehicleWCState = wcState;
         
-//        headingGauge.setBands(wcState.getBands(BandType.HEADING), 
-//                              wcState.getBands(BandType.RECOVERY_HEADING));
+        headingGauge.setBands(wcState.getBands(BandType.HEADING), 
+                              wcState.getBands(BandType.RECOVERY_HEADING));
         
         altitudeBar.setBands(wcState.getBands(BandType.ALTITUDE), 
                              wcState.getBands(BandType.RECOVERY_ALTITUDE));
@@ -232,7 +232,8 @@ public class WellClearPanel extends JPanel {
         double barIntervalRange;        // Difference of min and max
         
         static int NUM_TICKS = 11;
-        static int NUM_MAJOR_TICKS = 3; // Top, Mid, Btm    
+//        static int NUM_MAJOR_TICKS = 3; // Top, Mid, Btm
+        static int NUM_MAJOR_TICKS = 2; // Top, Btm    
         
         // Don't need, have access to WellClearState
         List<BandIntervals.Band> conflictBandsList = new ArrayList<>();
