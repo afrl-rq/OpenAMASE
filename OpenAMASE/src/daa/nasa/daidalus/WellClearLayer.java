@@ -144,7 +144,7 @@ public class WellClearLayer extends GraphicsLayer<MapGraphic> implements AppEven
                                                           endPoint.getLatitude(), endPoint.getLongitude());
                         headingLine.setPainter(Color.WHITE, 1);
                         getList().add(headingLine);
-
+/*
                         // Build the Altitude bar -------------------------------------------------------------------------------------
                         // > Draw it to the "left" of the heading band circle
                         // Find the distance to the bar points from the location
@@ -210,7 +210,7 @@ public class WellClearLayer extends GraphicsLayer<MapGraphic> implements AppEven
                         MapLine currVertSpdLine = drawBarTickinWorldCord(vertSpdBtmPt, vertSpdLineDist_m, currVertSpdBarPercent);
                         currVertSpdLine.setPainter(Color.CYAN, 1);
                         getList().add(currVertSpdLine);
-
+*/
 
                         // This ensures that "stale bands" are not drawn. 
                         // When no messages received within a second of the last the band is considered stale. 
@@ -225,7 +225,7 @@ public class WellClearLayer extends GraphicsLayer<MapGraphic> implements AppEven
                                 arc.setPainter(band.getColor(), BAND_WIDTH);
                                 getList().add(arc);
                             }
-
+/*
                             for (BandIntervals.Band band : wellClearState.getBands(BandType.ALTITUDE)) {
                                 // System.out.println(ScenarioState.getTime() + ": Entered into BandType.ALTITUDE");
 
@@ -250,7 +250,7 @@ public class WellClearLayer extends GraphicsLayer<MapGraphic> implements AppEven
                                 vertSpdIntLine.setPainter(band.getColor(), BAND_WIDTH);
                                 getList().add(vertSpdIntLine);
                             }
-
+*/
                             // Draw the Recovery Bands ----------------------------------------------------------------
                             // Recovery Heading
                             for (BandIntervals.Band band : wellClearState.getBands(BandType.RECOVERY_HEADING)) {
@@ -259,7 +259,7 @@ public class WellClearLayer extends GraphicsLayer<MapGraphic> implements AppEven
                                 arc.setPainter(band.getColor(), BAND_WIDTH);
                                 getList().add(arc);
                             }
-
+/*
                             // Recovery Altitude
                             for (BandIntervals.Band band : wellClearState.getBands(BandType.RECOVERY_ALTITUDE)) {
                                 MapLine altIntLine = drawIntervalLine(altBtmPt, tmpMaxAltitude_m, tmpMinAltitude_m, altLineDist_m, band);
@@ -280,7 +280,7 @@ public class WellClearLayer extends GraphicsLayer<MapGraphic> implements AppEven
                                 vertSpdIntLine.setPainter(band.getColor(), BAND_WIDTH);
                                 getList().add(vertSpdIntLine);
                             }
-
+*/
                         }
                     }   
                 }

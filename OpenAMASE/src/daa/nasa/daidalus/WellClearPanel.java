@@ -183,20 +183,23 @@ public class WellClearPanel extends JPanel {
 
         // Altitude - DAIDALUSConfiguration-------------------------------------
         altitudeBar.setMinMaxBarRange(daidalusCfg.getMinAltitude(), daidalusCfg.getMaxAltitude());
-        altitudeBar.setUnitLabel("m");
-        altitudeBar.setBottomLabel("");
+        altitudeBar.setUnitLabel("");
+        altitudeBar.setBottomLabel("m");
+        altitudeBar.setConfigFlag(true);
         // ---------------------------------------------------------------------
         
         // Ground Speed - DAIDALUSConfiguration---------------------------------
         grdSpdBar.setMinMaxBarRange(daidalusCfg.getMinGroundSpeed(), daidalusCfg.getMaxGroundSpeed());
-        grdSpdBar.setUnitLabel("m/s");
-        grdSpdBar.setBottomLabel("");
+        grdSpdBar.setUnitLabel("");
+        grdSpdBar.setBottomLabel("m/s");
+        grdSpdBar.setConfigFlag(true);
         // ---------------------------------------------------------------------
         
         // Vertical Speed - DAIDALUSConfiguration-------------------------------
         vertSpdBar.setMinMaxBarRange(daidalusCfg.getMinVerticalSpeed(), daidalusCfg.getMaxVerticalSpeed());
-        vertSpdBar.setUnitLabel("m/s");
-        vertSpdBar.setBottomLabel("");
+        vertSpdBar.setUnitLabel("");
+        vertSpdBar.setBottomLabel("m/s");
+        vertSpdBar.setConfigFlag(true);
         // ---------------------------------------------------------------------
     }
     
@@ -223,9 +226,9 @@ public class WellClearPanel extends JPanel {
        
     public static class BandBar extends JPanel {
         
-        double current = 5500.515;          // Current vehicle level (prepacked for testing)
-        double barInterval_max = 15240;     // Bar max interval value (prepacked for testing)
-        double barInterval_min = 30;        // Bar min interval value (prepacked for testing)
+        double current;          // Current vehicle level (prepacked for testing)
+        double barInterval_max;     // Bar max interval value (prepacked for testing)
+        double barInterval_min;        // Bar min interval value (prepacked for testing)
         double barIntervalRange;        // Difference of min and max
         
         static int NUM_TICKS = 11;
@@ -247,12 +250,15 @@ public class WellClearPanel extends JPanel {
         String barBtmLabel = "TEST_BTM";
         String barUnits = "TEST_UNITS";
         
+        // Draw the current information
+        boolean isConfigLoaded = false;
+        
         DecimalFormat df = new DecimalFormat("#.#");
 
         public BandBar(String title_str) {
             //setToolTipText("Energy: " + String.valueOf((int) (fuelpct)) + "%");
             this.barTopLabel = title_str;
-            setPreferredSize(new Dimension(100, 400));
+            setPreferredSize(new Dimension(100, 250));
             setMinimumSize(getPreferredSize());
              
             barIntervalRange = barInterval_max - barInterval_min;
@@ -264,7 +270,10 @@ public class WellClearPanel extends JPanel {
 //            this.current = 5;              // Current vehicle level (prepacked for testing)
 //            this.barInterval_max = 10;     // Bar max interval value (prepacked for testing)
 //            this.barInterval_min = 0;      // Bar min interval value (prepacked for testing)
-             
+            
+            // Don't draw current information until a DAIDALUS config arrives
+            this.isConfigLoaded = false;
+
             // In case there are multiple runs (as in playback) reset the panel
             repaint();
              
@@ -328,16 +337,30 @@ public class WellClearPanel extends JPanel {
             this.barIntervalRange = max - min;
         }
         
+        public void setConfigFlag(boolean flag) {
+            this.isConfigLoaded = flag;
+        }
+        
         public String tickValue(int tickNumber) {
             if (tickNumber == 0) {
-                return String.valueOf(barInterval_max);
+                return String.valueOf(df.format(barInterval_max));
             }
             else if (tickNumber == NUM_TICKS-1) {
-                return String.valueOf(barInterval_min);
+                return String.valueOf(df.format(barInterval_min));
             }
             
             double incrementVal = barIntervalRange / (NUM_TICKS-1);            
             return String.valueOf(df.format(barInterval_max - (incrementVal * tickNumber)));
+        }
+        
+        public double boundPercent(double input) {
+            if (input > 100.0) {
+                return 100.0;
+            }
+            else if (input < 0.0) {
+                return 0.0;
+            }
+            return input;
         }
         
         @Override
@@ -346,7 +369,7 @@ public class WellClearPanel extends JPanel {
             panelWidth = this.getWidth();
             panelHt = this.getHeight();
             
-            barHRng_max = (int)(getHeight() * 0.95);
+            barHRng_max = (int)(getHeight() * 0.9);
             barHRng_min = (int)(getHeight() * 0.1);
             barHRng_diff = barHRng_max - barHRng_min;
             vertDiv = getWidth() / 6;
@@ -382,8 +405,11 @@ public class WellClearPanel extends JPanel {
             // Draw the Conflict Bands
             for (BandIntervals.Band band : conflictBandsList) {
 
-                double upperPtBarPercent = ((band.upper - barInterval_min) / barIntervalRange);
-                double lowerPtBarPercent = ((band.lower - barInterval_min) / barIntervalRange);
+                double upper = (band.upper > barInterval_max)  ? barInterval_max : band.upper;
+                double lower = (band.lower < barInterval_min)  ? barInterval_min : band.lower;
+                
+                double upperPtBarPercent = boundPercent((upper - barInterval_min) / barIntervalRange);
+                double lowerPtBarPercent = boundPercent((lower - barInterval_min) / barIntervalRange);
 
                 double barHeight = ((upperPtBarPercent * barHRng_diff) - (lowerPtBarPercent * barHRng_diff));
                 
@@ -394,9 +420,13 @@ public class WellClearPanel extends JPanel {
             
             // Draw the Recovery Bands
             for (BandIntervals.Band band : recoveryBandsList) {
-                double upperPtBarPercent = ((band.upper - barInterval_min) / barIntervalRange);
-                double lowerPtBarPercent = ((band.lower - barInterval_min) / barIntervalRange);
                 
+                double upper = (band.upper > barInterval_max)  ? barInterval_max : band.upper;
+                double lower = (band.lower < barInterval_min)  ? barInterval_min : band.lower;
+                
+                double upperPtBarPercent = boundPercent((upper - barInterval_min) / barIntervalRange);
+                double lowerPtBarPercent = boundPercent((lower - barInterval_min) / barIntervalRange);
+                              
                 double barHeight = ((upperPtBarPercent * barHRng_diff) - (lowerPtBarPercent * barHRng_diff));
                 
                 g.setColor(band.getColor());
@@ -427,15 +457,18 @@ public class WellClearPanel extends JPanel {
             // -----------------------------------------------------------------
                        
             // Draw the current bar value
-            g.setColor(Color.MAGENTA);
-            double currentPercent = ((current - barInterval_min) / barIntervalRange);
-            double currentBarLoc = barHRng_max - (barHRng_diff * currentPercent);
-            g.drawLine((int)(vertDiv*1.8), (int)(currentBarLoc), (int)(vertDiv*4.2), (int)(currentBarLoc));
-            
-            // Add the current value to the left of the bars            
-            String currVal_str = String.valueOf(df.format(current));
-            strWidth = g.getFontMetrics().stringWidth(currVal_str);            
-            g.drawString(currVal_str, (int)((vertDiv * 1.8) - strWidth -2), (int)(currentBarLoc +(strHt/2)-2)); 
+            if (isConfigLoaded) {
+                g.setColor(Color.MAGENTA);
+                double currentPercent = ((current - barInterval_min) / barIntervalRange);
+                double currentBarLoc = barHRng_max - (barHRng_diff * currentPercent);
+                g.drawLine((int)(vertDiv*1.8), (int)(currentBarLoc), (int)(vertDiv*4.2), (int)(currentBarLoc));
+
+                // Add the current value to the left of the bars            
+                String currVal_str = String.valueOf(df.format(current));
+                strWidth = g.getFontMetrics().stringWidth(currVal_str);            
+                g.drawString(currVal_str, (int)((vertDiv * 1.8) - strWidth -2), (int)(currentBarLoc +(strHt/2)-2));
+            }
+             
 
         }
     }

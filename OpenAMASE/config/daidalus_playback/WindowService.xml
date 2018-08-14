@@ -14,9 +14,9 @@
     <!--The baseline title that is shown in the title bar.-->
     <baseTitle>AMASE Playback Tool</baseTitle>
     <!--Preferred Width of window.-->
-    <width>1855</width>
+    <width>1215</width>
     <!--Preferred Height of window.-->
-    <height>960</height>
+    <height>680</height>
     <!--An Icon to show.  Specify the path using java classpath URL conventions.-->
     <icon>/resources/amase_playback.png</icon>
     <!--x coordinate of the top left corner of the window.-->
@@ -32,14 +32,14 @@
       <Perspective id="default" name="default">
         <Layout>
           <DockingPortNode>
-            <SplitNode dockingRegion="north" orientation="vertical" percentage="0.44994375" region="left">
+            <SplitNode dockingRegion="north" orientation="vertical" percentage="0.4499179" region="left">
               <DockingPortNode>
-                <SplitNode dockingRegion="east" orientation="horizontal" percentage="0.1260917" region="left">
+                <SplitNode dockingRegion="east" orientation="horizontal" percentage="0.12583892" region="left">
                   <DockingPortNode>
                     <DockableNode dockableId="avtas.amase.ui.SimControls"/>
                   </DockingPortNode>
                   <DockingPortNode>
-                    <SplitNode dockingRegion="east" orientation="horizontal" percentage="0.6927409" region="left">
+                    <SplitNode dockingRegion="east" orientation="horizontal" percentage="0.5543792" region="left">
                       <DockingPortNode>
                         <DockableNode dockableId="avtas.amase.map.MapPlugin"/>
                       </DockingPortNode>
