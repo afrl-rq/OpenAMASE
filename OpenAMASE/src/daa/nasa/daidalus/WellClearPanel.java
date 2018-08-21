@@ -23,6 +23,7 @@ import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
@@ -32,6 +33,7 @@ import java.awt.geom.Arc2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.RenderingHints;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,6 +41,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -58,10 +61,10 @@ import javax.swing.JSeparator;
 public class WellClearPanel extends JPanel {
     
     double vehicleEntityID;
-    WellClearState vehicleWCState;
+//    WellClearState vehicleWCState;
     
     // Show the heading conflict/recovery circle
-    HeadingCircle headingGauge = new HeadingCircle();
+    HeadingCircle headingGauge = new HeadingCircle(vehicleEntityID);
     
     // Establish the bar types
     BandBar altitudeBar = new BandBar("Altitude");
@@ -82,63 +85,42 @@ public class WellClearPanel extends JPanel {
 
         JPanel statPanel = new JPanel();
         statPanel.setLayout(new GridLayout(0, 2));
-        
-//        JPanel textArea = new JPanel(new BorderLayout(5,0));
-//        JPanel labelPanel = new JPanel(new GridLayout(0, 1));
-//        
-//        labelPanel.add(new JLabel("Altitude"));
-//        labelPanel.add(new JLabel("Speed"));
-//        labelPanel.add(new JLabel("Heading"));
-//        labelPanel.add(new JLabel("Vert Speed"));
-//        labelPanel.add(new JLabel("Nav Mode"));
-//        
-//        textArea.add(labelPanel, BorderLayout.WEST);
-//        
-//        JPanel fieldPanel = new JPanel(new GridLayout(0,1));
-//        fieldPanel.add(altBox);
-//        fieldPanel.add(speedBox);
-//        fieldPanel.add(hdgBox);
-//        fieldPanel.add(vsBox);
-//        fieldPanel.add(modeBox);
-//        textArea.add(fieldPanel, BorderLayout.CENTER);
+       
 
-
-
-        // Trying to layer the guage and icon
-//        JLayeredPane layerPane = new JLayeredPane();
-//        layerPane.add(headingGauge, JLayeredPane.DEFAULT_LAYER);
-        
+        JPanel iconHeadingPanel = new JPanel();
+        iconHeadingPanel.setLayout(new BoxLayout(iconHeadingPanel, BoxLayout.LINE_AXIS));
+        iconHeadingPanel.setAlignmentY(CENTER_ALIGNMENT);
         
         JPanel iconPanel = new JPanel();
-        iconPanel.setLayout(new BorderLayout());
+        iconPanel.setLayout(new BoxLayout(iconPanel, BoxLayout.PAGE_AXIS));
+        iconPanel.setAlignmentX(CENTER_ALIGNMENT);
+        iconPanel.setAlignmentY(CENTER_ALIGNMENT);
 
         Image icon = IconTools.getFilledImage(IconManager.getIcon(avc), 24, 24, 2, getForeground(), color);
         String vehName = avc.getLabel().toUpperCase() + " (" + avc.getID() + ")";
         JLabel vehicleIcon = new JLabel(vehName, new ImageIcon(icon), JLabel.CENTER);
         vehicleIcon.setVerticalTextPosition(JLabel.BOTTOM);
         vehicleIcon.setHorizontalTextPosition(JLabel.CENTER);
-        iconPanel.add(vehicleIcon, BorderLayout.CENTER);
-//        iconPanel.add(Box.createHorizontalStrut(20), BorderLayout.EAST);
-//        iconPanel.add(Box.createHorizontalStrut(20), BorderLayout.WEST);
-        add(iconPanel, BorderLayout.NORTH);
         
-//        layerPane.add(vehicleIcon, JLayeredPane.PALETTE_LAYER);
+        iconPanel.add(vehicleIcon);
+   
+        iconHeadingPanel.add(Box.createHorizontalGlue());
+        iconHeadingPanel.add(iconPanel);
+        iconHeadingPanel.add(headingGauge);
+        iconHeadingPanel.add(Box.createHorizontalGlue());
         
-        JPanel headingPanel = new JPanel();        
-        headingPanel.setLayout(new BorderLayout());
-        headingPanel.add(headingGauge, BorderLayout.CENTER);    
-//        add(headingPanel, BorderLayout.NORTH);
-       
+           
+        add(iconHeadingPanel, BorderLayout.NORTH);
 
-        // Build the bar panel section
+        // Build the bar panel section -----------------------------------------
         JPanel barPanel = new JPanel();
         barPanel.setLayout(new GridLayout(1, 3, 5, 5));
         barPanel.add(altitudeBar);
         barPanel.add(grdSpdBar);
         barPanel.add(vertSpdBar);
 
+        
         add(barPanel, BorderLayout.CENTER);
-//        add(new JSeparator(JSeparator.VERTICAL),BorderLayout.EAST);
         
     }
 
@@ -155,29 +137,9 @@ public class WellClearPanel extends JPanel {
             e.printStackTrace();
         }
     }
-
-    public void update(AirVehicleState avs) {
-
-//        String ktsSpd = intFormat.format(Unit.MPS.convertTo(avs.getAirspeed(), Unit.KNOTS));
-//        String ftAlt = intFormat.format(Unit.METER.convertTo(avs.getLocation().getAltitude(), Unit.FEET));
-//        String fpmVs = intFormat.format(Unit.MPS.convertTo(avs.getVerticalSpeed(), Unit.FPM));
-//
-//        speedBox.setText(intFormat.format(avs.getAirspeed()) + " MPS ( " + ktsSpd + " KTS)");
-//        altBox.setText(intFormat.format(avs.getLocation().getAltitude()) + " M ( " + ftAlt + " FT)");
-//        hdgBox.setText(intFormat.format(Unit.bound360(avs.getHeading())));
-//        vsBox.setText(intFormat.format(avs.getVerticalSpeed()) + " MPS ( " + fpmVs + " FPM)");
-//        modeBox.setText(avs.getMode().toString());
-        
-        headingGauge.setOrientation(avs.getHeading());
-        altitudeBar.setCurrent(avs.getLocation().getAltitude());
-        grdSpdBar.setCurrent(avs.getGroundspeed());
-        vertSpdBar.setCurrent(avs.getVerticalSpeed());        
-
-        repaint();
-    }
     
     public void update(DAIDALUSConfiguration daidalusCfg, WellClearState wcState) {
-        this.vehicleWCState = wcState;
+//        this.vehicleWCState = wcState;
         
 //        headingGauge.setOrientation(avs.getHeading());
 
@@ -201,27 +163,32 @@ public class WellClearPanel extends JPanel {
         vertSpdBar.setBottomLabel("m/s");
         vertSpdBar.setConfigFlag(true);
         // ---------------------------------------------------------------------
+        
+        repaint();
     }
     
     public void update(WellClearState wcState) {
-        this.vehicleWCState = wcState;
+//        this.vehicleWCState = wcState;
         
+        headingGauge.setOrientation(wcState.getCurrent(BandType.HEADING));              
         headingGauge.setBands(wcState.getBands(BandType.HEADING), 
                               wcState.getBands(BandType.RECOVERY_HEADING));
         
+        altitudeBar.setCurrent(wcState.getCurrent(BandType.ALTITUDE));
         altitudeBar.setBands(wcState.getBands(BandType.ALTITUDE), 
                              wcState.getBands(BandType.RECOVERY_ALTITUDE));
         
+        grdSpdBar.setCurrent(wcState.getCurrent(BandType.GROUND_SPEED));
         grdSpdBar.setBands(wcState.getBands(BandType.GROUND_SPEED), 
                            wcState.getBands(BandType.RECOVERY_GROUND_SPEED));
         
+        vertSpdBar.setCurrent(wcState.getCurrent(BandType.VERTICAL_SPEED));
         vertSpdBar.setBands(wcState.getBands(BandType.VERTICAL_SPEED), 
                             wcState.getBands(BandType.RECOVERY_VERTICAL_SPEED));
         
         repaint();
         
     }
-
 
        
     public static class BandBar extends JPanel {
@@ -235,7 +202,7 @@ public class WellClearPanel extends JPanel {
 //        static int NUM_MAJOR_TICKS = 3; // Top, Mid, Btm
         static int NUM_MAJOR_TICKS = 2; // Top, Btm    
         
-        // Don't need, have access to WellClearState
+        // Chose to hold the specific band information
         List<BandIntervals.Band> conflictBandsList = new ArrayList<>();
         List<BandIntervals.Band> recoveryBandsList = new ArrayList<>();
         
@@ -267,45 +234,16 @@ public class WellClearPanel extends JPanel {
             // Default values until a DAIDALUS Config arrives
             this.barBtmLabel = "";
             this.barUnits = "";
-             
-//            this.current = 5;              // Current vehicle level (prepacked for testing)
-//            this.barInterval_max = 10;     // Bar max interval value (prepacked for testing)
-//            this.barInterval_min = 0;      // Bar min interval value (prepacked for testing)
+            
             
             // Don't draw current information until a DAIDALUS config arrives
             this.isConfigLoaded = false;
 
             // In case there are multiple runs (as in playback) reset the panel
             repaint();
-             
-            // testing
-//            conflictBandsList = testConflictBands().getBands();
-//            recoveryBandsList = testRecoveryBands().getBands();
         }
         
-//        public BandIntervals testConflictBands() {
-//            List<BandIntervals.Band> testBandsList = new ArrayList<>(); 
-//            List<BandIntervals> intervalList = new ArrayList<>();
-//            
-//            testBandsList.add(new BandIntervals.Band(9000, 15240, BandsRegion.FAR));
-//            testBandsList.add(new BandIntervals.Band(30, 2000, BandsRegion.FAR));
-//            testBandsList.add(new BandIntervals.Band(6000, 9000, BandsRegion.MID));
-//            testBandsList.add(new BandIntervals.Band(2000, 4000, BandsRegion.MID));
-//            testBandsList.add(new BandIntervals.Band(4000, 6000, BandsRegion.NEAR));
-//                
-//            return new BandIntervals(5500, testBandsList);
-//        }
-//        
-//        public BandIntervals testRecoveryBands() {
-//            List<BandIntervals.Band> testBandsList = new ArrayList<>(); 
-//            List<BandIntervals> intervalList = new ArrayList<>();
-//            
-//            testBandsList.add(new BandIntervals.Band(3500, 8000));
-//                
-//            return new BandIntervals(5500, testBandsList);
-//        }
-       
-        
+
         public void setBands(List<BandIntervals.Band> conflictBands,
                              List<BandIntervals.Band> recoveryBands) {
             this.conflictBandsList = conflictBands;
@@ -381,6 +319,11 @@ public class WellClearPanel extends JPanel {
 
             int strWidth;
             int strHt = g.getFontMetrics().getHeight();
+            
+//            Graphics2D g2 = (Graphics2D)g;
+//            
+//            g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+//                               RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
             
             
             // color the background of the complete working panel
@@ -475,13 +418,14 @@ public class WellClearPanel extends JPanel {
     }
     
     public static class HeadingCircle extends JComponent {
-
-        static final int strokeWidth = 16;
-        static final BasicStroke scaleStroke = new BasicStroke(2);
-        static final BasicStroke bandStroke = new BasicStroke(strokeWidth);
+        
+        static final int TICK_LENGTH = 6;
+        static final int ANCHOR_OFFSET = 12;
+        static final BasicStroke scaleStroke = new BasicStroke(1);
+        
         double currentHeading_deg = 0;
         
-        // Don't need, have access to WellClearState
+        // Chose to hold the specific band information 
         List<BandIntervals.Band> conflictBandsList = new ArrayList<>();
         List<BandIntervals.Band> recoveryBandsList = new ArrayList<>();
         
@@ -489,37 +433,24 @@ public class WellClearPanel extends JPanel {
         int panelCtrX, panelCtrY;
         int circleCtrX, circleCtrY;
         
-        double rad_roll = 0.;
         int width = 0;
         int height = 0;
         
-        double tickOffset = 30;        
+        double tickOffset = 30;
         
-        
-        static final Color OUTLINE = Color.BLACK;
-        static final Color SKY = Colors.getColor("SkyBlue", Color.BLACK);
-        static final Color GROUND = Colors.getColor("SaddleBrown", Color.BLACK);
+        DecimalFormat df = new DecimalFormat("#.##");
 
-        public HeadingCircle() {
+        public HeadingCircle(double vehID) {
             super();
-            setPreferredSize(new Dimension(200, 250));
+            setPreferredSize(new Dimension(200, 175));
             setMinimumSize(getPreferredSize());
-            width = 180;
-            height = 180;
-            
-            // Temp for alignment
-            super.setBorder(new LineBorder(OUTLINE));
-        }
-        
-        public HeadingCircle(int width, int height) {
-            super();
-            setPreferredSize(new Dimension(200, 250));
-            setMinimumSize(getPreferredSize());
-            this.width = width;
-            this.height = height;
-            
-            // Temp for alignment
-            super.setBorder(new LineBorder(OUTLINE));
+            width = 120;
+            height = 120;
+                                  
+//            // Temp for alignment
+//            super.setBorder(new LineBorder(OUTLINE));
+//            width = 240;
+//            height = 240;
         }
         
         /* The graphics draw sets 0.0 at east with positive numbers progressing counter-clockwise.
@@ -531,12 +462,41 @@ public class WellClearPanel extends JPanel {
         public double degreesAircraftToDraw(double aircraft_deg) {
             // Shift 0.0 in AC to 0.0 to drawing ==> +90
             // Change direction of the numberline ==> * -1
-            return (aircraft_deg * -1) + 90;
+            
+//            return (aircraft_deg * -1) + 90;
+            double rtnDrawAngle = 90 - aircraft_deg;
+            if (rtnDrawAngle < 0) {
+                return rtnDrawAngle + 360;
+            }            
+            return rtnDrawAngle;
         }
         
-        public double degreesAircraftBand(double min, double max) {
-            // Order is on purpose since the math degrees move in CW and aircraft in CCW
-            return (min - max);
+        public double degreesAircraftBand(double lower_deg, double upper_deg) {
+            // return values are multipled by negative one since the math degrees
+            // are positive in the clockwise (CW) direction but aircraft degrees
+            // are positive in the counter-clockwise (CCW) direction
+            
+            // The band information is always provided in the proper order
+            // - Only way that upper can be less than lower is if that end has restarted the circle
+            // - Add 360 to upper to represent the band length
+            if (upper_deg < lower_deg) {
+                return -1.0 * ((upper_deg + 360) - lower_deg);
+            }
+            return -1.0 * (upper_deg - lower_deg);
+            
+        }
+        
+        public double actualToDisplay(double actual_deg) {
+            double valToRtn_deg = actual_deg - currentHeading_deg;
+            
+            if (valToRtn_deg < 0.0) {
+                return valToRtn_deg + 360;
+            }
+            else if (valToRtn_deg >= 360) {         // Shouldn't need
+                return valToRtn_deg - 360;
+            }
+            
+            return valToRtn_deg;
         }
         
         public void setBands(List<BandIntervals.Band> conflictBands,
@@ -545,43 +505,88 @@ public class WellClearPanel extends JPanel {
             this.recoveryBandsList = recoveryBands;
             repaint();
         }
-        
-        public Line2D.Double drawTicks(final int theta) {
-            
-            double radius = width/2; // height and width are assumed equal
-            
+                
+        public void drawTicks(Graphics2D graphicsObj, final int theta, final double radius) {
+           
             double insidePointX;
             double insidePointY;
             double outsidePointX;
             double outsidePointY;
             
+            double[] labelCtrPtXY = new double[2];
+            
             // To rotate around the center, must move around the center changing quadrants
             if (theta >= 0 && theta < 90) {
-                insidePointX = circleCtrX + (Math.sin(Math.toRadians(theta)) * (radius - strokeWidth/2));
-                insidePointY = circleCtrY - (Math.cos(Math.toRadians(theta)) * (radius - strokeWidth/2));
-                outsidePointX = circleCtrX + (Math.sin(Math.toRadians(theta)) * (radius + strokeWidth/2));
-                outsidePointY = circleCtrY - (Math.cos(Math.toRadians(theta)) * (radius + strokeWidth/2));
+                insidePointX = circleCtrX + (Math.sin(Math.toRadians(theta)) * (radius - TICK_LENGTH/2));
+                insidePointY = circleCtrY - (Math.cos(Math.toRadians(theta)) * (radius - TICK_LENGTH/2));
+                outsidePointX = circleCtrX + (Math.sin(Math.toRadians(theta)) * (radius + TICK_LENGTH/2));
+                outsidePointY = circleCtrY - (Math.cos(Math.toRadians(theta)) * (radius + TICK_LENGTH/2));
+                
+                labelCtrPtXY[0] = circleCtrX + (Math.sin(Math.toRadians(theta)) * (radius + TICK_LENGTH/2 +ANCHOR_OFFSET));
+                labelCtrPtXY[1] = circleCtrY - (Math.cos(Math.toRadians(theta)) * (radius + TICK_LENGTH/2 +ANCHOR_OFFSET));
             } 
             else if (theta >= 90 && theta < 180) {
-                insidePointX = circleCtrX + (Math.cos(Math.toRadians(theta-90)) * (radius - strokeWidth/2));
-                insidePointY = circleCtrY + (Math.sin(Math.toRadians(theta-90)) * (radius - strokeWidth/2));
-                outsidePointX = circleCtrX + (Math.cos(Math.toRadians(theta-90)) * (radius + strokeWidth/2));
-                outsidePointY = circleCtrY + (Math.sin(Math.toRadians(theta-90)) * (radius + strokeWidth/2));            
+                insidePointX = circleCtrX + (Math.cos(Math.toRadians(theta-90)) * (radius - TICK_LENGTH/2));
+                insidePointY = circleCtrY + (Math.sin(Math.toRadians(theta-90)) * (radius - TICK_LENGTH/2));
+                outsidePointX = circleCtrX + (Math.cos(Math.toRadians(theta-90)) * (radius + TICK_LENGTH/2));
+                outsidePointY = circleCtrY + (Math.sin(Math.toRadians(theta-90)) * (radius + TICK_LENGTH/2));
+                
+                labelCtrPtXY[0] = circleCtrX + (Math.cos(Math.toRadians(theta-90)) * (radius + TICK_LENGTH/2 +ANCHOR_OFFSET));
+                labelCtrPtXY[1] = circleCtrY + (Math.sin(Math.toRadians(theta-90)) * (radius + TICK_LENGTH/2 +ANCHOR_OFFSET));
             }
             else if (theta >= 180 && theta < 270) {
-                insidePointX = circleCtrX - (Math.sin(Math.toRadians(theta-180)) * (radius - strokeWidth/2));
-                insidePointY = circleCtrY + (Math.cos(Math.toRadians(theta-180)) * (radius - strokeWidth/2));
-                outsidePointX = circleCtrX - (Math.sin(Math.toRadians(theta-180)) * (radius + strokeWidth/2));
-                outsidePointY = circleCtrY + (Math.cos(Math.toRadians(theta-180)) * (radius + strokeWidth/2));                
+                insidePointX = circleCtrX - (Math.sin(Math.toRadians(theta-180)) * (radius - TICK_LENGTH/2));
+                insidePointY = circleCtrY + (Math.cos(Math.toRadians(theta-180)) * (radius - TICK_LENGTH/2));
+                outsidePointX = circleCtrX - (Math.sin(Math.toRadians(theta-180)) * (radius + TICK_LENGTH/2));
+                outsidePointY = circleCtrY + (Math.cos(Math.toRadians(theta-180)) * (radius + TICK_LENGTH/2));
+                
+                labelCtrPtXY[0] = circleCtrX - (Math.sin(Math.toRadians(theta-180)) * (radius + TICK_LENGTH/2 +ANCHOR_OFFSET));
+                labelCtrPtXY[1] = circleCtrY + (Math.cos(Math.toRadians(theta-180)) * (radius + TICK_LENGTH/2 +ANCHOR_OFFSET)); 
             }
-            else {
-                insidePointX = circleCtrX - (Math.cos(Math.toRadians(theta-270)) * (radius - strokeWidth/2));
-                insidePointY = circleCtrY - (Math.sin(Math.toRadians(theta-270)) * (radius - strokeWidth/2));
-                outsidePointX = circleCtrX - (Math.cos(Math.toRadians(theta-270)) * (radius + strokeWidth/2));
-                outsidePointY = circleCtrY - (Math.sin(Math.toRadians(theta-270)) * (radius + strokeWidth/2));                
+            else { // theta >= 270 && theta < 360
+                insidePointX = circleCtrX - (Math.cos(Math.toRadians(theta-270)) * (radius - TICK_LENGTH/2));
+                insidePointY = circleCtrY - (Math.sin(Math.toRadians(theta-270)) * (radius - TICK_LENGTH/2));
+                outsidePointX = circleCtrX - (Math.cos(Math.toRadians(theta-270)) * (radius + TICK_LENGTH/2));
+                outsidePointY = circleCtrY - (Math.sin(Math.toRadians(theta-270)) * (radius + TICK_LENGTH/2));
+                
+                labelCtrPtXY[0] = circleCtrX - (Math.cos(Math.toRadians(theta-270)) * (radius + TICK_LENGTH/2 +ANCHOR_OFFSET));
+                labelCtrPtXY[1] = circleCtrY - (Math.sin(Math.toRadians(theta-270)) * (radius + TICK_LENGTH/2 +ANCHOR_OFFSET)); 
             }
             
-            return new Line2D.Double(insidePointX, insidePointY, outsidePointX, outsidePointY);
+            Line2D.Double tickLine = new Line2D.Double(insidePointX, insidePointY, outsidePointX, outsidePointY);
+            graphicsObj.draw(tickLine);
+            
+//            // Testing
+//            graphicsObj.setColor(Color.RED);
+//            graphicsObj.drawLine((int)labelCtrPtXY[0], (int)labelCtrPtXY[1], (int)labelCtrPtXY[0], (int)labelCtrPtXY[1]);
+//            graphicsObj.drawString(String.valueOf(theta), (int)labelCtrPtXY[0], (int)labelCtrPtXY[1]);
+//            graphicsObj.setColor(Color.GREEN);
+//            graphicsObj.drawLine((int)labelCtrPtXY[0], (int)labelCtrPtXY[1]-15, (int)labelCtrPtXY[0], (int)labelCtrPtXY[1]-15);            
+//            graphicsObj.drawString(String.valueOf(theta), (int)labelCtrPtXY[0], (int)labelCtrPtXY[1]-15);
+            
+            graphicsObj.setColor(Color.BLACK);
+            
+            drawTickLabel(graphicsObj, theta, labelCtrPtXY);
+        }
+        
+        public void drawTickLabel(Graphics2D graphicsObj, final int theta, final double[] coordinateXY) {
+            int strHt = graphicsObj.getFontMetrics().getHeight();            
+            int strWidth;
+            
+            int tickVal;
+            
+            graphicsObj.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                                        RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
+            
+            if (theta >= 0.0 && theta <= 180) {
+                tickVal = theta;
+            } else {
+                tickVal = -1* (360 - theta);
+            }
+            
+            strWidth = graphicsObj.getFontMetrics().stringWidth(String.valueOf(tickVal));
+            graphicsObj.drawString(String.valueOf(tickVal), (float)(coordinateXY[0] - strWidth/2), (float)(coordinateXY[1] + strHt/3));
+            
         }
      
         @Override
@@ -594,8 +599,7 @@ public class WellClearPanel extends JPanel {
             panelCtrY = (int)(panelHt / 2);
             
             circleCtrX = panelCtrX;
-            circleCtrY = panelCtrY;      
-            
+            circleCtrY = panelCtrY;    
             
         }
 
@@ -605,45 +609,24 @@ public class WellClearPanel extends JPanel {
             g.setColor(Color.RED);
             
             // Anchor of circle is the upper left of the bounding box
-            int outsideCircleAnchorX = circleCtrX - (width/2);
-            int outsideCircleAnchorY = circleCtrY - (height/2);
+            int circleAnchorX = circleCtrX - (width/2);
+            int circleAnchorY = circleCtrY - (height/2);
             
             
-            g.drawOval(outsideCircleAnchorX, outsideCircleAnchorY, width, height);
+            g.drawOval(circleAnchorX, circleAnchorY, width, height);
             
             // Temporary for alignment
-            g.drawLine(0, 0, panelWidth, panelHt);
-            g.drawLine(panelWidth, 0, 0, panelHt);
+//            g.drawLine(0, 0, panelWidth, panelHt);
+//            g.drawLine(panelWidth, 0, 0, panelHt);
             
-            int insideCircleAnchorX = circleCtrX - (width-20)/2;
-            int insideCircleAnchorY = circleCtrY - (height-20)/2;
+//            int insideCircleAnchorX = circleCtrX - (width-20)/2;
+//            int insideCircleAnchorY = circleCtrY - (height-20)/2;
             
-            Ellipse2D.Double ring = new Ellipse2D.Double (outsideCircleAnchorX, outsideCircleAnchorY, width, height);
-            Rectangle2D.Double ellipseBounds = new Rectangle2D.Double(outsideCircleAnchorX, outsideCircleAnchorY, width, height);
-            
-            
-          
-//            // Note that to get the 120 deg arc using stroke I have to end the shorten the arc and start it 5 degrees forward in the scale
-//            Arc2D.Double conflictArc = new Arc2D.Double(ellipseBounds, degreesAircraftToDraw(5), degreesAircraftBand(0,120-10), 0);
-//            Arc2D.Double conflictArc2 = new Arc2D.Double(ellipseBounds, degreesAircraftToDraw(125), degreesAircraftBand(0,120-10), 0);
-//            Arc2D.Double conflictArc3 = new Arc2D.Double(ellipseBounds, degreesAircraftToDraw(245), degreesAircraftBand(0,120-10), 0);
+            Ellipse2D.Double ring = new Ellipse2D.Double (circleAnchorX, circleAnchorY, width, height);
+            Rectangle2D.Double ellipseBounds = new Rectangle2D.Double(circleAnchorX, circleAnchorY, width, height);
+
             Graphics2D g2 = (Graphics2D)g;
             
-            
-//            g2.setColor(Color.GREEN);
-//            g2.setStroke(bandStroke);
-//            g2.draw(conflictArc);
-//            
-//            g2.setColor(Color.RED);            
-//            g2.draw(conflictArc2);
-//            
-//            g2.setColor(Color.CYAN);            
-//            g2.draw(conflictArc3);
-            
-//            g2.setColor(Color.BLACK);
-//            g2.setStroke(scaleStroke);
-//            g2.draw(conflictArc);
-
             // Draw Bands ------------------------------------------------------
             /* Note on the adjusted degrees: 
              * - The stroke makes a larger dot rather than a "wide line" therefore the termination of the line exceeds past the range.
@@ -651,47 +634,38 @@ public class WellClearPanel extends JPanel {
              * resolve the distance.
              * - A new issue is if the band is not 10 degrees or more a special case must be determined.
              */
-            g2.setStroke(bandStroke);
             // Draw the Conflict Bands
             for (BandIntervals.Band band : conflictBandsList) {
-                double bandStart_deg = (band.lower + 5) % 360;          // Maintain 0 to 360
-                double bandExtent_deg = band.upper - band.lower - 10;
                 
                 Arc2D.Double conflictArc;
                 g2.setColor(band.getColor());
                 
-                // The band extent would be negative, draw a single point at the middle of the range.
-                if ((band.upper - band.lower) < 10) {
-                    double midPt = (band.upper - band.lower)/2;
-                    conflictArc = new Arc2D.Double(ellipseBounds, degreesAircraftToDraw(midPt), degreesAircraftBand(midPt,1), 0);
-                    
-                }
-                else {
-                    conflictArc = new Arc2D.Double(ellipseBounds, degreesAircraftToDraw(bandStart_deg), degreesAircraftBand(bandStart_deg,bandExtent_deg), 0);
-                }
+//                System.out.println("-------------------------");
+//                System.out.println("Conflict Band");
+//                System.out.println("Curr Hdg: " + currentHeading_deg);
+//                System.out.println("lower: " + band.lower);
+//                System.out.println("upper: " + band.upper);
+//                System.out.println("-------------------------");
                 
+                conflictArc = new Arc2D.Double(ellipseBounds, 
+                                               degreesAircraftToDraw(actualToDisplay(band.lower)), 
+                                               degreesAircraftBand(band.lower,band.upper), 
+                                               Arc2D.PIE);
                 g2.draw(conflictArc);
+                g2.fill(conflictArc);
             }
             
             // Draw the Recovery Bands
             for (BandIntervals.Band band : recoveryBandsList) {
-                double bandStart_deg = (band.lower + 5) % 360;          // Maintain 0 to 360
-                double bandExtent_deg = band.upper - band.lower - 10;
                 
                 Arc2D.Double recoveryArc;
                 g2.setColor(band.getColor());
-                
-                // The band extent would be negative, draw a single point at the middle of the range.
-                if ((band.upper - band.lower) < 10) {
-                    double midPt = (band.upper - band.lower)/2;
-                    recoveryArc = new Arc2D.Double(ellipseBounds, degreesAircraftToDraw(midPt), degreesAircraftBand(midPt,1), 0);
-                    
-                }
-                else {
-                    recoveryArc = new Arc2D.Double(ellipseBounds, degreesAircraftToDraw(bandStart_deg), degreesAircraftBand(bandStart_deg,bandExtent_deg), 0);
-                }
-                
+                recoveryArc = new Arc2D.Double(ellipseBounds, 
+                                               degreesAircraftToDraw(actualToDisplay(band.lower)), 
+                                               degreesAircraftBand(band.lower,band.upper), 
+                                               Arc2D.PIE);
                 g2.draw(recoveryArc);
+                g2.fill(recoveryArc);
             }
             
             // -----------------------------------------------------------------
@@ -702,34 +676,37 @@ public class WellClearPanel extends JPanel {
             g2.draw(ring);
             
             for (int theta = 0; theta < 360; theta += tickOffset) {
-                Line2D.Double tickMark = drawTicks(theta);
-                g2.draw(tickMark);                
-                
-                // TODO: Figure out how to write the values here
+                drawTicks(g2, theta, width/2);
             }
             
-            // Draw heading line - Use arc for ease of establishing the line
-            
-            Arc2D.Double HeadingLine = new Arc2D.Double(ellipseBounds, degreesAircraftToDraw(currentHeading_deg), 0, 2);
+//            System.out.println("--------------------------------------");
+//            System.out.println("Heading Line - VID: " + vehicleEntityID);
+//            System.out.println("Curr Hdg: " + currentHeading_deg);
+//            System.out.println("degACtoD: " + degreesAircraftToDraw(currentHeading_deg));
+//            System.out.println("actToDis: " + actualToDisplay(degreesAircraftToDraw(currentHeading_deg)));
+//            System.out.println("--------------------------------------");
+
+            // To draw heading line
+            // 1) Get current heading - stored as currentHeading_deg
+            // 2) Zero the current heading - use function actualToDisplay
+            // 3) Convert the zero from AC degrees to Draw degrees - use function degreesAircraftToDraw
+            Arc2D.Double HeadingLine = new Arc2D.Double(ellipseBounds, 
+                                                        degreesAircraftToDraw(actualToDisplay(currentHeading_deg)), 
+                                                        0, Arc2D.PIE);
             g2.setColor(Color.BLACK);
             g2.setStroke(scaleStroke);
             g2.draw(HeadingLine);
-            
-            // Draw the aircraft icon
-//           Image icon = IconTools.getFilledImage(IconManager.getIcon(avc), 24, 24, 2, altBox.getForeground(), color);
-//           String vehName = avc.getLabel().toUpperCase() + " (" + avc.getID() + ")";        
-//           JLabel vehicleIcon = new JLabel(vehName, new ImageIcon(icon), JLabel.CENTER);
-//           vehicleIcon.setVerticalTextPosition(JLabel.BOTTOM);
-//           vehicleIcon.setHorizontalTextPosition(JLabel.CENTER);
-//           headingPanel.add(vehicleIcon, BorderLayout.CENTER);
-            
-            
 
         }
 
         public void setOrientation(double heading_deg) {
-            this.currentHeading_deg = heading_deg;
-            setToolTipText("Heading: " + (int) heading_deg);
+            this.currentHeading_deg = heading_deg;           
+            
+            // Heading is always drawn at straight up.
+            // - Therefore the heading must be adjusted to properly be displayed
+            // - This is done in the paintComponent function
+            setToolTipText("Actual Heading: " + df.format(heading_deg));
+            
             repaint();
         }
     }

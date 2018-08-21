@@ -23,6 +23,9 @@ import avtas.amase.scenario.ScenarioEvent;
 import avtas.amase.ui.*;
 import avtas.amase.AmasePlugin;
 import avtas.amase.scenario.ScenarioState;
+import avtas.app.Context;
+import avtas.xml.Element;
+import avtas.xml.XMLUtil;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -49,6 +52,9 @@ public class WellClearStateDisplay extends AmasePlugin {
     HashMap<Long,WellClearPanel> vehicleMap = new HashMap<>();
     JPanel statusListPanel = new JPanel();
     JScrollPane scrollpane;
+    
+//    boolean xmlShowHeadingWheel = true;
+//    boolean xmlShowBars = true;
     
     public WellClearStateDisplay() {
         
@@ -108,13 +114,13 @@ public class WellClearStateDisplay extends AmasePlugin {
                 wcPanel.update(daidalusCfg, state);
             }            
         }
-        else if (event instanceof AirVehicleState) {
-            AirVehicleState avs = (AirVehicleState) event;
-            WellClearPanel wcPanel = vehicleMap.get(avs.getID());
-            if (wcPanel != null) {
-                wcPanel.update(avs);
-            }
-        }
+//        else if (event instanceof AirVehicleState) {
+//            AirVehicleState avs = (AirVehicleState) event;
+//            WellClearPanel wcPanel = vehicleMap.get(avs.getID());
+//            if (wcPanel != null) {
+//                wcPanel.update(avs);
+//            }
+//        }
         else if (event instanceof WellClearViolationIntervals) {        
             WellClearViolationIntervals wcvIntvl = (WellClearViolationIntervals) event;
             Long id = wcvIntvl.getEntityId();
@@ -136,6 +142,16 @@ public class WellClearStateDisplay extends AmasePlugin {
             }
         }
         
+    }
+    
+    public void initialize(Element node, String[] args) {
+        boolean ShowHeadingWheel = XMLUtil.getBool(node, "ShowHeadingWheel", true);
+        boolean ShowBars = XMLUtil.getBool(node, "ShowBars", true);
+    }
+    
+    @Override
+    public void addedToApplication(Context context, Element xml, String[] cmdParams) {
+        initialize(xml, cmdParams);
     }
 
     @Override
