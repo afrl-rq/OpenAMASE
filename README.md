@@ -24,6 +24,10 @@ To modify *OpenAMASE*, the Java JDK 1.8 or higher is required. All external libr
 requires are included in the `lib` folder. For convenience, Netbeans project files are included to allow
 developers a quick way to change and re-build *OpenAMASE*.
 
+## Building OpenAMASE
+
+run `ant jar` in `OpenAMASE\OpenAMASE`.
+
 ## Running *OpenAMASE*
 
 *OpenAMASE* has multiple options and configurations. For details, see `AMASE Tutorial.pptx` and `AmaseQuickstart.pdf`. In-depth
