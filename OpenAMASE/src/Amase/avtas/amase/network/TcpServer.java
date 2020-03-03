@@ -41,7 +41,7 @@ import java.util.ArrayList;
 import java.util.ListIterator;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
-import org.omg.CORBA.UserException;
+//import org.omg.CORBA.UserException;
 
 /**
  *
