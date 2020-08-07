@@ -8,6 +8,7 @@
         <data xmlns="http://www.netbeans.org/ns/j2se-project/3">
             <name>OpenAMASE</name>
             <source-roots>
+                <root id="src.daa.dir"/>
                 <root id="Core.dir" name="Core"/>
                 <root id="Amase.dir" name="Amase"/>
                 <root id="SetupTool.dir" name="SetupTool"/>
