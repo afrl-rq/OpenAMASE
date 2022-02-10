@@ -87,7 +87,7 @@ public class EntityTcpServer {
     }
 
     protected void messageReceived(LMCPObject lmcp) {
-
+        
         if (lmcp instanceof AutomationResponse) {
             processAutomationResponse((AutomationResponse) lmcp);
         } else {
@@ -127,6 +127,8 @@ public class EntityTcpServer {
 
             while (isRunning) {
                 try {
+                    //TODO: The Java Socket types is NOT thread safe and there's no protection here for concurrent read/write
+                    // to the socket!
                     byte[] bytes = LMCPFactory.getMessageBytes(socket.getInputStream());
                     if (bytes.length > 0) {
                         avtas.lmcp.LMCPObject lmcpObject = LMCPFactory.getObject(bytes);
