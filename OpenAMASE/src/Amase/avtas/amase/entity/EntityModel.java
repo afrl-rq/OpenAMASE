@@ -275,26 +275,36 @@ public class EntityModel {
      * the source.
      */
     public void fireModelEvent(Object event, Object source) {
-
-        eventQueue.add(new EventWrapper(event, source));
-
-        if (isDispatching) {
-            return;
+        synchronized(eventQueue) {
+            eventQueue.add(new EventWrapper(event, source));
         }
-        isDispatching = true;
 
-        while (!eventQueue.isEmpty()) {
-            EventWrapper eventWrapper = eventQueue.pollFirst();
-            if (eventWrapper != null) {
-                for (EntityModule m : moduleList) {
-                    if (eventWrapper.source != m) {
-                        m.modelEventOccurred(event);
+        synchronized(this) {
+            if (isDispatching) {
+                return;
+            }
+            isDispatching = true;
+        }
+
+        while (true) {
+            synchronized(eventQueue) {
+                if (eventQueue.isEmpty()) {
+                    break;
+                }
+                EventWrapper eventWrapper = eventQueue.pollFirst();
+                if (eventWrapper != null) {
+                    for (EntityModule m : moduleList) {
+                        if (eventWrapper.source != m) {
+                            m.modelEventOccurred(eventWrapper.event);
+                        }
                     }
                 }
             }
         }
 
-        isDispatching = false;
+        synchronized(this) {
+            isDispatching = false;
+        }
     }
 
     public long getID() {
