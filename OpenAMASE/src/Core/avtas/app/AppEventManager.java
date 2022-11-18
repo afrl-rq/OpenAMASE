@@ -139,7 +139,9 @@ public class AppEventManager extends AmasePlugin {
      */
     public void fireEvent(Object evt, Object eventSource) {
         EventWrapper wrapper = new EventWrapper(evt, eventSource);
-        waitList.addLast(wrapper);
+        synchronized(waitList) {
+            waitList.addLast(wrapper);
+        }
         dispatchObjects();
     }
 
@@ -151,7 +153,9 @@ public class AppEventManager extends AmasePlugin {
      */
     public void fireEvent(Object evt) {
         EventWrapper wrapper = new EventWrapper(evt, null);
-        waitList.addLast(wrapper);
+        synchronized(waitList) {
+            waitList.addLast(wrapper);
+        }
         dispatchObjects();
     }
 
@@ -166,9 +170,11 @@ public class AppEventManager extends AmasePlugin {
      * the source object.
      */
     public void fireEventNow(Object evt, Object eventSource) {
-        for (AppEventListener l : listeners) {
-            if (l != eventSource) {
-                l.eventOccurred(evt);
+        synchronized(listeners) {
+            for (AppEventListener l : listeners) {
+                if (l != eventSource) {
+                    l.eventOccurred(evt);
+                }
             }
         }
     }
@@ -207,10 +213,12 @@ public class AppEventManager extends AmasePlugin {
      *
      * @param l The AppEventListener to be added.
      */
-    public synchronized boolean addListener(AppEventListener l) {
-        if (!listeners.contains(l)) {
-            listeners.add(l);
-            return true;
+    public boolean addListener(AppEventListener l) {
+        synchronized(listeners) {
+            if (!listeners.contains(l)) {
+                listeners.add(l);
+                return true;
+            }
         }
         return false;
     }
@@ -224,8 +232,10 @@ public class AppEventManager extends AmasePlugin {
      * @param l The listener to remove.
      * @return true if the listener was removed, false otherwise.
      */
-    public synchronized boolean removeListener(AppEventListener l) {
-        return listeners.remove(l);
+    public boolean removeListener(AppEventListener l) {
+        synchronized(listeners) {
+            return listeners.remove(l);
+        }
     }
 
     /**
@@ -234,7 +244,9 @@ public class AppEventManager extends AmasePlugin {
      * @return The list of registered event listeners
      */
     public List<AppEventListener> getListeners() {
-        return listeners;
+        //cpw: For now return a shallow copy of the list, user shouldn't modify elements of the container!
+        //TODO: Return a deep copy of the list here.
+        return new ArrayList<AppEventListener>(listeners);
     }
 
     /**
@@ -244,31 +256,38 @@ public class AppEventManager extends AmasePlugin {
      * <code>lock</code> is true.
      */
     private void dispatchObjects() {
-
-        if (eventOccuring) {
-            return;
-        }
-        eventOccuring = true;
-        while (!lock) {
-            EventWrapper e = waitList.poll();
-            if (e == null) {
-                break;
+        // Separate synchronization on "this" to allow early return from this function and proper protection of
+        // "eventOccuring" primitive type (cannot synchronize on these).
+        synchronized(this) {
+            if (eventOccuring) {
+                return;
             }
-            synchronized (listeners) {
-                for (int i = 0; i < listeners.size(); i++) {
-                    if (consume == e.event) {
-                        consume = null;
-                        break;
-                    }
-                    AppEventListener l = listeners.get(i);
-                    if (l != e.source) {
-                        l.eventOccurred(e.event);
+            eventOccuring = true;
+        }
+        while (!lock) {
+            synchronized(waitList) {
+                EventWrapper e = waitList.poll();
+                if (e == null) {
+                    break;
+                }
+                synchronized(listeners) {
+                    for (int i = 0; i < listeners.size(); i++) {
+                        if (consume == e.event) {
+                            consume = null;
+                            break;
+                        }
+                        AppEventListener l = listeners.get(i);
+                        if (l != e.source) {
+                            l.eventOccurred(e.event);
+                        }
                     }
                 }
             }
         }
         consume = null;
-        eventOccuring = false;
+        synchronized(this) {
+            eventOccuring = false;
+        }
     }
 
     /**
@@ -285,19 +304,15 @@ public class AppEventManager extends AmasePlugin {
     @Override
     public void applicationPeerAdded(Object peer) {
         if (peer instanceof AppEventListener) {
-            synchronized (listeners) {
-                AppEventListener l = (AppEventListener) peer;
-                addListener(l);
-            }
+            AppEventListener l = (AppEventListener) peer;
+            addListener(l);
         }
     }
 
     @Override
     public void applicationPeerRemoved(Object peer) {
-        synchronized (listeners) {
-            AppEventListener l = (AppEventListener) peer;
-            removeListener(l);
-        }
+        AppEventListener l = (AppEventListener) peer;
+        removeListener(l);
     }
 
 
