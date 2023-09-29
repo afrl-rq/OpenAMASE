@@ -110,14 +110,6 @@ public class MapGraphicsList<T extends MapGraphic> extends MapGraphic implements
     }
 
     /**
-     * @deprecated Use {@link #size() } instead.
-     * @return length of the internalList
-     */
-    public int getLength() {
-        return internalList.size();
-    }
-
-    /**
      * Returns all of the graphics that intersect the given screen location in the
      * current projection.
      * @param x screen x-coordinate

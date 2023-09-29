@@ -37,19 +37,19 @@ public class IntegerWrapModel extends SpinnerNumberModel {
         this.max = max;
         this.interval = interval;
         
-        setValue( new Integer(val));
+        setValue(val);
     }
     
     public Object getPreviousValue() {
         if (val - interval >= min)
-            return new Integer(val-interval);
-        else return new Integer(max-interval);
+            return (val - interval);
+        else return (max - interval);
     }
     
     public Object getNextValue() {
         if (val + interval < max)
-            return new Integer(val + interval);
-        else return new Integer(min);
+            return (val + interval);
+        else return min;
     }
     
     public void setValue(Object o) {
@@ -60,7 +60,7 @@ public class IntegerWrapModel extends SpinnerNumberModel {
     }
     
     public Object getValue() {
-        return new Integer(val);
+        return val;
     }
 }
 
