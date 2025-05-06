@@ -74,10 +74,10 @@ public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEven
 		} else {
 		    //Make the IZV line and text invisible
 		    if (IDtoLine.containsKey(id)) {
-                            IDtoLine.get(id).setVisible(false);
+                            IDtoLine.remove(id);
 			}
 		    if (IDtoText.containsKey(id)) {
-			    IDtoText.get(id).setVisible(false);
+			    IDtoText.remove(id);
 			}
 		    AircraftColors.makeOriginalColor((int) id);
 		}
@@ -107,10 +107,13 @@ public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEven
 		IZV2.add(vID);
 	    }
 	    if (airVehicleState != null) {
+                IDtoLine.remove(vID);
+                IDtoText.remove(vID);
 		Location3D location = airVehicleState.getLocation();                            
                 MapLine violationLine = new MapLine(location.getLatitude(), location.getLongitude(), lat, lon);
 		MapText violationTime = new MapText();
 		violationLine = new MapLine(location.getLatitude(), location.getLongitude(), lat, lon);
+                violationLine.setPainter(Color.WHITE, 1);
 		violationTime.setColor(Color.WHITE);
 		violationTime.setFill(Color.BLACK);
 		violationTime.setHorizontalAlignment(SwingConstants.CENTER);
