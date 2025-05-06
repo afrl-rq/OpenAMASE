@@ -92,8 +92,8 @@ public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEven
 	    ImminentZoneViolation proc = (ImminentZoneViolation) event;
 	    int vID = (int) proc.getVehicleID();
 	    double TTI = proc.getTimeToIntercept();
-	    double lat = proc.getInterceptPosition().geteast();
-	    double lon = proc.getInterceptPosition().getnorth();
+	    double lat = proc.getInterceptPosition().getEast();
+	    double lon = proc.getInterceptPosition().getNorth();
 	    AirVehicleState airVehicleState = ScenarioState.getAirVehicleState(vID);
 	    if (!IZV.contains(vID)){
 		IZV.add(vID);
@@ -102,7 +102,8 @@ public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEven
 		IZV2.add(vID);
 	    }
 	    if (airVehicleState != null) {
-		Location3D location = airVehicleState.getLocation();                            MapLine violationLine = new MapLine(location.getLatitude(), location.getLongitude(), lat, lon);
+		Location3D location = airVehicleState.getLocation();                            
+                MapLine violationLine = new MapLine(location.getLatitude(), location.getLongitude(), lat, lon);
 		MapText violationTime = new MapText();
 		violationLine = new MapLine(location.getLatitude(), location.getLongitude(), lat, lon);
 		violationTime.setColor(Color.WHITE);
