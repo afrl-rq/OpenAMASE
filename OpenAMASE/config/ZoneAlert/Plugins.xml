@@ -36,7 +36,7 @@
                     <ScaleType>Metric</ScaleType>
                 </Layer>
                 <Layer Class="avtas.amase.analysis.SearchAnalysisLayer"/>
-                <Layer Class="nasa.daidalus.WellClearLayer"/>
+                <Layer Class="ZoneAlert.ZoneAlertLayer"/>
             </Layers>
         </Map>
     </Plugin >

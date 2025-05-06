@@ -50,9 +50,6 @@
                   </DockingPortNode>
                 </SplitNode>
               </DockingPortNode>
-              <!--DockingPortNode>
-                <DockableNode dockableId="nasa.daidalus.WellClearStateDisplay"/>
-              </DockingPortNode-->
             </SplitNode>
           </DockingPortNode>
         </Layout>
