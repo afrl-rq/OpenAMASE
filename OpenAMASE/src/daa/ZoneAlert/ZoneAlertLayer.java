@@ -26,6 +26,9 @@ import java.awt.*;
 import java.util.*;
 import java.lang.Math;
 
+//debugging
+import java.io.*;
+
 public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEventListener {
     private Map<Long, MapLine> IDtoLine = new HashMap<>();
     private Map<Long, MapText> IDtoText = new HashMap<>();
@@ -88,6 +91,7 @@ public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEven
 	//  5.  Display the provided time next to the vehicle* (ideally,
 	//        next to the line)
 	else if (event instanceof ImminentZoneViolation){
+            System.out.println("Imminent Zone Violation from AMASE");
 	    ImminentZoneViolation proc = (ImminentZoneViolation) event;
 	    long vID = proc.getVehicleID();
 	    double TTI = proc.getTimeToIntercept();
@@ -118,6 +122,7 @@ public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEven
 	    AircraftColors.makeNewColor(vID, Color.YELLOW);
 	}
 	else if (event instanceof ActiveZoneViolation){
+            System.out.println("Active Zone Violation from AMASE");
 	    ActiveZoneViolation proc = (ActiveZoneViolation) event;
 	    long vID = proc.getVehicleID();
 	    if (!AZV.contains(vID)){
