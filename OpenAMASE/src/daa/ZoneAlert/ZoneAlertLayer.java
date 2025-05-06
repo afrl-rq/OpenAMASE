@@ -90,10 +90,10 @@ public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEven
 	//        next to the line)
 	else if (event instanceof ImminentZoneViolation){
 	    ImminentZoneViolation proc = (ImminentZoneViolation) event;
-	    int vID = proc.VehicleID;
-	    double TTI = proc.TimeToIntercept;
-	    double lat = proc.InterceptPosition.east;
-	    double lon = proc.InterceptPosition.north;
+	    int vID = (int) proc.getVehicleID();
+	    double TTI = proc.getTimeToIntercept();
+	    double lat = proc.getInterceptPosition().east;
+	    double lon = proc.getInterceptPosition().north;
 	    AirVehicleState airVehicleState = ScenarioState.getAirVehicleState(vID);
 	    if (!IZV.contains(vID)){
 		IZV.add(vID);
@@ -119,7 +119,7 @@ public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEven
 	}
 	else if (event instanceof ActiveZoneViolation){
 	    ActiveZoneViolation proc = (ActiveZoneViolation) event;
-	    int vID = proc.VehicleID;
+	    int vID = (int) proc.getVehicleID;
 	    AirVehicleState airVehicleState = ScenarioState.getAirVehicleState(vID);
 	    if (!AZV.contains(vID)){
 		AZV.add(vID);
