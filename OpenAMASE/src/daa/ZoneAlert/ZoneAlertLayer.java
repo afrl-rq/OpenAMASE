@@ -120,7 +120,6 @@ public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEven
 	else if (event instanceof ActiveZoneViolation){
 	    ActiveZoneViolation proc = (ActiveZoneViolation) event;
 	    long vID = proc.getVehicleID();
-	    AirVehicleState airVehicleState = ScenarioState.getAirVehicleState(vID);
 	    if (!AZV.contains(vID)){
 		AZV.add(vID);
 	    }
