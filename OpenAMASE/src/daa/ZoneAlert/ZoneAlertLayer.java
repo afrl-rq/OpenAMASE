@@ -74,10 +74,10 @@ public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEven
 		} else {
 		    //Make the IZV line and text invisible
 		    if (IDtoLine.containsKey(id)) {
-                            IDtoLine.remove(id);
+                            IDtoLine.get(id).setVisible(false);
 			}
 		    if (IDtoText.containsKey(id)) {
-			    IDtoText.remove(id);
+			    IDtoText.get(id).setVisible(false);
 			}
 		    AircraftColors.makeOriginalColor((int) id);
 		}
@@ -107,6 +107,8 @@ public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEven
 		IZV2.add(vID);
 	    }
 	    if (airVehicleState != null) {
+                getList().remove(IDtoLine.get(vID));
+                getList().remove(IDtoText.get(vID));
                 IDtoLine.remove(vID);
                 IDtoText.remove(vID);
 		Location3D location = airVehicleState.getLocation();                            
@@ -141,12 +143,10 @@ public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEven
 	else if (event instanceof SessionStatus) {
             
             for (Map.Entry<Long, MapLine> entry : IDtoLine.entrySet()){
-		//getList().add(entry.getValue());
-                project(entry.getValue());
-	    }
+		getList().add(entry.getValue());
+            }
             for(Map.Entry<Long, MapText> entry : IDtoText.entrySet()){
-                project(entry.getValue());
-		//getList().add(entry.getValue());
+		getList().add(entry.getValue());
             }   
 	    project(getProjection());
         }
