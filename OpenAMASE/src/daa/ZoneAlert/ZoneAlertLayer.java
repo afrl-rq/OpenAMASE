@@ -30,10 +30,10 @@ public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEven
     private Map<Long, MapLine> IDtoLine = new HashMap<>();
     private Map<Long, MapText> IDtoText = new HashMap<>();
     private Map<Long, Location3D> CurrentLoc = new HashMap<>();
-    private ArrayList<Long> IZV = new ArrayList<Integer>();
-    private ArrayList<Long> AZV = new ArrayList<Integer>();
-    private ArrayList<Long> IZV2 = new ArrayList<Integer>();
-    private ArrayList<Long> AZV2 = new ArrayList<Integer>();
+    private ArrayList<Long> IZV = new ArrayList<Long>();
+    private ArrayList<Long> AZV = new ArrayList<Long>();
+    private ArrayList<Long> IZV2 = new ArrayList<Long>();
+    private ArrayList<Long> AZV2 = new ArrayList<Long>();
 
     
     @Override
