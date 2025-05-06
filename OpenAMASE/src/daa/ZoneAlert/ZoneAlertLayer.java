@@ -27,13 +27,13 @@ import java.util.*;
 import java.lang.Math;
 
 public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEventListener {
-    private Map<Integer, MapLine> IDtoLine = new HashMap<>();
-    private Map<Integer, MapText> IDtoText = new HashMap<>();
-    private Map<Integer, Location3D> CurrentLoc = new HashMap<>();
-    private ArrayList<Integer> IZV = new ArrayList<Integer>();
-    private ArrayList<Integer> AZV = new ArrayList<Integer>();
-    private ArrayList<Integer> IZV2 = new ArrayList<Integer>();
-    private ArrayList<Integer> AZV2 = new ArrayList<Integer>();
+    private Map<Long, MapLine> IDtoLine = new HashMap<>();
+    private Map<Long, MapText> IDtoText = new HashMap<>();
+    private Map<Long, Location3D> CurrentLoc = new HashMap<>();
+    private ArrayList<Long> IZV = new ArrayList<Integer>();
+    private ArrayList<Long> AZV = new ArrayList<Integer>();
+    private ArrayList<Long> IZV2 = new ArrayList<Integer>();
+    private ArrayList<Long> AZV2 = new ArrayList<Integer>();
 
     
     @Override
@@ -54,18 +54,17 @@ public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEven
 	//  imminent.
 	if (event instanceof AirVehicleState){
 	    AirVehicleState proc = (AirVehicleState) event;
-            long procID = proc.getID();
-            Integer id = (int)(long) procID;
+            long id = proc.getID();
 	    if (IZV2.contains(id) || AZV2.contains(id)){
-			IZV2.remove((Integer) id);
-			AZV2.remove((Integer) id);
+			IZV2.remove(id);
+			AZV2.remove(id);
 	    } else
 		if (IZV.contains(id) || AZV.contains(id)) {
 		    if (IZV.contains(id)) {
-			IZV.remove((Integer) id);
+			IZV.remove(id);
 		    }
 		    if (AZV.contains(id)) {
-			AZV.remove((Integer) id);
+			AZV.remove(id);
 		    }
 		} else {
 		    //Make the IZV line and text invisible
@@ -90,7 +89,7 @@ public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEven
 	//        next to the line)
 	else if (event instanceof ImminentZoneViolation){
 	    ImminentZoneViolation proc = (ImminentZoneViolation) event;
-	    int vID = (int) proc.getVehicleID();
+	    long vID = proc.getVehicleID();
 	    double TTI = proc.getTimeToIntercept();
 	    double lat = proc.getInterceptPosition().getEast();
 	    double lon = proc.getInterceptPosition().getNorth();
@@ -120,7 +119,7 @@ public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEven
 	}
 	else if (event instanceof ActiveZoneViolation){
 	    ActiveZoneViolation proc = (ActiveZoneViolation) event;
-	    int vID = (int) proc.getVehicleID;
+	    long vID = proc.getVehicleID();
 	    AirVehicleState airVehicleState = ScenarioState.getAirVehicleState(vID);
 	    if (!AZV.contains(vID)){
 		AZV.add(vID);
