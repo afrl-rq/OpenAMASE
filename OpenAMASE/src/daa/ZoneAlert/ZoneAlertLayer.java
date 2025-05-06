@@ -116,7 +116,7 @@ public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEven
 		MapText violationTime = new MapText();
 		violationLine = new MapLine(location.getLatitude(), location.getLongitude(), lat, lon);
                 violationLine.setPainter(Color.WHITE, 1);
-		violationTime.setColor(Color.YELLOW);
+		violationTime.setColor(Color.BLACK);
 		violationTime.setFill(Color.WHITE);
 		violationTime.setHorizontalAlignment(SwingConstants.CENTER);
 		violationTime.setLatLon(location.getLatitude(), location.getLongitude());
@@ -132,13 +132,19 @@ public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEven
             System.out.println("Active Zone Violation from AMASE");
 	    ActiveZoneViolation proc = (ActiveZoneViolation) event;
 	    long vID = proc.getVehicleID();
+            if (IDtoLine.containsKey(vID)) {
+                IDtoLine.get(vID).setVisible(false);
+		}
+            if (IDtoText.containsKey(vID)) {
+                IDtoText.get(vID).setVisible(false);
+            }
 	    if (!AZV.contains(vID)){
 		AZV.add(vID);
 	    }
-	    if (! AZV.contains(vID)){
+	    if (!AZV2.contains(vID)){
 		AZV2.add(vID);
 	    }
-		AircraftColors.makeNewColor(vID, Color.RED);
+	AircraftColors.makeNewColor(vID, Color.RED);
 	}
 	else if (event instanceof SessionStatus) {
             
