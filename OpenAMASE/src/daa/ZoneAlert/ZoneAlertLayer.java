@@ -108,7 +108,7 @@ public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEven
 		violationTime.setColor(Color.WHITE);
 		violationTime.setFill(Color.BLACK);
 		violationTime.setHorizontalAlignment(SwingConstants.CENTER);
-		violationTime.setLatLon(0.9 * location.getLatitude() + 0.1*lat, 0.9 * location.getLongitude + 0.1 * lon);
+		violationTime.setLatLon(0.9 * location.getLatitude() + 0.1*lat, 0.9 * location.getLongitude() + 0.1 * lon);
 		violationTime.setText(Integer.toString((int) TTI));
 		violationLine.setVisible(true);
 		violationTime.setVisible(true);
@@ -131,10 +131,10 @@ public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEven
 	}
 	else if (event instanceof SessionStatus) {
             
-            for (Map.Entry<Integer, MapLine> entry : IDtoLine.entrySet()){
+            for (Map.Entry<Long, MapLine> entry : IDtoLine.entrySet()){
 		getList().add(entry.getValue());
 	    }
-            for(Map.Entry<Integer, MapText> entry : IDtoText.entrySet()){
+            for(Map.Entry<Long, MapText> entry : IDtoText.entrySet()){
 		getList().add(entry.getValue());
             }   
 	    project(getProjection());
