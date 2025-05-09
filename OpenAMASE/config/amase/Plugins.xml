@@ -40,7 +40,6 @@
                 </Layer>
                 <Layer Class="avtas.amase.analysis.SearchAnalysisLayer"/>
                 <Layer Class="avtas.map.layers.Distance"/>
-		<Layer Class="ZoneAlert.ZoneAlertLayer"/>
 	    </Layers>
         </Map>
     </Plugin >
