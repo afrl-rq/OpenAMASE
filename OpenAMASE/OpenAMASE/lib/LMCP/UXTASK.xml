@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE MDM SYSTEM 'MDM.DTD'>
+
+<!--
+        <h2>Introduction</h2>
+        This MDM defines the interface for stand-alone (possibly external) tasks managed by UxAS
+-->
+
+<MDM>
+    <SeriesName>UXTASK</SeriesName>
+    <Namespace>uxas/messages/task</Namespace>
+    <Version>8</Version>
+    
+    <EnumList>
+    </EnumList>
+    
+    <StructList>
+        
+        <!-- This task facilitates assignment coordination. When a {@link CoordinatedAutomationRequest}
+        message is received, the {@link AssignmentCoordinatorTask} task waits for up to {@link MaximumResponseTime}
+        for {@link AssignmentCoordination} from all the other entities in the EligibleEtities list of
+        the {@link CoordinatedAutomationRequest} message. Once states have been 
+        received for all the EligibleEntities, they are used for planning and assignmnet for 
+        the specified {@link CoordinatedAutomationRequest}-->
+        <Struct Name="AssignmentCoordinatorTask" Extends="CMASI/Task">
+        </Struct>
+
+        <!-- This task will synchronize all involved vehicles at a specified location
+             (or set of locations) at the same time.
+
+             Loiter patterns are used to ensure that when the latest
+             vehicle arrives, the others will be in the proper positions
+             and orientations to satisfy the location specification
+             simultaneously. -->
+        <Struct Name="RendezvousTask" Extends="CMASI/Task">
+            <!-- Number of vehicles that will participate in the rendezvous. To restrict
+                 the available participants, use the 'EligibleEntities' field. If the
+                 number of participants is exactly equal to the number of eligible
+                 entities, then this task will only produce a single option that ensures
+                 those exact entities meet at the rendezvous location. -->
+            <Field Name="NumberOfParticipants" Type="byte" />
+            <!-- The desired rendezvous states of the entities. If the EntityID fields
+                 are set to 0, then any eligible vehicle can be used at that location. 
+                 Only used when 'MultiLocationRendezvous' is set to 'true'. If the 
+                 EntityID fields are non-zero, they must correspond to an eligible
+                 vehicle and only that particular entity will be used at that position. -->
+            <Field Name="RendezvousStates" Type="PlanningState[]" MaxArrayLength="16" />
+        </Struct>
+
+        <!-- The state of an entity to be used as the initial planning state when 
+        constructing assignments/plans. -->
+        <Struct Name="PlanningState">
+            <!-- Identifier of the entitiy -->
+            <Field Name="EntityID" Type="int64" />
+            <!-- Position of this entity for the plan. A valid PlanningState must define PlanningPosition (null not allowed). -->
+            <Field Name="PlanningPosition" Type="CMASI/Location3D" Optional="false" />
+            <!-- Heading of this entity for the plan -->
+            <Field Name="PlanningHeading" Type="real32" />
+        </Struct>
+        
+        <!-- This messages is used to syncronize the entity states, used for planning, to 
+        facilitate assignment coordination. When an entity receives a {@link CoordinatedAutomationRequest} 
+        message it's {@link AssignmentCoordinatorTask} task sends out a AssignmentCoordination message with the entity's planning state. -->
+        <Struct Name="AssignmentCoordination">
+            <!-- Identifier of the associated CoordinatedAutomationRequest -->
+            <Field Name="CoordinatedAutomationRequestID" Type="int64" />
+            <!-- The state of the entity that will used for planning/assignment of 
+            the given automation request. A valid AssignmentCoordination must define
+            PlanningState (null not allowed). -->
+            <Field Name="PlanningState" Type="PlanningState" Optional="false" />
+        </Struct>
+        
+        <!-- A CMASI automation request (with Identifier) that requires coordination among 
+        the eligible entities. Note: entities must have a {@link AssignmentCoordinatorTask} task
+        running to utilize this this message.-->
+        <Struct Name="CoordinatedAutomationRequest">
+            <!-- Identifier for tracking requests and coordination -->
+            <Field Name="RequestID" Type="int64" />
+            <!-- This is the maximum time to wait for {@link AssignmentCoordination} messages
+            from the other eligible entities, before proceeding with the assignment. 
+            Note: the value of -1 indicates that there is no limit. If there are no eligble entites
+            listed in the {@link CoordinatedAutomationRequest}, then {@link MaximumResponseTime} is the
+            amount of time the {@link AssignmentCoordinatorTask} waits for {@link AssignmentCoordination} messages
+            before proceeding with the assignment. Note: if there are no eligble entities and the 
+            {@link MaximumResponseTime} is -1, then the {@link AssignmentCoordination} proceeds with
+            the assignment immediately. -->
+            <Field Name="MaximumResponseTime" Type="int64"  Default="-1"  Units="milliseconds"/>
+            <!-- Original automation request without a unique identifier. A valid CoordinatedAutomationRequest must define OriginalRequest (null not allowed). -->
+            <Field Name="OriginalRequest" Type="CMASI/AutomationRequest" Optional="false" />
+            <!-- The initial states of entities used in planning. Note: if an eligible
+            entity does not have a PlanningState, then it must be obtained from the entity
+            in an {@link AssignmentCoordination} message. -->
+            <Field Name="PlanningStates" Type="PlanningState[]" MaxArrayLength="16" />
+        </Struct>
+        <!-- A CMASI automation request (with Identifier) that is sent by tasks. -->
+        <Struct Name="TaskAutomationRequest">
+            <!-- Identifier for tracking requests and responses -->
+            <Field Name="RequestID" Type="int64" />
+            <!-- Original automation request without a unique identifier. A valid TaskAutomationRequest must define OriginalRequest (null not allowed). -->
+            <Field Name="OriginalRequest" Type="CMASI/AutomationRequest" Optional="false" />
+            <!-- If this boolean is true, then the resulting plans based on this
+            automation request will not be directly implemented, for example, tasks should 
+            not expect the waypoints generated for this request to be active -->
+            <Field Name="SandBoxRequest" Type="bool" Default="false" />
+            <!-- The initial states of entities used in planning. Note: if an eligible
+            entity does not have a PlanningState, then it's most recent EntityState is used for 
+            plannning. -->
+            <Field Name="PlanningStates" Type="PlanningState[]" MaxArrayLength="16" />
+        </Struct>
+        
+        <!-- A CMASI automation response (with Identifier) that is sent back to tasks. -->
+        <Struct Name="TaskAutomationResponse">
+            <!-- Identifier for tracking requests and responses. Must match RequestID
+            from corresponding TaskAutomationRequest -->
+            <Field Name="ResponseID" Type="int64" />
+            <!-- Original automation request without a unique identifier. A valid TaskAutomationResponse must define OriginalResponse (null not allowed). -->
+            <Field Name="OriginalResponse" Type="CMASI/AutomationResponse" Optional="false" />
+            <!-- The final states of entities when the plan is completed. -->
+            <Field Name="FinalStates" Type="PlanningState[]" MaxArrayLength="16" />
+        </Struct>
+        
+        <!-- Patches CMASI automation request to add a unique identifier -->
+        <Struct Name="UniqueAutomationRequest">
+            <!-- Identifier for tracking requests and responses -->
+            <Field Name="RequestID" Type="int64" />
+            <!-- Original automation request without a unique identifier. A valid UniqueAutomationRequest must define OriginalRequest (null not allowed). -->
+            <Field Name="OriginalRequest" Type="CMASI/AutomationRequest" Optional="false" />
+            <!-- If this boolean is true, then the resulting plans based on this
+            automation request will not be directly implemented, for example, tasks should 
+            not expect the waypoints generated for this request to be active -->
+            <Field Name="SandBoxRequest" Type="bool" Default="false" />
+            <!-- The initial states of entities used in planning. Note: if an eligible
+            entity does not have a PlanningState, then it's most recent EntityState is used for 
+            plannning. -->
+            <Field Name="PlanningStates" Type="PlanningState[]" MaxArrayLength="16" />
+        </Struct>
+        
+        <!-- Patches CMASI automation response to add a unique identifier -->
+        <Struct Name="UniqueAutomationResponse">
+            <!-- Identifier for tracking requests and responses. Must match RequestID
+            from corresponding UniqueAutomationRequest -->
+            <Field Name="ResponseID" Type="int64" />
+            <!-- Original automation request without a unique identifier. A valid UniqueAutomationResponse must define OriginalResponse (null not allowed). -->
+            <Field Name="OriginalResponse" Type="CMASI/AutomationResponse" Optional="false" />
+            <!-- The final states of entities when the plan is completed. -->
+            <Field Name="FinalStates" Type="PlanningState[]" MaxArrayLength="16" />
+        </Struct>
+        
+        <!-- Request to compute a set of sensor footprints from possible vehicles in the system -->
+        <Struct Name="SensorFootprintRequests">
+            <!-- Request ID for correlating to response -->
+            <Field Name="RequestID" Type="int64" />
+            <!-- Request ID for correlating to response -->
+            <Field Name="Footprints" Type="FootprintRequest[]" MaxArrayLength="16" />
+        </Struct>
+        
+        <!-- Request to compute potential eligible sensor footprint for a single vehicle at
+        various GSDs and altitudes from available sensors on the vehicle -->
+        <Struct Name="FootprintRequest">
+            <!-- ID corresponding to this specific footprint request -->
+            <Field Name="FootprintRequestID" Type="int64" />
+            <!-- Single vehicle to be considered for sensor request. -->
+            <Field Name="VehicleID" Type="int64" />
+            <!-- Camera wavelength to be considered. If list is empty, planner
+            should plan for all available sensors on each entity -->
+            <Field Name="EligibleWavelengths" Type="CMASI/WavelengthBand[]" MaxArrayLength="8" />
+            <!-- Desired ground sample distance for an eligible sensor. If list is
+            empty, then footprint calculation uses the max ground sample distance
+            for the specified altitude. -->
+            <Field Name="GroundSampleDistances" Type="real32[]" MaxArrayLength="8" />
+            <!-- AGL Altitude to consider during sensor information calculation.
+            If 'AglAltitudes' list is empty, sensor planner should use nominal
+            altitude from entity configurations -->
+            <Field Name="AglAltitudes" Type="real32[]" MaxArrayLength="8" Units="meters" />
+            <!-- Desired camera elevation angles. If list is empty, then uses an
+            optimal elevation angle for achieving max GSD -->
+            <Field Name="ElevationAngles" Type="real32[]" MaxArrayLength="8" Units="deg" />
+        </Struct>
+        
+        <!-- Description of a sensor footprint -->
+        <Struct Name="SensorFootprint">
+            <!-- Response ID that matches corresponding request ID. Note that multiple
+            responses may be generated from a single request (such as multiple cameras
+            which all meet the specification). Each response must contain the matching
+            request ID in it's FootprintResponseID field. -->
+            <Field Name="FootprintResponseID" Type="int64" />
+            <!-- Vehicle for which the footprint calculation applies -->
+            <Field Name="VehicleID" Type="int64" />
+            <!-- Camera from which settings (such as zoom and field of view)
+            were used in the footprint calculation -->
+            <Field Name="CameraID" Type="int64" />
+            <!-- Gimbal from which parameters such as allowable steering angles
+            were used in the footprint calculation -->
+            <Field Name="GimbalID" Type="int64" />
+            <!-- The selected horizontal field of view of the camera necessary
+            to get the reported footprint (equivalent to zoom) -->
+            <Field Name="HorizontalFOV" Type="real32" Units="degrees" />
+            <!-- Altitude above ground level for which the footprint was calculated -->
+            <Field Name="AglAltitude" Type="real32" Units="meters" />
+            <!-- Commanded gimbal elevation to achieve sensor footprint -->
+            <Field Name="GimbalElevation" Type="real32" Units="degrees" />
+            <!-- Aspect ratio (width/height) of the camera image used for footprint calculation.
+            Note: combine with horizontal field of view to determine camera vertical field of view. -->
+            <Field Name="AspectRatio" Type="real32" Units="None" />
+            <!-- Ground sample distance obtained with this sensor footprint -->
+            <Field Name="AchievedGSD" Type="real32" Units="meters/pixel" />
+            <!-- Sensor wavelength used applicable to this footprint calculation -->
+            <Field Name="CameraWavelength" Type="CMASI/WavelengthBand" />
+            <!-- Distance out front of the entity to the leading edge -->
+            <Field Name="HorizontalToLeadingEdge" Type="real32" Units="meters" />
+            <!-- Distance out front of the entity to the trailing edge -->
+            <Field Name="HorizontalToTrailingEdge" Type="real32" Units="meters" />
+            <!-- Distance out front of the entity to the center of the footprint -->
+            <Field Name="HorizontalToCenter" Type="real32" Units="meters" />
+            <!-- Width of the footprint at the vertical center -->
+            <Field Name="WidthCenter" Type="real32" Units="meters" />
+            <!-- At the prescribed settings (e.g. altitude, elevation angle, etc) the distance
+            from the camera to the center of the footprint -->
+            <Field Name="SlantRangeToCenter" Type="real32" Units="meters" />
+        </Struct>
+        
+        <!-- Response to a Sensor Footprint Request containing all sensor
+        footprint information -->
+        <Struct Name="SensorFootprintResponse">
+            <!-- ID matching initial request ID -->
+            <Field Name="ResponseID" Type="int64" />
+            <!-- All sensor footprints calculated during request -->
+            <Field Name="Footprints" Type="SensorFootprint[]" MaxArrayLength="65535" />
+        </Struct>
+        
+        <!-- Request to generate waypoints enroute to the task as well as to complete a task.
+        From a given start position and heading, a task must plan enroute waypoints to reach
+        the task and then append task waypoints for computing the task and then report final
+        position and heading of the vehicle. -->
+        <Struct Name="TaskImplementationRequest">
+            <!-- Request ID for correlating to matching response -->
+            <Field Name="RequestID" Type="int64" />
+            <!-- This task implementation request is part of fulfilling a unique automation request -->
+            <Field Name="CorrespondingAutomationRequestID" Type="int64" />
+            <!-- Starting waypoint ID that task must use when building response. Note that
+            Plan Builder reserves all values greater than 1,000,000,000. Therefore all
+            *internal* task waypoints must be less than 1e9 and can be obtained from the
+            reported waypoint number by "waypoint->getNumber()%1e9" .-->
+            <Field Name="StartingWaypointID" Type="int64" />
+            <!-- Assigned vehicle ID -->
+            <Field Name="VehicleID" Type="int64" />
+            <!-- Initial position of entity before task. A valid TaskImplementationRequest must define StartPosition (null not allowed). -->
+            <Field Name="StartPosition" Type="CMASI/Location3D" Optional="false" />
+            <!-- Initial heading of entity before task -->
+            <Field Name="StartHeading" Type="real32" Units="degrees" />
+            <!-- Time when vehicle is at the starting location -->
+            <Field Name="StartTime" Type="int64" Units="milliseconds since 1 Jan 1970" />
+            <!-- ID for full region in which entity should plan -->
+            <Field Name="RegionID" Type="int64" />
+            <!-- Task ID to be completed -->
+            <Field Name="TaskID" Type="int64" />
+            <!-- Using option ID to complete this task -->
+            <Field Name="OptionID" Type="int64" />
+            <!-- Time before which this task cannot begin -->
+            <Field Name="TimeThreshold" Type="int64" Units="milliseconds since 1 Jan 1970" />
+            <!-- Predicted locations and headings of all other entities at the point
+                 in the mission when this option is to be conducted. -->
+            <Field Name="NeighborLocations" Type="PlanningState[]" MaxArrayLength="65535" />
+        </Struct>
+        
+        <!-- Response to a final task implementation request (one for each vehicle assigned).
+        Note that in addition to calculating task waypoints that achieve that task purpose,
+        a task implementation also includes the enroute waypoints to get the vehicle(s) to 
+        that task to be completed. Finally, an ending position and heading for the vehicle is
+        reported so that the next task in order will have a valid start position and heading. -->
+        <Struct Name="TaskImplementationResponse">
+            <!-- Response ID that matches the initial request -->
+            <Field Name="ResponseID" Type="int64" />
+            <!-- This task implementation response is part of fulfilling a unique automation request -->
+            <Field Name="CorrespondingAutomationRequestID" Type="int64" />
+            <!-- Task ID -->
+            <Field Name="TaskID" Type="int64" />
+            <!-- Option ID that was selected for this task -->
+            <Field Name="OptionID" Type="int64" />
+            <!-- Vehicle ID -->
+            <Field Name="VehicleID" Type="int64" />
+            <!-- Waypoints that implement this task for the indicated vehicle -->
+            <Field Name="TaskWaypoints" Type="CMASI/Waypoint[]" MaxArrayLength="1024" />
+            <!-- Vehicle location when this task is complete. A valid TaskImplementationResponse must define FinalLocation (null not allowed). -->
+            <Field Name="FinalLocation" Type="CMASI/Location3D" Optional="false" />
+            <!-- Vehicle heading when this task is complete -->
+            <Field Name="FinalHeading" Type="real32" Units="degrees" />
+            <!-- Time when vehicle is at the final location -->
+            <Field Name="FinalTime" Type="int64" Units="milliseconds since 1 Jan 1970" />
+        </Struct>
+        
+        <!-- Matrix of costs consisting of:
+        (1) costs from initial vehicle positions to all task options; and
+        (2) costs from each task option to every other task option -->
+	<Struct Name="AssignmentCostMatrix" >
+            <!-- ID that matches this cost matrix with the appropriate unique automation request -->
+            <Field Name="CorrespondingAutomationRequestID" Type="int64" />
+            <!-- Over-arching task relationship description (directly from
+            automation request). A process algebra string with only task IDs. -->
+            <Field Name="TaskLevelRelationship" Type="string" />
+            <!-- List of all tasks that this cost matrix includes -->
+            <Field Name="TaskList" Type="int64[]" MaxArrayLength="16" />
+            <!-- Operating region that was used during matrix calculation -->
+            <Field Name="OperatingRegion" Type="int64" />
+            <!-- Set of task-to-task timings for each requested vehicle.
+                 Assume 'T' max tasks [16], 'O' max options per task [8], 'V' max vehicles [16]:
+                 then max number of elements in matrix is 'V*T*O + (T*O)^2' [18432] -->
+            <Field Name="CostMatrix" Type="TaskOptionCost[]" MaxArrayLength="18432" />
+        </Struct>
+        
+        <!-- Single task option cost for a particular vehicle -->
+	<Struct Name="TaskOptionCost" >
+            <!-- Corresponding Vehicle ID -->
+            <Field Name="VehicleID" Type="int64" />
+            <!-- Initial task ID (if zero, corresponds to current vehicle location) -->
+            <Field Name="IntialTaskID" Type="int64" />
+            <!-- Initial task option -->
+            <Field Name="IntialTaskOption" Type="int64" />
+            <!-- Destination task ID -->
+            <Field Name="DestinationTaskID" Type="int64" />
+            <!-- Destination task option -->
+            <Field Name="DestinationTaskOption" Type="int64" />
+            <!-- Timing corresponding to travel between ('InitialTask' using 'InitialTaskOption')
+            and ('DestinationTask' using 'DestinationTaskOption'). If time is less than zero,
+            no feasible path exists between tasks. -->
+            <Field Name="TimeToGo" Type="int64" Units="milliseconds" />
+        </Struct>
+        
+        <!-- Representation of the assignment of entities to a task -->
+        <Struct Name="TaskAssignment">
+            <!-- Task ID -->
+            <Field Name="TaskID" Type="int64" />
+            <!-- Option ID that was selected for this task -->
+            <Field Name="OptionID" Type="int64" />
+            <!-- Vehicle that is assigned to this task -->
+            <Field Name="AssignedVehicle" Type="int64" />
+            <!-- Time before which this task cannot begin -->
+            <Field Name="TimeThreshold" Type="int64" Units="milliseconds since 1 Jan 1970" />
+            <!-- Time that this task is assigned to be completed. -->
+            <Field Name="TimeTaskCompleted" Type="int64" Units="milliseconds since 1 Jan 1970" />
+        </Struct>
+        
+        <!-- A completed assignment consisting of an <b>ordered</b> list of tasks -->
+        <Struct Name="TaskAssignmentSummary">
+            <!-- ID that matches this summary with the appropriate unique automation request -->
+            <Field Name="CorrespondingAutomationRequestID" Type="int64" />
+            <!-- Operating region which was considered during this assignment -->
+            <Field Name="OperatingRegion" Type="int64" />
+            <!-- Ordered list of tasks to be completed -->
+            <Field Name="TaskList" Type="TaskAssignment[]" MaxArrayLength="256" />
+        </Struct>
+
+        <!-- Start/end locations and headings and cost for implementing the task from this configuration -->
+        <Struct Name="TaskOption">
+            <!-- Task ID -->
+            <Field Name="TaskID" Type="int64" />
+            <!-- ID for this option -->
+            <Field Name="OptionID" Type="int64" />
+            <!-- Eligible entities for completing this option with identical cost to complete. If list is empty, then all vehicles are assumed to be eligible. -->
+            <Field Name="EligibleEntities" Type="int64[]" MaxArrayLength="16" />
+            <!-- Cost to complete option in terms of time (given in milliseconds) -->
+            <Field Name="Cost" Type="int64" Units="milliseconds"/>
+            <!-- Start location entering the option. A valid TaskOption must define StartLocation (null not allowed). -->
+            <Field Name="StartLocation" Type="CMASI/Location3D" Optional="false" />
+            <!-- Start heading entering the option -->
+            <Field Name="StartHeading" Type="real32" Units="degrees" />
+            <!-- Ending location for this option. A valid TaskOption must define EndLocation (null not allowed). -->
+            <Field Name="EndLocation" Type="CMASI/Location3D" Optional="false" />
+            <!-- Ending heading for this option -->
+            <Field Name="EndHeading" Type="real32" Units="degrees" />
+        </Struct>
+        
+        <!-- Summary of available options to complete this task -->
+        <Struct Name="TaskPlanOptions">
+            <!-- ID that matches this message with the appropriate unique automation request -->
+            <Field Name="CorrespondingAutomationRequestID" Type="int64" />
+            <!-- Task ID -->
+            <Field Name="TaskID" Type="int64" />
+            <!-- Process algebra string encoding all of the different options -->
+            <Field Name="Composition" Type="string" />
+            <!-- List of options. NOTE for computational reasons, the larger the number
+            of options, the much greater the computation -->
+            <Field Name="Options" Type="TaskOption[]" MaxArrayLength="64" />
+        </Struct>
+        
+        <!-- Place a task in a 'paused' state where it no longer sends commands to any entities -->
+        <Struct Name="TaskPause">
+            <!-- Task ID -->
+            <Field Name="TaskID" Type="int64" />
+        </Struct>
+        
+        <!-- Resumes execution of a task from it's paused state -->
+        <Struct Name="TaskResume">
+            <!-- Task ID -->
+            <Field Name="TaskID" Type="int64" />
+            <!-- Instead of resuming from paused task state, re-start the complete task -->
+            <Field Name="RestartCompletely" Type="bool" Default="false" />
+            <!-- Instead of resuming from paused task state with the previously assigned entities, resume task with new assignment options. Only used when not null. -->
+            <Field Name="ReAssign" Type="TaskAssignment" Default="null" Optional="true" />
+        </Struct>
+        
+        <!-- Reports the progress of the task -->
+        <Struct Name="TaskProgress">
+            <!-- Response ID that matches the task progress request -->
+            <Field Name="ResponseID" Type="int64" />
+            <!-- Task ID -->
+            <Field Name="TaskID" Type="int64" />
+            <!-- Percentage of progress on task -->
+            <Field Name="PercentComplete" Type="real32" />
+            <!-- Entities that are working this task -->
+            <Field Name="EntitiesEngaged" Type="int64[]" MaxArrayLength="16" />
+        </Struct>
+        
+        <!-- Optional task progress query -->
+        <Struct Name="TaskProgressRequest">
+            <!-- Task progress request ID for properly matching corresponding response -->
+            <Field Name="RequestID" Type="int64" />
+            <!-- Task ID to report current progress -->
+            <Field Name="TaskID" Type="int64" />
+        </Struct>
+        
+        <!-- Task initialized message indicating that the corresponding task service is available for use in automation requests -->
+        <Struct Name="TaskInitialized" >
+            <!-- Task ID is initialized and ready for use in automation requests -->
+            <Field Name="TaskID" Type="int64" />
+        </Struct>
+
+        <!-- Task Active message. Sent when task becomes active -->
+        <Struct Name="TaskActive" >
+            <!-- Task ID that was just activated -->
+            <Field Name="TaskID" Type="int64" />
+            <!-- Entity ID that activated the task -->
+            <Field Name="EntityID" Type="int64" />
+            <!-- Time that this task was activated. -->
+            <Field Name="TimeTaskActivated" Type="int64" Units="milliseconds since 1 Jan 1970" />
+        </Struct>
+
+        <!-- Task complete message -->
+        <Struct Name="TaskComplete" >
+            <!-- Task ID that was just completed -->
+            <Field Name="TaskID" Type="int64" />
+            <!-- Entity IDs that completed the task -->
+            <Field Name="EntitiesInvolved" Type="int64[]" MaxArrayLength="16" />
+            <!-- Time that this task was completed. -->
+            <Field Name="TimeTaskCompleted" Type="int64" Units="milliseconds since 1 Jan 1970" />
+        </Struct>
+        
+        <!-- Task cancel message -->
+        <Struct Name="CancelTask" >
+            <!-- List of vehicle IDs that are directed to cancel tasks. If empty, all vehicles currently on a listed task will be directed to cancel. -->
+            <Field Name="Vehicles" Type="int64[]" MaxArrayLength="16" />
+            <!-- Task ID(s) to be removed from task lists of indicated vehicles. If empty, then only the current task is removed. -->
+            <Field Name="CanceledTasks" Type="int64[]" MaxArrayLength="16" />
+        </Struct>
+        
+    </StructList>
+</MDM>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE MDM SYSTEM 'MDM.DTD'>
+
+<!--
+        <h2>Introduction</h2>
+        Perception message definitions. Depends upon CMASI MDM.
+
+-->
+<MDM>
+    <SeriesName>PERCEIVE</SeriesName>
+    <Namespace>afrl/cmasi/perceive</Namespace>
+    <Version>1</Version>
+
+
+    <StructList>
+		
+		<!-- A report of a potential target/tracked entity.  Perceptions are received from a
+             given sensor or set of sensors.  Entities can be perceived by scenario aircraft or other entities.
+        -->
+        <Struct Name="EntityPerception">
+            <!-- A scenario-unique ID for this target entity. IDs should be greater than zero.  Since this is a
+                 perception, the entity ID may not be known.  In that case, this field should be set to
+                 zero.
+            -->
+            <Field Name="PerceivedEntityID" Type="uint32"/>
+
+            <!-- ID of the entity or aircraft that reported the detection/perception -->
+            <Field Name="PerceiverID" Type="uint32"/>
+
+            <!-- The IDs of the payloads that reported this perception. -->
+            <Field Name="PerceiverPayloads" Type="uint32[]" MaxArrayLength="8" />
+
+            <!-- The perceived target velocity in three-dimensions.  The velocity should be stated
+                 in tangential-plane coordinates using the North-East-Down coordinate system.
+            -->
+            <Field Name="Velocity" Type="real32[3]" Units="meter/sec" />
+
+            <!-- Velocity error for this perception.  The error terms should be in the same
+                 coordinate system as the velocity.
+            -->
+            <Field Name="VelocityError" Type="real32[3]" Units="meter/sec" />
+
+            <!-- If true, denotes that the velocity and velocity error have meaning. -->
+            <Field Name="VelocityValid" Type="bool" Default="false"/>
+
+            <!-- Euler angle tangential-plane attitude for this entity.  Should be stated as
+                 Psi-Theta-Phi.  For information on Euler coordinates, see
+                 <a href="http://en.wikipedia.org/wiki/Euler_angle">Euler Angles</a>
+            -->
+            <Field Name="Attitude" Type="real32[3]" Units="degree"/>
+
+            <!-- Error in the perception of the entity attitude.  This should be in the same
+                 coordinate system as the attitude.
+            -->
+            <Field Name="AttitudeError" Type="real32[3]" Units="degree"/>
+
+            <!-- If true, denotes that the attitude and attitude error have meaning. -->
+            <Field Name="AttitudeValid" Type="bool" Default="false"/>
+
+            <!-- The entity location. A valid EntityPerception must define Location (null not allowed) -->
+            <Field Name="Location" Type="CMASI/Location3D" Optional="false" />
+
+            <!-- Error in the perception of the location of this entity.  The first index is North-South error, the second index
+                 is the East-West error, and the third index is the vertical error.  The result is an error cylinder.
+            -->
+            <Field Name="LocationError" Type="real32[3]" Units="meter"/>
+
+            <!-- Time that this entity was perceived since scenario start. -->
+            <Field Name="TimeLastSeen" Type="int64" Units="millisecond"/>
+
+        </Struct>
+		
+		
+		<!--
+             This puts an entity into a "track" mode, where the vehicle commands itself and its onboard sensors to attempt to
+             keep a target in view. If multiple sensors are to be used simultaneously, multiple track actions should be sent.
+        -->
+        <Struct Name="TrackEntityAction" Extends="CMASI/VehicleAction">
+
+            <!-- The unique identifier of the target to be tracked. -->
+            <Field Name="EntityID" Type="uint32"  />
+
+            <!-- The unique identifier of the sensor that is to be actively steered to track the target. -->
+            <Field Name="SensorID" Type="uint32" />
+            
+            <!-- The waypoint that this vehicle is to return to when complete (or lost track) -->
+            <Field Name="ReturnToWaypoint" Type="uint32"/>
+
+        </Struct>
+        
+        <!--
+            A request to track a specific entity.  It is assumed that the tracked entity can move at any time during the scenario.
+        -->
+        <Struct Name="TrackEntityTask" Extends="CMASI/Task" >
+            <!-- The ID of the target to be tracked. -->
+            <Field Name="EntityID" Type="uint32" Units="None" />
+			
+			<!-- Required sensor modality for tracking the target -->
+			<Field Name="SensorModality" Type="CMASI/WavelengthBand" Default="AllAny"/>
+            
+            <!-- The minimum ground sample distance that should be maintained for this target track operation. -->
+            <Field Name="GroundSampleDistance" Type="real32" Units="meter"/>
+        </Struct>
+		
+		
+    </StructList>
+</MDM>
+
+
+
+

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE MDM SYSTEM 'MDM.DTD'>
+
+<!--
+        <h2>Introduction</h2>
+        VEHICLES message definitions.
+ 
+        <h2>Changes</h2>
+        <h3>04 April 2017</h3>
+        <ul>
+            <li>Moved ground vehicle, surface vehicle, and stationary sensor definitions to separate MDM</li>
+        </ul>
+ 
+-->
+
+<MDM>
+    <SeriesName>VEHICLES</SeriesName>
+    <Namespace>afrl/vehicles</Namespace>
+    <Version>1</Version>
+
+    <StructList>
+    
+        <!-- Provides information regarding a vehicle's configuration items. -->
+        <Struct Name="GroundVehicleConfiguration" Extends="CMASI/EntityConfiguration">
+            
+            <!-- Valid operational road network. UGV adheres to positions defined in this graph. Indicated by previously sent GraphRegion's ID -->
+            <Field Name="RoadGraphID" Type="int64" />
+
+            <!-- The minimum speed that should be commanded for this vehicle -->
+            <Field Name="MinimumSpeed" Type="real32" Units="meter/sec" />
+
+            <!-- The maximum speed that should be commanded for this vehicle -->
+            <Field Name="MaximumSpeed" Type="real32" Units="meter/sec" />
+            
+            <!--
+                The consumption rate of available energy at nominal speed, expressed in terms of the percentage of maximum capacity used per second.
+            -->
+            <Field Name="EnergyRate" Type="real32" Units="%/sec" />
+
+        </Struct>
+        
+        <!--Provides basic state information regarding entity position, orientation, and velocity. -->
+        <Struct Name="GroundVehicleState" Extends="CMASI/EntityState">
+
+        </Struct>
+         
+        <!-- Provides information regarding a vehicle's configuration items. -->
+        <Struct Name="SurfaceVehicleConfiguration" Extends="CMASI/EntityConfiguration">
+            
+            <!-- Valid operational water zone (by ID). USV adheres to this area  -->
+            <Field Name="WaterArea" Type="int64" />
+
+            <!-- The minimum speed that should be commanded for this vehicle -->
+            <Field Name="MinimumSpeed" Type="real32" Units="meter/sec" />
+
+            <!-- The maximum speed that should be commanded for this vehicle -->
+            <Field Name="MaximumSpeed" Type="real32" Units="meter/sec" />
+            
+            <!--
+                The consumption rate of available energy at nominal speed, expressed in terms of the percentage of maximum capacity used per second.
+            -->
+            <Field Name="EnergyRate" Type="real32" Units="%/sec" />
+            
+            <!-- The maximum angle that this vehicle will bank -->
+            <Field Name="MaxBankAngle" Type="real32" Units="degree" />
+            
+            <!-- The maximum angular rate that this vehicle will bank -->
+            <Field Name="MaxBankRate" Type="real32" Units="degree/sec" />
+
+        </Struct>
+        
+        <!--Provides basic state information regarding entity position, orientation, and velocity. -->
+        <Struct Name="SurfaceVehicleState" Extends="CMASI/EntityState">
+
+            <!-- Current bank angle of the surface vehicle -->
+            <Field Name="BankAngle" Type="real32" Units="degree" />
+
+            <!-- Forward speed of the vehicle relative to the mass of water -->
+            <Field Name="Speed" Type="real32" Units="meter/sec" />
+
+        </Struct>
+		
+        <!-- Provides information regarding a sensor's configuration items. -->
+        <Struct Name="StationarySensorConfiguration" Extends="CMASI/EntityConfiguration">
+            
+        </Struct>
+        
+        <!--Provides basic state information regarding entity position, orientation, and velocity. -->
+        <Struct Name="StationarySensorState" Extends="CMASI/EntityState">
+
+        </Struct>
+		
+ </StructList>
+</MDM>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="lcmplib" default="default" basedir=".">
+    <description>Builds the LMCP library</description>
+    <import file="nbproject/build-impl.xml"/>
+</project>

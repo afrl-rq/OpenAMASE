@@ -1,0 +1,1585 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE MDM SYSTEM 'MDM.DTD'>
+
+<!--
+        <h2>Introduction</h2>
+        CMASI message definitions. The Common Mission Automation Services Interface (CMASI) defines data relevant to mission planning and
+        UAV autonomy. Direct any questions to Matt Duquette (matthew.duquette@wright.edu).
+        <br/>
+        <p>CMASI is designed for machine-to-machine communication of information related to UAV mission planning.  It is designed
+        to provide a minimum set of data for that purpose.  It is envisioned that end-users would expand on the base data set
+        by making custom messages that extend from existing data types.</p>
+
+        <p><i>Note on units:</i> Unless otherwise specified, the units of measure [meters, kilograms, milliSeconds, degrees] are used.  Since this is a system
+        for machine-to-machine communication, end applications are expected to do appropriate conversions to and from the MKSD unit types.</p>
+
+        <p><i>Note on Earth coordinates:</i>Unless otherwise specified, latitudes and longitudes are assumed to be based on the
+        WGS84 ellipsoid/datum and EGM96 gravitational model.  Altitude is the height above mean sea level for a given point.
+        (See <a href="http://en.wikipedia.org/wiki/World_Geodetic_System">WGS-84</a> and <a href="http://en.wikipedia.org/wiki/EGM96">EGM96</a>
+        for more info)</p>
+        <p>Note on directions:  Unless otherwise noted, all directional angles are relative to true North.</p>
+        <p>Note on IDs:  Many types have scenario-wide unique ids associated with them (VehicleID, TaskID, etc.)  These IDs should not be zero.</p>
+
+
+        <h2>Changes</h2>
+        
+        <h3>19 July 2017</h3>
+		<ul>
+			<li>Added maxmimum length bounds to all arrays. Does not change serialization API, however, it can be used to check properly formatted messages during deserialization. Because 'max array length' is informational, wire compatability is preserved (so version number is NOT incremented).</li>
+			<li>Added 'Optional' indicator on fields of messages that contain references to other messages. For fields that are not indicated as Optional, a viable message must not send 'null' in that field. Does not change serialization API and wire compatability is preserved (so version number is NOT incremented).</li>
+		</ul>
+		
+        <h3>7 May 2015</h3>
+		<ul>
+			<li>Added nominal altitde in {@link EntityConfiguration}</li>
+		</ul>
+ 
+		<h3>23 April 2015</h3>
+		<ul>
+			<li>Changed default AltitudeType in {@link Location3D} from "AGL" to "MSL"</li>
+			<li>Changed time field in {@link FollowPathCommand} from real32 seconds to int64 milliseconds</li>
+			<li>Changed DwellTime field in {@link SearchTask} from real32 seconds to int64 milliseconds</li>
+			<li>Changed Duration field in {@link LoiterAction} from real32 seconds to int64 milliseconds</li>
+		</ul>
+		
+		<h3>16 April 2015</h3>
+		<ul>
+			<li>Moved "ActualEnergyRate", "CurrentCommand", "CurrentWaypoint", "Mode", and "AssociatedTasks" 
+				from {@link AirVehicleState} to {@link EntityState} </li>
+		</ul>
+ 
+		<h3>18 March 2015</h3>
+		<ul>
+            <li>All ID fields updated from uint32 to int64</li>
+            <li>PauseTime in {@link PathWaypoint} and Duration in {@link GimbalStareAction} changed to millisecond units</li>
+        </ul>
+		
+		<h3>11 March 2015</h3>
+		<ul>
+			<li>Moved EntityDetection, TrackEntityTask, and TrackEntityAction to PERCEIVE MDM</li>
+			<li>Added "Unknown" gimbal pointing type to {@link GimbalPointingMode}</li>
+			<li>Added reported boresight angles and vertical field of view to {@link GimballedPayloadState}</li>
+			<li>{@link CameraState} now derives from {@link GimballedPayloadState} for direct reporting of angles during state messages</li>
+			<li><Added associated payload actions to {@link CameraAction} to streamline gimbal pointing simultaneously with camera zoom</li>
+                        <li>Added {@link WaypointTransfer} message and {@link WaypointTransferMode} enumeration</li>
+                        <li>Added additional contingency point in {@link Waypoint}</li>
+                        <li>Added {@link PayloadStowAction} and added "stowed" to {@link GimbalPointingMode} </li>
+                </ul>
+		
+		<h3>5 March 2015</h3>
+		<ul>
+			<li>Moved body axis speeds, accelerations, and angles from {@link AirVehicleState} to {@link EntityState}.</li>
+			<li>Added {@link KeyValuePair} lists to {@link EntityConfiguration} and {@link EntityState} to support easy inclusion of custom data</li>
+			<li>Added {@link EntityDetection}</li>
+			<li>Added {@link TrackEntityTask}, {@link TrackEntityAction}</li>
+			<li>Added {@link FollowPathCommand} and {@link PathWaypoint}</li>
+		</ul>
+        
+        <h3>25 Feb 2015</h3>
+        <ul>
+            <li>Created {@link EntityConfiguration} and {@link EntityState} with {@link AirVehicleConfiguration} and {@link AirVehicleState} deriving from them
+            <li>Created {@link OperatingRegion} to collect all zones during {@link AutomationRequest}
+            <li>Moved vehicle eligibility constraints to {@link Task}
+            <li>Removed VehicleInfo structure for {@link AutomationRequest} constraints - all constraints via task or zone eligibility
+            <li>Removed Location2D. When only two dimensions are needed, the third is ignored as specified in message documentation
+            <li>Added altitude type. {@link Location3D} and {@link AbstractZone} now both utilize
+            <li>All time fields now use int64 type and are considered in units of milliseconds
+        </ul>
+ 
+        <h3>8 October 2010</h3>
+        <ul>
+            <li>Changed EndPoint in {@link VehicleInfo} to be {@link Location2D} based on group discussion
+            <li>Added Centerpoint field in {@link CameraState}
+            <li>Changed "ClimbRate" to "VerticalSpeed" in {@link FlightProfile}
+        </ul>
+
+        <h3>7 October 2010</h3>
+        <ul>
+            <li>Changed StartPoint in {@link VehicleInfo} to be {@link Location3D} so that altitude is always well defined
+            <li>Fixed documentation in {@link AirVehicleConfiguration} regarding MinAltAboveGround
+            <li>Fixed documentation in {@link AirVehicleState} regarding VerticalSpeed
+        </ul>
+
+        <h3>4 October 2010</h3>
+        <ul>
+            <li>Made {@link VideoStreamState} extend {@link PayloadState}
+            <li>Fixed documentation in {@link WeatherReport}
+        </ul>
+
+        <h3>21 September 2010</h3>
+        <ul>
+            <li>Set default WavelengthBand to "EO" in {@link CameraConfiguration}.
+            <li>Added aspect ratio comment in {@link CameraConfiguration}.
+            <li>Changed documentation in {@link VehicleInfo} to denote use of {@link Location2D} or
+            {@link Location3D} objects for "StartPoint" and "EndPoint".
+            <li>Added note regarding end-of-route behavior in {@link MissionCommand}.
+            <li>Changed {@link VideoStreamConfiguration} to extend {@link PayloadConfiguration} and removed.
+            "VideoStreamConfigurationList" from {@link AirVehicleConfiguration}.
+            <li>Added "Priority" and "Required" fields to {@link Task}.
+            <li>Created {@link WeatherReport}.
+            <li>Changed comment regarding WGS-84 and EGM-96.
+        </ul>
+        
+        <h3>31 August 2010</h3>
+        <ul>
+        <li>Fixed missing type in "UseInertialViewAngles" in {@link LineSearchTask}
+        </ul>
+
+        <h3>20 August 2010</h3>
+        <ul>
+        <li>Changed default altitude to Mean-sea-level from Height-above-ellipsoid</li>
+        <li>Added note in main documentation regarding "zero" in ids
+        <li>Changed documentation for "ContingencyPoint" in {@link Waypoint}
+        <li>Removed WavelengthBand from {@link CameraAction} and changed WavelengthBands to WavelengthBand (array to scalar) in {@link CameraConfiguration}
+        <li>Removed framerate information from {@link CameraConfiguration} and {@link SearchTask}
+        <li>Renamed "FlightMode" to {@link NavigationMode}
+        <li>Added "Hover" to {@link LoiterType} and updated {@link LoiterAction} to reflect the use of Axis in hover-mode.
+        <li>Added Min, Max, and Min AGL altitudes to {@link AirVehicleConfiguration}
+        <li>Updated documentation for Min/Max altitudes in {@link VehicleInfo}.
+        <li>Added start and end points in {@link VehicleInfo}.
+        <li>Improved (hopefully) the view angle documentation in {@link LineSearchTask}.
+        <li>Updated documentation in {@link Wedge}.
+        </ul>
+
+        <h3>10 August 2010</h3>
+        <ul>
+        <li>Changed "ContingencyWaypoint" type from {@link Waypoint} to uint32 in {@link Waypoint}.
+        <li>Renamed "LostCommPoint" to "ContingencyPoint" in {@link VehicleInfo} and updated the documentation.
+        <li>Added "RequiredFramerate" to {@link SearchTask}.
+        <li>Addded "AvailableFramerates" to {@link CameraConfiguration}.
+        <li>Changed "WaypointMode" enum to {@link FlightMode}.  WaypointMode was a misnomer, since the enum describes many flight states, "WaypointFollow" being
+        only one of the available states.
+        <li>Added "AvailableLoiterTypes" and "AvailableTurnTypes" to {@link AirVehicleConfiguration} to denote vehicle capabilities.
+        <li>Removed "AssignedAltitude" from {@link AirVehicleConfiguration} since altitude can be assigned using {@link VehicleInfo} object in {@link AutomationRequest}
+        The presence of "AssignedAltitude" caused ambiguity in planning situations.  (which takes precedence?)
+        <li>Added "CurrentCommand" to {@link AirVehicleState} to denote the VehicleActionCommand or MissionCommand currently being executed.
+        <li>Improved documentation in {@link Wedge}.
+        </ul>
+
+        <h3>28 July 2010</h3>
+        <ul>
+        <li>Removed "WedgeList" from {@link Task} and put "ViewAngleList" fields in {@link PointSearchTask} {@link LineSearchTask}, and {@link AreaSearchTask}
+        The definition of ViewAngle is based on the type of task.</li>
+        <li>Removed "Azimuth" and "Elevation" from {@link LineSearchTask}. Replaced with "ViewAngleList"</li>
+        <li>Added {@link KeyValuePair} to replace many existing string fields with a more structured set of data</li>
+        <li>Replaced string fields with {@link KeyValuePair} type to enable structured maps of data in {@link Task}, {@link OperatorSignal}, {@link AutomationResponse},
+        {@link ServiceStatus}, {@link SessionStatus}.</li>
+        <li>Added "CommandID" in {@link VehicleActionCommand} and {@link MissionCommand}</li>
+        <li>Added {@link CommandStatusType} enum
+        <li>Added "Status" fields in {@link VehicleActionCommand} and {@link MissionCommand}.
+        <li>Updated documentation to {@link VehicleInfo} to clarify the meaning of min/max altitudes.
+        </ul>
+
+        <h3>26 July 2010</h3>
+        <ul>
+        <li>Changed version tag to "2".
+        <li>Replaced references to "No Fly" to "Keep Out".
+        <li>Added "Length" parameter in {@link LoiterAction}.
+        <li>Fixed azimuth and elevation fields in {@link LineSearchTask} to reflect inertial coordinates.
+        <li>Updated comments in {@link AirVehicleState} regarding body angles.
+        <li>Added "Visual" to {@link ZoneAvoidanceType} enum.
+        <li>Added vertical component to {@link Wedge}.
+        <li>Added "ContingencyWaypoint" field in {@link Waypoint}.
+        <li>Added {@link AutomationResponse} type.
+        <li>Changed "PlanRequest" to {@link AutomationRequest}.
+        <li>Added "UseAltitude" field in {@link MustFlyTask}.
+        <li>Moved "Boundary" from {@link KeepInZone} and {@link KeepOutZone} into {@link AbstractZone}.
+        <li>Added {@link RemoveZones} and {@link RemoveAirVehicles} types.
+        <li>Added {@link FlightDirectorAction} type.
+        </ul>
+
+        ( Previous changes are reflected in CMASI version 1 MDM )
+        
+-->
+<MDM>
+    <SeriesName>CMASI</SeriesName>
+    <Namespace>afrl/cmasi</Namespace>
+    <Version>3</Version>
+
+    <EnumList>
+        <!-- Describes wavelength bands -->
+        <Enum Name="WavelengthBand">
+            <!-- used in cases when wavelength is not applicable -->
+            <Entry Name="AllAny" Value="0"/>
+            <!-- Electro-optical.  Visible spectrum -->
+            <Entry Name="EO" Value="1"/>
+            <!-- Long-wave Infrared -->
+            <Entry Name="LWIR" Value="2"/>
+            <!-- Short-wave infrared -->
+            <Entry Name="SWIR" Value="3"/>
+            <!-- mid-wave infrared -->
+            <Entry Name="MWIR" Value="4"/>
+            <!-- Other or undefined wavelength band -->
+            <Entry Name="Other" Value="5"/>
+        </Enum>
+        <!-- Describes waypoint modes -->
+        <Enum Name="NavigationMode">
+            <!-- standard waypoint following mode -->
+            <Entry Name="Waypoint" Value="0"/>
+            <!-- loiter mode, vehicle in constant orbit -->
+            <Entry Name="Loiter" Value="1"/>
+            <!-- flight director, vehicle following specific heading and spedd commands without regard to waypoints -->
+            <Entry Name="FlightDirector" Value="2"/>
+            <!-- track target, vehicle adjusts path to maintain current target track -->
+            <Entry Name="TargetTrack" Value="3"/>
+            <!-- follow leader, vehicle path is maintained to remain in formation with a leader -->
+            <Entry Name="FollowLeader" Value="4"/>
+            <!-- lost comm, vehicle is out of comm range and should be executing lost-comm behavior -->
+            <Entry Name="LostComm" Value="5"/>
+        </Enum>
+        <!-- Describes how the field-of-view for a camera can be changed, i.e. in a continuous or discrete manner -->
+        <Enum Name="FOVOperationMode">
+            <!-- field of view can be continuously changed -->
+            <Entry Name="Continuous" Value="0"/>
+            <!-- field of view can only be set to certian, discrete values -->
+            <Entry Name="Discrete" Value="1"/>
+        </Enum>
+        <!-- Describes available pointing modes for a gimbal -->
+        <Enum Name="GimbalPointingMode">
+            <!-- Unknown pointing mode or unavailable -->
+            <Entry Name="Unknown" Value="0"/>
+          <!-- angles are commanded relative to the vehicle -->
+            <Entry Name="AirVehicleRelativeAngle" Value="1"/>
+            <!-- angle rates are commanded relative to the vehicle -->
+            <Entry Name="AirVehicleRelativeSlewRate" Value="2"/>
+            <!-- gimbal aimed at an inertial location -->
+            <Entry Name="LatLonSlaved" Value="3"/>
+            <!-- gimbal rates are calculated relative to the inertial coordinate system -->
+            <Entry Name="InertialRelativeSlewRate" Value="4"/>
+            <!-- gimbal continuously scans in a pre-determined pattern -->
+            <Entry Name="Scan" Value="5"/>
+            <!-- indicates that the gimbal is stowed -->
+            <Entry Name="Stowed" Value="6"/>
+        </Enum>
+        <!-- Describes types of keep-out zones -->
+        <Enum Name="ZoneAvoidanceType">
+            <!-- zone corresponds to a physical boundary (e.g. terrain, buildings) -->
+            <Entry Name="Physical" Value="1"/>
+            <!-- zone corresponds to a regulatory boundary (e.g. flight control corridor) -->
+            <Entry Name="Regulatory" Value="2"/>
+            <!-- zone corresponds to an area that is sensitive to acoustic intrusion -->
+            <Entry Name="Acoustic" Value="3"/>
+            <!-- zone contains a threat-->
+            <Entry Name="Threat" Value="4"/>
+            <!-- zone defines an area that is sensitive to visual detection.  The threshold of visual detection
+                is not defined by this standard.-->
+            <Entry Name="Visual" Value="5"/>
+        </Enum>
+        <!-- Describes loiter types -->
+        <Enum Name="LoiterType">
+            <!-- vehicle default -->
+            <Entry Name="VehicleDefault" Value="0"/>
+            <!-- circular -->
+            <Entry Name="Circular" Value="1"/>
+            <!-- racetrack -->
+            <Entry Name="Racetrack" Value="2"/>
+            <!-- figure eight-->
+            <Entry Name="FigureEight" Value="3"/>
+            <!-- Hovering.-->
+            <Entry Name="Hover" Value="4"/>
+        </Enum>
+        <!-- Describes loiter direction -->
+        <Enum Name="LoiterDirection">
+            <!-- vehicle default -->
+            <Entry Name="VehicleDefault" Value="0"/>
+            <!-- counter-clockwise -->
+            <Entry Name="CounterClockwise" Value="1"/>
+            <!-- clockwise -->
+            <Entry Name="Clockwise" Value="2"/>
+        </Enum>
+        <!-- Describes automation service status types -->
+        <Enum Name="ServiceStatusType">
+            <!-- informational note from automation service -->
+            <Entry Name="Information" Value="0"/>
+            <!-- warning from automation service -->
+            <Entry Name="Warning" Value="1"/>
+            <!-- error from automation service -->
+            <Entry Name="Error" Value="2"/>
+        </Enum>
+        <!-- Describes simulation status types -->
+        <Enum Name="SimulationStatusType">
+            <!-- simulation is stopped -->
+            <Entry Name="Stopped" Value="0"/>
+            <!-- simulation is running -->
+            <Entry Name="Running" Value="1"/>
+            <!-- simulation paused -->
+            <Entry Name="Paused" Value="2"/>
+            <!-- simulation is reset -->
+            <Entry Name="Reset" Value="3"/>
+        </Enum>
+        <!-- Describes vehicle speed type -->
+        <Enum Name="SpeedType">
+            <!-- airspeed -->
+            <Entry Name="Airspeed" Value="0"/>
+            <!-- groundspeed -->
+            <Entry Name="Groundspeed" Value="1"/>
+        </Enum>
+        <!-- Describes vehicle turn type -->
+        <Enum Name="TurnType">
+            <!-- turn short, return to track -->
+            <Entry Name="TurnShort" Value="0"/>
+            <!-- fly over, return to track -->
+            <Entry Name="FlyOver" Value="1"/>
+        </Enum>
+        <Enum Name="CommandStatusType">
+            <!-- Pending authorization prior to execution -->
+            <Entry Name="Pending"/>
+            <!-- Approved for execution by the aircraft -->
+            <Entry Name="Approved"/>
+            <!-- Currently executing by an aircraft -->
+            <Entry Name="InProcess"/>
+            <!-- Completed execution by an aircraft -->
+            <Entry Name="Executed"/>
+            <!-- Cancelled by an operator, aircraft, or other entity -->
+            <Entry Name="Cancelled"/>
+        </Enum>
+        <Enum Name="AltitudeType">
+            <!-- Height above ground/survace level -->
+            <Entry Name="AGL"/>
+            <!-- Height above WGS84 ellipsoid, mean sea level -->
+            <Entry Name="MSL"/>
+        </Enum>
+		
+	<!-- Designates how an entity should treat a path following command.  -->
+        <Enum Name="TravelMode">
+            <!-- A path is traversed from beginning to end, then the entity stops -->
+            <Entry Name="SinglePass"/>
+            <!-- Upon reaching the end of a route, the entity travels the waypoint list in reverse-direction. -->
+            <Entry Name="ReverseCourse"/>
+            <!-- Upon reaching the end of a route, the entity travels to the first point and repeats the route. -->
+            <Entry Name="Loop"/>
+        </Enum>
+        
+        <!-- Used in {@link WaypointTransfer} to indicate the type of waypoint exchange -->
+        <Enum Name="WaypointTransferMode">
+            <!-- Requests download of waypoints from the aircraft -->
+            <Entry Name="RequestWaypoints"/>
+            <!-- Adds waypoints to the aircraft.  Waypoints with the same number are overwritten -->
+            <Entry Name="AddWaypoints"/>
+            <!-- Commands the aircraft to clear its waypoints -->
+            <Entry Name="ClearWaypoints"/>
+            <!-- Reports waypoints that are curretly in the aircraft computer -->
+            <Entry Name="ReportWaypoints"/>
+        </Enum>
+
+    </EnumList>
+
+    <StructList>
+
+        <!-- Base class for geometry types -->
+        <Struct Name="AbstractGeometry">
+        </Struct>
+        
+        <!-- A container for key/value pairs.  Keys and values can be any valid string. -->
+        <Struct Name="KeyValuePair">
+            <!-- A key (name) for the property -->
+            <Field Name="Key" Type="string"/>
+            <!-- A value for the property -->
+            <Field Name="Value" Type="string"/>
+        </Struct>
+        
+        <!--
+         Location is defined as a point in the world using the WGS84 specification for latitude
+         and longitude.
+         -->
+        <Struct Name="Location3D">
+            <!-- Latitude -->
+            <Field Name="Latitude" Type="real64" Units="degree" />
+            
+            <!-- Longitude -->
+            <Field Name="Longitude" Type="real64" Units="degree" />
+            
+            <!-- Altitude for this waypoint -->
+            <Field Name="Altitude" Type="real32" Units="meter"/>
+            
+            <!-- Altitude type for specified altitude -->
+            <Field Name="AltitudeType" Type="AltitudeType" Default="MSL" />
+        </Struct>
+        
+        <!-- An action for controlling a payload item (abstract). -->
+        <Struct Name="PayloadAction" Extends="VehicleAction">
+            <!-- A unique id for this payload item. -->
+            <Field Name="PayloadID" Type="int64" Units="None" />
+        </Struct>
+        
+        <!-- Base type for payloads -->
+        <Struct Name="PayloadConfiguration">
+            <!-- The unique id for this payload item. -->
+            <Field Name="PayloadID" Type="int64" Units="None" />
+            
+            <!-- A string uniquely identifying the kind of payload item (primarily to be used
+             for debugging purposes). -->
+            <Field Name="PayloadKind" Type="string" Units="None" />
+            
+            <!-- Optional parameters associated with payload configuration -->
+            <Field Name="Parameters" Type="KeyValuePair[]" MaxArrayLength="8" />
+        </Struct>
+        
+        <!-- Describes the current state of a payload item (abstract). -->
+        <Struct Name="PayloadState">
+            <!-- The unique id for this payload item. -->
+            <Field Name="PayloadID" Type="int64" Units="None" />
+            
+            <!-- Optional parameters associated with payload state -->
+            <Field Name="Parameters" Type="KeyValuePair[]" MaxArrayLength="8" />
+        </Struct>
+        
+        <!--
+         Base class for an action to be taken by a vehicle.  This is usually used as an object inside of
+         {@link Waypoint} to describe the action that a vehicle is to take upon reaching a waypoint.  This is
+         used by child types to perform something meaningful.<br/>
+         -->
+        <Struct Name="VehicleAction">
+            <!--
+             A list of tasks that are associated with this action.  A length of zero denotes no associated tasks.
+             This field is for analysis purposes.  The automation service should associate a list of tasks with each action to enable
+             analysis of the allocation of tasks to vehicles.<br/>
+             -->
+            <Field Name="AssociatedTaskList" Type="int64[]" MaxArrayLength="8"/>
+        </Struct>
+        
+        <!--
+         The base class for all task requests passed to the automation service.  Task requests are not assigned to a specific vehicle, but
+         allow the automation service to determine the best vehicle to complete the task.
+         -->
+        <Struct Name="Task">
+            <!-- A unique identifier for this task. -->
+            <Field Name="TaskID" Type="int64" Units="None" />
+            
+            <!-- An optional text string for the task. This is not necesarily unique,
+             and is included for information only. TaskID should be used to uniquely
+             identify tasks. -->
+            <Field Name="Label" Type="string" />
+            
+            <!-- A list of entity IDs that are eligible to accomplish this task.  If the list is empty, then it is
+             assumed all entities are eligible. -->
+            <Field Name="EligibleEntities" Type="int64[]" MaxArrayLength="32" Units="None" />
+            
+            <!--
+             If a task is to be repeatedly done, this field indicates how often.
+             A value of zero means the task is complete on the first pass.
+             -->
+            <Field Name="RevisitRate" Type="real32" Units="sec" Default="0"/>
+            
+            <!-- An optional text string for automation service task parameters. -->
+            <Field Name="Parameters" Type="KeyValuePair[]" MaxArrayLength="8" />
+            
+            <!-- The priority value for this task.  Priority is a relative value of this task compared to other tasks in the scenario.  This
+             field should be limited to the range[0..100], 100 being the highest level of priority.  The exact interpretation
+             priority may vary depending on algorithm implementation. -->
+            <Field Name="Priority" Type="byte" Default="0"/>
+            
+            <!-- Indicates whether this task <i><b>must</b></i> be executed as part of a mission plan.  -->
+            <Field Name="Required" Type="bool" Default="true"/>
+            
+        </Struct>
+        
+        <!-- Used to request a search task allocation from the automation service. -->
+        <Struct Name="SearchTask" Extends="Task">
+            
+            <!-- The wavelength bands that should be used to complete the task.   -->
+            <Field Name="DesiredWavelengthBands" Type="WavelengthBand[]" MaxArrayLength="8" Default="AllAny" />
+            
+            <!-- Minimum time that a sensor must look at any given point in this search task. -->
+            <Field Name="DwellTime" Type="int64" Units="milliseconds" />
+            
+            <!-- Average ground sample distance for locations in search area -->
+            <Field Name="GroundSampleDistance" Type="real32" Units="meters/pixel" />
+            
+        </Struct>
+
+        <!-- Base Type for all zones (keep-in and keep-out zones) -->
+        <Struct Name="AbstractZone">
+            <!-- A globally unique reference number for this zone -->
+            <Field Name="ZoneID" Type="int64" Units="None" />
+
+            <!-- Lower altitude bound for the zone -->
+            <Field Name="MinAltitude" Type="real32" Units="meter" />
+            
+            <!-- Altitude type for min altitude -->
+            <Field Name="MinAltitudeType" Type="AltitudeType" Default="AGL" />
+
+            <!-- Maximum altitude for operations -->
+            <Field Name="MaxAltitude" Type="real32" Units="meter" />
+            
+            <!-- Altitude type for max altitude -->
+            <Field Name="MaxAltitudeType" Type="AltitudeType" Default="MSL" />
+
+            <!-- A list of aircraft IDs that this zone applies to.  If the list is empty, then it is
+                 assumed that the boundary applies to all aircraft. -->
+            <Field Name="AffectedAircraft" Type="int64[]" MaxArrayLength="32"  Units="None" />
+
+            <!-- Time at which this zone becomes active. Time datum is defined by the application, but unless otherwise specified is milliseconds since 1 Jan 1970 -->
+            <Field Name="StartTime" Type="int64" Units="milliseconds"/>
+
+            <!-- Time at which this zone becomes inactive. Time datum is defined by the application, but unless otherwise specified is milliseconds since 1 Jan 1970 -->
+            <Field Name="EndTime" Type="int64" Units="milliseconds"/>
+
+            <!-- Buffer to add/subtract around the border of the zone -->
+            <Field Name="Padding" Type="real32" Units="meters" Default="0" />
+
+            <!-- Optional label for this zone -->
+            <Field Name="Label" Type="string"/>
+
+            <!--
+                Geometry object describing the boundary.  This boundary is 2-dimensional.  The zone boundary is defined as
+                an extrusion of this boundary from MinAltitude to MaxAltitude. A valid zone must define a boundary (null not allowed).
+            -->
+            <Field Name="Boundary" Type="AbstractGeometry" Units="None" Optional="false" />
+        </Struct>
+
+        <!--
+            Provides information regarding a base entitie's configuration items.
+        -->
+        <Struct Name="EntityConfiguration">
+            <!-- A unique id for this entity -->
+            <Field Name="ID" Type="int64" Units="None" />
+            
+            <!-- the team or "side" that an entity belongs to.  This can be a name of a country, a "friend" or
+             "foe" designation, or a team name (e.g. "red team"). -->
+            <Field Name="Affiliation" Type="string" Default="Unknown"/>
+            
+            <!-- The type of this entity.  The content of this field is dependent on the session. The value
+             of this field is not specifically defined, so it is up to the simulation/session components
+             to define a type system. For a common entity definition, see MIL STD 2525 or use DIS enumerations.
+             -->
+            <Field Name="EntityType" Type="string"/>
+
+            <!--
+                An optional text string for the vehicle.  This is not necessarily unique, and is included
+                for information only.  ID should be used to uniquely identify entities.
+            -->
+            <Field Name="Label" Type="string"/>
+            
+            <!-- The speed that is typically commanded for this entity -->
+            <Field Name="NominalSpeed" Type="real32" Units="meter/sec" />
+            
+            <!-- The altitude that is typically commanded for this entity -->
+            <Field Name="NominalAltitude" Type="real32" Units="meter" Default="0.0" />
+            
+            <!-- Altitude type for nominal altitude -->
+            <Field Name="NominalAltitudeType" Type="AltitudeType" Default="AGL" />
+
+            <!-- A list of all payload configurations for this vehicle. Examples of payloads include: gimbaled sensors,
+                 SAR radars (not yet supported), air-launched UAVs (not yet supported), and weapons (not yet supported). -->
+            <Field Name="PayloadConfigurationList" Type="PayloadConfiguration[]" MaxArrayLength="8" Units="None" />
+			
+			<!-- A list that maps keys to values for the inclusion of extra, custom information about this entity -->
+            <Field Name="Info" Type="KeyValuePair[]" MaxArrayLength="8" />
+
+        </Struct>
+        
+        <!--
+         A set of parameter describing the operations of a vehicle.  This can be used to set routing preferences
+         for a particular vehicle.  The "Name" field can be used to describe a given condition, such as "cruise" or "climb".
+         -->
+        <Struct Name="FlightProfile">
+            <!-- The unique name for this configuration -->
+            <Field Name="Name" Type="string" Units="None" />
+            
+            <!-- True Airspeed -->
+            <Field Name="Airspeed" Type="real32" Units="meter/sec" />
+            
+            <!-- The pitch angle of the aircraft in this flight condition(assuming zero bank) -->
+            <Field Name="PitchAngle" Type="real32" Units="degree" />
+            
+            <!-- Vertical speed (positive upwards) of the vehicle -->
+            <Field Name="VerticalSpeed" Type="real32" Units="meter/sec" />
+            
+            <!-- The maximum angle that this vehicle will bank -->
+            <Field Name="MaxBankAngle" Type="real32" Units="degree" />
+            
+            <!--
+             The consumption rate of available energy, expressed in terms of the percentage of maximum capacity
+             used per second.
+             -->
+            <Field Name="EnergyRate" Type="real32" Units="%/sec" />
+            
+        </Struct>
+
+        <!--
+            Provides information regarding a vehicle's configuration items.
+        -->
+        <Struct Name="AirVehicleConfiguration" Extends="EntityConfiguration">
+
+            <!-- The minimum true airspeed that should be commanded for this aircraft -->
+            <Field Name="MinimumSpeed" Type="real32" Units="meter/sec" />
+
+            <!-- The maximum true airspeed that should be commanded for this aircraft -->
+            <Field Name="MaximumSpeed" Type="real32" Units="meter/sec" />
+
+            <!-- Describes the preferred operating mode for most planning purposes.  This can be a max range
+            or endurance speed profile, or any other operating point chosen by a user.  This field may not
+            be null.
+            -->
+            <Field Name="NominalFlightProfile" Type="FlightProfile" Optional="false" />
+
+            <!-- A list of all flight configurations described for this vehicle.
+                Each flight configuration specifies a different mode of flight, for instance: climb, cruise,
+                dash, loiter.  This list may be empty, and does not necessarily contain the nominal flight
+                configuration.
+            -->
+            <Field Name="AlternateFlightProfiles" Type="FlightProfile[]" MaxArrayLength="8" Units="None" />
+
+            <!-- A list of available loiter types for this aircraft -->
+            <Field Name="AvailableLoiterTypes" Type="LoiterType[]" MaxArrayLength="8" />
+
+            <!-- A list of available turning modes for this aircraft -->
+            <Field Name="AvailableTurnTypes" Type="TurnType[]" MaxArrayLength="8" />
+
+            <!-- Minimum MSL altitude that this aircraft is allowed to fly.  This value should be treated as
+            a regulatory or safety-of-flight parameter and therefore takes precedence over other requests. -->
+            <Field Name="MinimumAltitude" Type="real32" Default="0" Units="meter"/>
+            
+            <!-- Altitude type for min altitude -->
+            <Field Name="MinAltitudeType" Type="AltitudeType" Default="AGL" />
+
+            <!-- Maximum MSL altitude that this aircraft is allowed to fly.  This value should be treated as
+            a regulatory or safety-of-flight parameter and therefore takes precedence over other requests.
+            -->
+            <Field Name="MaximumAltitude" Type="real32" Default="1000000" Units="meter"/>
+            
+            <!-- Altitude type for max altitude -->
+            <Field Name="MaxAltitudeType" Type="AltitudeType" Default="MSL" />
+
+        </Struct>
+
+        <!-- Reported state for an entity in the system  -->
+        <Struct Name="EntityState">
+            <!-- A unique ID for this entity. IDs should be greater than zero -->
+            <Field Name="ID" Type="int64" />
+			
+			<!-- Velocity in the body x-direction (postive out nose) -->
+            <Field Name="u" Type="real32" Units="meter/sec" />
+
+            <!-- Velocity in the body y-direction (positive out right wing) -->
+            <Field Name="v" Type="real32" Units="meter/sec" />
+
+            <!-- Velocity in the body z-direction (positve downward) -->
+            <Field Name="w" Type="real32" Units="meter/sec" />
+
+            <!-- Acceleration in the body x-direction (postive out nose) -->
+            <Field Name="udot" Type="real32" Units="meter/sec/sec" />
+
+            <!-- Acceleration in the body y-direction (positive out right wing) -->
+            <Field Name="vdot" Type="real32" Units="meter/sec/sec" />
+
+            <!-- Acceleration in the body z-direction (positve downward) -->
+            <Field Name="wdot" Type="real32" Units="meter/sec/sec" />
+
+            <!-- Angle between true North and the projection of the body x-axis in the North-East plane. -->
+            <Field Name="Heading" Type="real32" Units="degree" />
+
+            <!-- Pitch of vehicle around body y-axis (positive upwards) -->
+            <Field Name="Pitch" Type="real32" Units="degree" />
+
+            <!-- Roll angle of the vehicle around body x-axis (positive right wing down) -->
+            <Field Name="Roll" Type="real32" Units="degree" />
+
+            <!-- roll-rate of vehicle (angular velocity around body x-axis).  Positive right-wing down. -->
+            <Field Name="p" Type="real32" Units="degree/sec" />
+
+            <!-- pitch rate of the vehicle (angular velocity around body y-axis).  Positive nose-up.-->
+            <Field Name="q" Type="real32" Units="degree/sec" />
+
+            <!-- yaw rate of the vehicle (angular velocity around body z-axis).  Positive nose right. -->
+            <Field Name="r" Type="real32" Units="degree/sec" />
+
+            <!-- Course/Groundtrack angle of the entity referenced to true North -->
+            <Field Name="Course" Type="real32" Units="degrees" />
+            
+            <!-- Current entity ground speed -->
+            <Field Name="Groundspeed" Type="real32" Units="m/s" />
+
+            <!-- The perceived entity location. A valid EntityState must include Location (null not allowed) -->
+            <Field Name="Location" Type="Location3D" Optional="false" />
+            
+            <!-- The available energy remaining, expressed in terms of the percentage of maximum capacity -->
+            <Field Name="EnergyAvailable" Type="real32" Units="%" />
+			
+			<!-- The consumption rate of available energy, expressed in terms of the percentage of maximum capacity
+                used per second. -->
+            <Field Name="ActualEnergyRate" Type="real32" Units="%/sec" />
+
+            <!-- A list of states for any onboard payloads -->
+            <Field Name="PayloadStateList" Type="PayloadState[]" MaxArrayLength="8" />
+			
+			<!--
+                The ID of the current waypoint. Only valid if the vehicle is in waypoint following mode.
+            -->
+            <Field Name="CurrentWaypoint" Type="int64" Units="None" />
+
+            <!-- Current command (VehicleActionCommand or MissionCommand) being executed. A value of zero denotes no command being executed,
+            or that a command without an set identifier (CommandID) is being executed.
+            -->
+            <Field Name="CurrentCommand" Type="int64"/>
+
+            <!--
+                The current mode for this vehicle. 
+            -->
+            <Field Name="Mode" Type="NavigationMode" Units="None" />
+
+            <!--
+                Tasks that this entity is currently executing.  An empty list indicates no associated tasks.  The task number should
+                coincide with the task number in the task request.  For instance, if a waypoint is associated with a search task, then the
+                task number associated with that search should be included in this list.
+            -->
+            <Field Name="AssociatedTasks" Type="int64[]" MaxArrayLength="8" Units="None"/>
+            
+            <!-- time stamp of this data. Time datum is defined by the application, but unless otherwise specified is milliseconds since 1 Jan 1970 -->
+            <Field Name="Time" Type="int64" Units="millisecond" />
+			
+			<!-- A list that maps keys to values for the inclusion of extra, custom information about this entity -->
+            <Field Name="Info" Type="KeyValuePair[]" MaxArrayLength="32" />
+
+        </Struct>
+        
+        <!--
+            Provides basic information regarding the vehicle state with regard to its location and orientation in the
+            world, and current velocity in body axis.  <br/>
+
+            Provides basic state information regarding entity position, orientation, velocity, and acceleration.
+            The entity body right-hand coordinate system is used, where X is out the nose, Y is out the right side, and Z
+            is downward.  The order of rotation from inertial to body coordinates is yaw-pitch-roll. <br/>
+            The direction cosine matrix (DCM) for conversion from body to inertial coordinates is:<br/><br/>
+            [cTheta*cPsi, cTheta*sPsi, -sTheta]<br/>
+            [sPhi*sTheta*cPsi-cPhi*sPsi, sPhi*sTheta*sPsi+cPhi*cPsi, sPhi*cTheta]<br/>
+            [cPhi*sTheta*cPsi+sPhi*sPsi, cPhi*sTheta*sPsi-sPhi*cPsi, cPhi*cTheta]<br/><br/>
+            where, c denotes cosine and s denotes sine.
+            <br/><br/>
+            To convert from body to inertial velocities, use,<br/>
+            [North Vel, East Vel, Down Vel]' = DCM' * [Vx, Vy, Vz]'  where [Vx, Vy, Vz] is the body vel or accel.
+        -->
+        <Struct Name="AirVehicleState" Extends="EntityState">
+            
+            <!-- vehicle true airspeed -->
+            <Field Name="Airspeed" Type="real32" Units="meter/sec" />
+
+            <!-- Vertical speed (positive upwards) of the vehicle in the inertial frame (rate of change of altitude) -->
+            <Field Name="VerticalSpeed" Type="real32" Units="meter/sec" />
+
+            <!-- Wind speed as detected or computed by the vehicle -->
+            <Field Name="WindSpeed" Type="real32" Units="meter/sec"/>
+
+            <!-- Wind source direction (true) as detected or computed by the vehicle-->
+            <Field Name="WindDirection" Type="real32" Units="degree"/>
+
+            
+
+        </Struct>
+
+        <!--
+            Defines an angular range for use in setting constraints or desired approaches to tasks.  In most cases, wedges are
+            defined in the inertial sense, where azimuth is the angle between North and the center of the wedge, elevation is the
+            angle between the horizon and the center of the wedge (positive up).  In some instances, other coordinate systems are defined, such as
+            angles relative to a line.
+        -->
+        <Struct Name="Wedge">
+            <!-- Azimuthal centerline of the wedge. -->
+            <Field Name="AzimuthCenterline" Type="real32" Units="degree"/>
+            <!-- Vertical centerline of the wedge.  -->
+            <Field Name="VerticalCenterline" Type="real32" Units="degree"/>
+            <!-- Azimuthal angular extent of the wedge.  The extent is centered around the centerline.
+            A value of zero denotes that this wedge is defined as a single angle. -->
+            <Field Name="AzimuthExtent" Type="real32" Units="degree"/>
+            <!-- Vertical angular extent of the wedge.  The extent is centered around the centerline.
+            A value of zero denotes that this wedge is defined as a single angle. -->
+            <Field Name="VerticalExtent" Type="real32" Units="degree"/>
+        </Struct>
+        
+        <!-- Area search task -->
+        <Struct Name="AreaSearchTask" Extends="SearchTask">
+
+            <!-- Area to search. A valid area search task must define a SearchArea (null not allowed) -->
+            <Field Name="SearchArea" Type="AbstractGeometry" Optional="false" />
+
+            <!-- A list of acceptable look-angles for this task.  Each wedge is defined relative to true North. To be a valid
+                 look angle, a sensor must be looking from a direction within the bounds of the wedge.
+            -->
+            <Field Name="ViewAngleList" Type="Wedge[]" MaxArrayLength="16" />
+
+        </Struct>
+
+        <!--
+            An action for controlling a camera that is mounted on a gimbal.
+        -->
+        <Struct Name="CameraAction" Extends="PayloadAction">
+            <!-- The commanded horizontal (azimuth) field of view. -->
+            <Field Name="HorizontalFieldOfView" Type="real32" Units="degree" />
+        </Struct>
+
+        <!--
+            Description of capabilities of a camera (EO, LWIR, SWIR, MWIR, etc.). If a camera has multiple bands,
+            then a CameraConfiguration for each camera mode should be included in the PayloadConfigurationList.<br/>
+            <i>Note on Aspect ratio:</i> Aspect ratio is computed by taking the ratio of VideoStreamHorizontalResolution and
+            VideoStreamVerticalResolution.  It is assumed that the camera has a constant aspect ratio through all
+            fields-of-view and that the field-of-view aspect ratio is the same as the video stream aspect ratio.
+        -->
+        <Struct Name="CameraConfiguration" Extends="PayloadConfiguration">
+            
+            <!-- The supported wavelength band of this camera -->
+            <Field Name="SupportedWavelengthBand" Type="WavelengthBand" Default="EO"/>
+
+            <!-- The manner in which field of views are commanded:
+                 Continuous (any FOV between MinHorizontalFieldOfView and MaxHorizontalFieldOfView can be commanded), or
+                 Discrete (the only supported FOVs are listed in DiscreteHorizontalFieldOfViewList). -->
+            <Field Name="FieldOfViewMode" Type="FOVOperationMode" Units="None" />
+
+            <!-- The minimum horizontal field of view of the sensor. Only used if FieldOfViewMode is Continuous. -->
+            <Field Name="MinHorizontalFieldOfView" Type="real32" Units="degree" />
+
+            <!-- The maximum horizontal field of view of the sensor. Only used if FieldOfViewMode is Continuous. -->
+            <Field Name="MaxHorizontalFieldOfView" Type="real32" Units="degree" />
+
+            <!-- The horizontal field of views supported by the sensor. Only used if FieldOfViewMode is Discrete. -->
+            <Field Name="DiscreteHorizontalFieldOfViewList" Type="real32[]" MaxArrayLength="16" Units="degree" />
+
+            <!-- The number of horizontal pixels in the output live-motion video stream. -->
+            <Field Name="VideoStreamHorizontalResolution" Type="uint32" Units="pixel" />
+
+            <!-- The number of vertical pixels in the output live-motion video stream. -->
+            <Field Name="VideoStreamVerticalResolution" Type="uint32" Units="pixel" />
+        </Struct>
+
+        <!-- Describes the current state of a camera. -->
+        <Struct Name="GimballedPayloadState" Extends="PayloadState">
+            <!-- Current pointing mode of the gimbal to which this payload is attached-->
+            <Field Name="PointingMode" Type="GimbalPointingMode" Default="Unknown" />
+
+            <!-- Current azimuth angle of the gimbal boresight (positive from vehicle x-axis). -->
+            <Field Name="Azimuth" Type="real32" Units="degree" />
+
+            <!-- Current elevation angle of the gimbal boresight (positive from vehicle x-y plane). -->
+            <Field Name="Elevation" Type="real32" Units="degree" />
+
+            <!-- Current rotation angle of the gimbal boresight (0 degrees aligned with aircraft normal, positive clockwise). -->
+            <Field Name="Rotation" Type="real32" Units="degree" />
+            
+        </Struct>
+
+        <!-- Describes the current state of a camera. -->
+        <Struct Name="CameraState" Extends="GimballedPayloadState">
+            
+            <!-- The current horizontal field of view (in sensor axis). -->
+            <Field Name="HorizontalFieldOfView" Type="real32" Units="degree" />
+
+            <!-- The current vertical field of view (in sensor axis). -->
+            <Field Name="VerticalFieldOfView" Type="real32" Units="degree" />
+            
+            <!-- The current sensor footprint of the camera represented as a polygon with n-vertices.
+                 If this field contains zero items then the footprint is unavailable or was not calculated. -->
+            <Field Name="Footprint" Type="Location3D[]" MaxArrayLength="8" Units="None" />
+
+            <!-- the current location according to the intersection of a ray along the center axis of the current
+                camera field of view with the ground.  If this field is null, then the location was not computed.
+            -->
+            <Field Name="Centerpoint" Type="Location3D" Default="null" Optional="true" />
+        </Struct>
+
+        <!-- Defines a circular shape based on a center point and radius -->
+        <Struct Name="Circle" Extends="AbstractGeometry">
+            <!-- Center point of the circle. A valid Circle must define CenterPoint (null not allowed) -->
+            <Field Name="CenterPoint" Type="Location3D" Optional="false" />
+            <!-- Radius of the circle -->
+            <Field Name="Radius" Type="real32" Units="meter"/>
+        </Struct>
+
+        <!--
+            An action for controlling the movement of a gimbal. Individual sensors on the gimbal are controlled
+            via the {@link CameraAction} message.<br/>
+            Azimuth is defined as the angle between the long axis of the aircraft and the sensor boresight, positive clockwise.<br/>
+            Elevation is defined as the angle between the aircraft long-lat plane and the sensor boresight, positive upwards.<br/>
+            Rotation is defined as rotation from the aircraft normal (Up), positive clockwise.<br/>
+        -->
+        <Struct Name="GimbalAngleAction" Extends="PayloadAction">
+
+            <!-- The commanded azimuth angle (0 degrees out of nose, positive clockwise).  -->
+            <Field Name="Azimuth" Type="real32" Units="degree" />
+
+            <!-- The commanded elevation angle (0 degrees horizontal, positive upwards).  -->
+            <Field Name="Elevation" Type="real32" Units="degree" />
+
+            <!-- The commanded rotation angle (0 degrees aligned with aircraft normal, positive clockwise).  -->
+            <Field Name="Rotation" Type="real32" Units="degree" />
+        </Struct>
+
+        <!--
+            Description of a gimbal's capabilities. A gimbal is defined as the mount of a sensor or set of sensors
+            that may or may not have freedom of motion (for instance, the fixed mounting of a camera would still be
+            considered a gimbal payload that must be defined).<br/>
+            Azimuth is defined as the angle between the long axis of the aircraft and the sensor boresight, positive clockwise.<br/>
+            Elevation is defined as the angle between the aircraft long-lat plane and the sensor boresight, positive upwards.<br/>
+            Rotation is defined as rotation from the aircraft normal (Up), positive clockwise.<br/>
+        -->
+        <Struct Name="GimbalConfiguration" Extends="PayloadConfiguration">
+
+            <!--
+                The pointing modes supported by the gimbal
+            -->
+            <Field Name="SupportedPointingModes" Type="GimbalPointingMode[]" MaxArrayLength="8" Units="None" />
+
+            <!--
+                Minimum azimuth that this sensor can slew in body axis (0 degrees out of nose, positive clockwise).
+                If this is a fixed-azimuth sensor, then this should be set to the fixed azimuth value.
+            -->
+            <Field Name="MinAzimuth" Type="real32" Units="degree" Default="-180" />
+
+            <!--
+                Maximum azimuth that this sensor can slew in body axis (0 degrees out of nose, positive clockwise).
+                If this is a fixed-azimuth sensor, then this should be set to the fixed azimuth value.
+            -->
+            <Field Name="MaxAzimuth" Type="real32" Units="degree" Default="180" />
+
+            <!--
+                Determines whether there are any limits on the azimuth of the gimbal. If this is set to
+                false, then MinAzimuth and MaxAzimuth are not used, and the gimbal is capable of
+                continuously spinning in a 360 degree circle without hitting any stops.
+            -->
+            <Field Name="IsAzimuthClamped" Type="bool" Units="None" Default="false" />
+
+            <!--
+                Minimum elevation that this sensor can slew in body axis (0 degrees horizontal, positive upwards).
+                If this is a fixed-elevation sensor, then this should be set to the fixed elevation value.
+            -->
+            <Field Name="MinElevation" Type="real32" Units="degree" Default="-180" />
+
+            <!--
+                Maximum elevation that this sensor can slew in body axis (0 degrees horizontal, positive upwards).
+                If this is a fixed-elevation sensor, then this should be set to the fixed elevation value.
+            -->
+            <Field Name="MaxElevation" Type="real32" Units="degree" Default="180" />
+
+            <!--
+                Determines whether there are any limits on the elevation of the gimbal. If this is set to
+                false, then MinElevation and MaxElevation are not used, and the gimbal is capable of
+                continuously spinning in a 360 degree circle without hitting any stops.
+            -->
+            <Field Name="IsElevationClamped" Type="bool" Units="None" Default="false" />
+
+            <!--
+                Minimum rotation that this sensor can slew in body axis (0 degrees aligned with aircraft normal, positive clockwise).
+                If this is a fixed-rotation sensor, then this should be set to the fixed rotation value.
+            -->
+            <Field Name="MinRotation" Type="real32" Units="degree" Default="0" />
+
+            <!--
+                Maximum rotation that this sensor can slew in body axis (0 degrees aligned with aircraft normal, positive clockwise).
+                If this is a fixed-rotation sensor, then this should be set to the fixed rotation value.
+            -->
+            <Field Name="MaxRotation" Type="real32" Units="degree" Default="0" />
+
+            <!--
+                Determines whether there are any limits on the rotation of the gimbal. If this is set to
+                false, then MinRotation and MaxRotation are not used, and the gimbal is capable of
+                continuously rotating in a 360 degree circle without hitting any stops.
+            -->
+            <Field Name="IsRotationClamped" Type="bool" Units="None" Default="true" />
+
+            <!-- Rate of maximum horizontal slew for this gimbal. -->
+            <Field Name="MaxAzimuthSlewRate" Type="real32" Units="degree/sec" />
+
+            <!-- Rate of maximum vertical slew for this gimbal. -->
+            <Field Name="MaxElevationSlewRate" Type="real32" Units="degree/sec" />
+
+            <!-- Rate of maximum rotation for this gimbal. -->
+            <Field Name="MaxRotationRate" Type="real32" Units="degree/sec" />
+
+            <!--
+                Lists the PayloadID of each sensor physically located within the gimbal and that shares
+                the same gimbal angles. It is assumed that all sensors are boresighted.
+            -->
+            <Field Name="ContainedPayloadList" Type="int64[]" MaxArrayLength="8" Units="None" />
+        </Struct>
+
+        <!--
+            Parameters for controlling the movement of a sensor in a continuous motion.  This can be used to start a back-and-forth or rotational
+            scan over time.  The sensor will sweep in a box pattern from the corner defined by:
+            (StartAzimuth, StartElevation) to (StartAzimuth, EndElevation) to (EndAzimuth, EndElevation)
+            to (EndAzimuth, StartElevation) and back to the origin.
+        -->
+        <Struct Name="GimbalScanAction" Extends="PayloadAction">
+            <!--
+                 sets the time-to-scan in the azimuthal direction. This is the time to complete one sweep through the
+                 the length of EndAzimuth - StartAzimuth.
+            -->
+            <Field Name="AzimuthSlewRate" Type="real32" Units="degree/second" />
+
+            <!--
+                 sets the time-to-scan in the elevation direction. This is the time to complete one sweep through the
+                 the length of EndElevation - StartElevation.
+            -->
+            <Field Name="ElevationSlewRate" Type="real32" Units="degree/second" />
+
+            <!-- The starting azimuth for the sensor scan (boresight angle right of aircraft long axis)-->
+            <Field Name="StartAzimuth" Type="real32" Units="degree"/>
+
+            <!-- The ending azimuth for the sensor scan (boresight angle right of aircraft long axis) -->
+            <Field Name="EndAzimuth" Type="real32" Units="degree"/>
+
+            <!-- The starting elevation for the sensor scan (boresight angle positive from aircraft x-y plane)-->
+            <Field Name="StartElevation" Type="real32" Units="degree"/>
+
+            <!-- The ending elevation for the sensor scan (boresight angle positive from aircraft x-y plane)-->
+            <Field Name="EndElevation" Type="real32" Units="degree"/>
+
+            <!-- Number of sensor sweeps to perform.  A zero value denotes indefinite number of sweeps. -->
+            <Field Name="Cycles" Type="uint32"/>
+        </Struct>
+
+        <!--
+            An action that commands a gimbal to make necessary rotations to allow mounted sensors to stare at the
+            given location.Individual sensors on the gimbal are controlled via the {@link CameraAction} message.<br/>
+        -->
+        <Struct Name="GimbalStareAction" Extends="PayloadAction">
+
+            <!-- The commanded stare point. A valid GimbalStareAction must define the Starepoint (null not allowed). -->
+            <Field Name="Starepoint" Type="Location3D" Units="None" Optional="false" />
+            
+            <!-- Duration for the stare operation.  Zero denotes an indefinate stare time -->
+            <Field Name="Duration" Type="int64" Units="milliseconds"/>
+
+        </Struct>
+
+        <!-- Describes the current state of a gimbal and the sensors mounted within it. -->
+        <Struct Name="GimbalState" Extends="PayloadState">
+            <!-- Current pointing mode of the gimbal -->
+            <Field Name="PointingMode" Type="GimbalPointingMode" Units="None" />
+
+            <!-- Current azimuth angle of the gimbal boresight (positive from vehicle x-axis). -->
+            <Field Name="Azimuth" Type="real32" Units="degree" />
+
+            <!-- Current elevation angle of the gimbal boresight (positive from vehicle x-y plane). -->
+            <Field Name="Elevation" Type="real32" Units="degree" />
+
+            <!-- Current rotation angle of the gimbal boresight (0 degrees aligned with aircraft normal, positive clockwise). -->
+            <Field Name="Rotation" Type="real32" Units="degree" />
+        </Struct>
+
+        <!-- Commands an aircraft to start flying towards a given waypoint in its waypoint list.  This action depends on an
+        aircraft already having the given waypoint in its current list.  A {@link MissionCommand} should be sent if new waypoints
+        are required.  The aircraft will remain in waypoint mode and will continue to fly its linked-list waypoint route until
+        otherwise commanded.
+        -->
+        <Struct Name="GoToWaypointAction" Extends="NavigationAction">
+            <!-- Waypoint number to which the aircraft should fly. -->
+            <Field Name="WaypointNumber" Type="int64"/>
+        </Struct>
+
+        <!--
+            Describes the outer boundary of operations for the entire UAV team or a subset of the vehicle team.
+        -->
+        <Struct Name="KeepInZone" Extends="AbstractZone">
+        </Struct>
+
+        <!--
+            Defines a keep-out zone.  This describes a volume where vehicles are not allowed
+            to fly. For standard zones, this Struct defines lateral boundaries.
+        -->
+        <Struct Name="KeepOutZone" Extends="AbstractZone">
+            <!--
+                The type of zone <br/>
+                Physical (physical boundary such as terrain or buildings) <br/>
+                Regulatory (fire control, flight corridor)  <br/>
+                Acoustic  Defines an area for acoustical avoidance <br/>
+                Threat  Defines an area where a threat is present.
+            -->
+            <Field Name="ZoneType" Type="ZoneAvoidanceType" Units="None" />
+        </Struct>
+
+        <!-- Defines a line search task.
+            A line search is a list of points that forms a polyline.  The ViewAngleList determines
+            from which direction the line may be viewed.  View angles are specified using the {@link Wedge} type. If the
+            UseInertialViewAngles option is true, then wedges are defined in terms of North-East coordinates, otherwise
+            wedges are defined relative to the line segment currently being viewed (a vector from point i through point i+1).
+            To be a valid look angle, the line segment must be viewed from an angle within the bounds of the wedge.
+        -->
+        <Struct Name="LineSearchTask" Extends="SearchTask">
+
+            <!-- Line to search -->
+            <Field Name="PointList" Type="Location3D[]" MaxArrayLength="1024" />
+
+            <!-- Defines a list of acceptable look-angles for this task.  See the documentation above for details. -->
+            <Field Name="ViewAngleList" Type="Wedge[]" MaxArrayLength="16" />
+
+            <!-- If true, the ViewAngleList specifies inertial (North-East) angles. See documentation above. -->
+            <Field Name="UseInertialViewAngles" Type="bool" Default="false"/>
+
+        </Struct>
+        
+        <!--
+         Base action class for all navigation actions that the vehicle may take
+         -->
+         <Struct Name="NavigationAction" Extends="VehicleAction">
+         </Struct>
+         
+        <!--
+            Used to command a vehicle to go into a vehicle-specific hold pattern.
+        -->
+        <Struct Name="LoiterAction" Extends="NavigationAction">
+            <!--
+                The loiter shape that the vehicle should fly
+            -->
+            <Field Name="LoiterType" Type="LoiterType" Units="none" Default="VehicleDefault"/>
+
+            <!--
+                The radius for the loiter. May be used for any curvature parameter of the vehicle specific hold pattern.
+            -->
+            <Field Name="Radius" Type="real32" Units="meter"/>
+
+            <!--
+                Direction of the major axis of the vehicle specific hold pattern.  For Racetracks and Figure-Eights, this is the direction of
+                the long axis.  Hovering loiters, this is direction the aircraft should face in the loiter.
+            -->
+            <Field Name="Axis" Type="real32" Units="degree" Default="0"/>
+
+            <!-- Used in racetrack and figure-eight loiters. For figure-eight loiters, this is the length between the focii of
+                 the turn circles. For racetracks, this is the length of the straight-away. Both types have a total length of
+                 Length + 2 * Radius.  For figure-eight loiters, if Length is less than 2 * radius, then this field is ignored.
+            -->
+            <Field Name="Length" Type="real32" Units="meter"/>
+
+            <!--
+                Direction of travel. 
+            -->
+            <Field Name="Direction" Type="LoiterDirection" Units="None" Default="VehicleDefault"/>
+
+            <!--
+                The time to loiter at this point before continuing.  A negative time value denotes
+                perpetual orbit.
+            -->
+            <Field Name="Duration" Type="int64" Units="milliseconds"/>
+
+            <!-- Commanded True Airspeed -->
+            <Field Name="Airspeed" Type="real32" Units="meter/sec" />
+
+            <!-- The geometric center point of the loiter. A valid LoiterAction must define Location (null not allowed). -->
+            <Field Name="Location" Type="Location3D" Optional="false" />
+
+        </Struct>
+
+        <!-- Used to define a loiter request from the automation service. -->
+        <Struct Name="LoiterTask" Extends="Task">
+
+            <!--
+                The desired loiter action to take. Must not be null.
+            -->
+            <Field Name="DesiredAction" Type="LoiterAction" Units="none" Optional="false" />
+
+        </Struct>
+
+        <!--
+            A simple waypoint class for vehicle routing
+        -->
+        <Struct Name="Waypoint" Extends="Location3D">
+            <!-- A unique waypoint number -->
+            <Field Name="Number" Type="int64" Units="None" />
+
+            <!--
+                The index of the next waypoint in the list. Consecutively numbered waypoints are <b>not</b> considered linked, the link must be explicitly stated in this field.
+            -->
+            <Field Name="NextWaypoint" Type="int64" Units="None" />
+
+            <!-- Commanded speed for this waypoint.  See SpeedType for defintion of this field. -->
+            <Field Name="Speed" Type="real32" Units="meter/sec" />
+
+            <!-- Type of commanded speed
+            -->
+            <Field Name="SpeedType" Type="SpeedType"/>
+
+            <!-- The commanded climb rate.  Positive values upwards.  For surface (ground and sea) entities, this value is ignored. -->
+            <Field Name="ClimbRate" Type="real32" Units="meter/sec" />
+
+            <!-- The type of turn to execute
+            -->
+            <Field Name="TurnType" Type="TurnType" Default="TurnShort"/>
+
+
+            <!-- A list of actions to perform at this waypoint -->
+            <Field Name="VehicleActionList" Type="VehicleAction[]" MaxArrayLength="8" Units="None" />
+
+            <!-- A waypoint for contingency (e.g. lost-comm, alternate mission) operations.  A value of zero denotes
+            that no contingency point is specified. -->
+            <Field Name="ContingencyWaypointA" Type="int64" Default="0"/>
+            
+            <!-- A waypoint for contingency (e.g. lost-comm, alternate mission) operations.  A value of zero denotes
+            that no contingency point is specified. -->
+            <Field Name="ContingencyWaypointB" Type="int64" Default="0"/>
+
+            <!--
+                A list of tasks that are associated with this waypoint.  A length of zero denotes no associated tasks.
+                This field is for analysis purposes.  The automation service should associate a list of tasks with each waypoint to enable
+                analysis of the allocation of tasks to vehicles.
+            -->
+            <Field Name="AssociatedTasks" Type="int64[]" MaxArrayLength="8" />
+
+        </Struct>
+
+        <!--
+            A mission to be performed by a vehicle.  This sends a new list of waypoints to an aircraft and commands the aircraft
+            to start flying the mission starting at the specified "FirstWaypoint".  A Mission command is made up of a linked
+            list of waypoints.  However, the waypoint list may contain other waypoints that are not linked to the main route path
+            that begins with "FirstWaypoint".<br/>
+            <i>Note on end-of-mission behavior: </i> The last waypoint in the linked route list should include some terminal
+            behavior. For instance, the last waypoint should be directed with itself as the "Next Waypoint" or there should be
+            an indefinite loiter assigned in the last waypoint's "VehicleActionList".<br/>
+            VehicleActionLists are performed immediately when MissionCommand is received, e.g. camera pointed toward first waypoint.
+        -->
+        <Struct Name="MissionCommand" Extends="VehicleActionCommand">
+
+            <!-- The list of waypoints associated with this mission task.  Waypoints are linked, but the waypoint list may
+            contain waypoints that are not necessarily linked.  Multiple linked routes may be sent in a single waypoint list.
+            Waypoints are not necessarily ordered in the list.
+            -->
+            <Field Name="WaypointList" Type="Waypoint[]" MaxArrayLength="1024" Units="None" />
+
+            <!-- ID of the first waypoint to follow. -->
+            <Field Name="FirstWaypoint" Type="int64"/>
+        </Struct>
+
+        <!--
+            Used to request a must-fly task with optional action list.
+        -->
+        <Struct Name="MustFlyTask" Extends="Task">
+
+            <!-- Point that vehicle must fly through. Null position not allowed. -->
+            <Field Name="Position" Type="Location3D" Optional="false" />
+
+            <!-- Denotes whether altitude should be used in this MustFlyTask. If false, the
+            aircraft should maintain altitude according to previous commands.
+            -->
+            <Field Name="UseAltitude" Type="bool" Default="true"/>
+
+        </Struct>
+
+        <!--
+            Used to send operator interaction information to automation system during task execution
+        -->
+        <Struct Name="OperatorSignal">
+
+            <!-- Content of signal (e.g. button clicked) -->
+            <Field Name="Signals" Type="KeyValuePair[]" MaxArrayLength="8" />
+
+        </Struct>
+
+        <!-- Collection of extrusions/zones that define operating region -->
+        <Struct Name="OperatingRegion">
+            
+            <!-- Operating region ID -->
+            <Field Name="ID" Type="int64" />
+            
+            <!-- Abstract Zone IDs in which the entity must remain during operation -->
+            <Field Name="KeepInAreas" Type="int64[]" MaxArrayLength="32" />
+            
+            <!-- Keep Out Zone IDs that an entity must remain out of during operation -->
+            <Field Name="KeepOutAreas" Type="int64[]" MaxArrayLength="32" />
+        </Struct>
+        
+        <!--
+            This is the primary message for requesting action from the automation service. The automation service is to use the list of
+            vehicles, tasks (with associated task relationships), keep-out zones, and keep-in zones to produce {@link MissionCommands}
+            for the vehicles requested. The automation service should only produce commands for the vehicles requested, but is not
+            required to produce plans for all vehicles. If multiple {@link AutomationRequest} messages are sent to the automation service, only
+            the last message will be considered, i.e. a new plan request supercedes all previous ones.
+        -->
+        <Struct Name="AutomationRequest">
+            <!-- List of entities to consider when planning. -->
+            <Field Name="EntityList" Type="int64[]" MaxArrayLength="16" />
+            <!-- list of task IDs (defined by {@link Task} messages) to be planned for by the automation service -->
+            <Field Name="TaskList" Type="int64[]" MaxArrayLength="32" />
+            <!-- string containing the relationship between requested tasks. If empty, all tasks are to be completed in any order. The
+                 format of the string is specific to the automation service. This relationship string is the mechanism for incorporating
+                 task precedence, priority, timing, etc. -->
+            <Field Name="TaskRelationships" Type="string"/>
+            <!-- Operating region ID to be considered during planning -->
+            <Field Name="OperatingRegion" Type="int64"/>
+            <!--
+                 Denotes that that the planner should restart any tasks that have been performed or are currently being performed.  This is useful in situations when a task
+                 request contains tasks that have been requested previously, and the operator wishes to restart the mission plans from the beginning.
+            -->
+            <Field Name="RedoAllTasks" Type="bool" Default="false"/>
+        </Struct>
+
+        <!-- Point search task -->
+        <Struct Name="PointSearchTask" Extends="SearchTask">
+
+            <!-- Point to search. A valid PointSearchTask must define SearchLocation (null not allowed). -->
+            <Field Name="SearchLocation" Type="Location3D" Optional="false" />
+
+            <!--Minimum distance that an aircraft must maintain from the point of interest. -->
+            <Field Name="StandoffDistance" Type="real32" Units="meter" Default="0"/>
+
+            <!-- A list of acceptable look-angles for this task.  Each wedge is defined relative to true North. To be a valid
+                 look angle, a sensor must be looking from a direction within the bounds of the wedge.
+            -->
+            <Field Name="ViewAngleList" Type="Wedge[]" MaxArrayLength="64" />
+
+        </Struct>
+
+        <!-- Describes a polygon defined by geographic locations. Altitude value of points is ignored. -->
+        <Struct Name="Polygon" Extends="AbstractGeometry">
+            <!-- Boundary points for the polygon -->
+            <Field Name="BoundaryPoints" Type="Location3D[]" MaxArrayLength="64" />
+        </Struct>
+
+        <!-- Defines a rectangular shape based on a corner point, width, height, and rotation -->
+        <Struct Name="Rectangle" Extends="AbstractGeometry">
+            <!-- Center point of the rectangle (note altitude value is ignored). A valid Rectangle must define CenterPoint (null not allowed). -->
+            <Field Name="CenterPoint" Type="Location3D" Optional="false" />
+            <!-- Width of the rectangle -->
+            <Field Name="Width" Type="real32" Units="meter"/>
+            <!-- Height of the rectangle -->
+            <Field Name="Height" Type="real32" Units="meter"/>
+            <!-- Rotation of the rectangle around the center point (positive from north axis towards east) -->
+            <Field Name="Rotation" Type="real32" Units="degree" Default="0"/>
+        </Struct>
+
+        <!--
+            Sent to denote that the target id numbers in the list are obsolete and will not be requested again. This can occur when the user
+            has replaced an old task with a new one, or has deleted a task permanently.  This is an optional message that automation services can ignore,
+            depending on how they manage tasks.
+        -->
+        <Struct Name="RemoveTasks">
+            <Field Name="TaskList" Type="int64[]" MaxArrayLength="32" />
+        </Struct>
+
+
+
+        <!--
+            Provides information regarding automation service compuation percent complete.  The automation service should send this when the computation of a
+            mission plan may take more than a few seconds, or when an error occurs (such as the inability to create one or more
+            mission commands given the task set)
+        -->
+        <Struct Name="ServiceStatus">
+
+            <!-- The estimated percentage completed for an automation process. -->
+            <Field Name="PercentComplete" Type="real32" />
+
+            <!-- Status from the automation service to the simulation regarding errors or conditions. -->
+            <Field Name="Info" Type="KeyValuePair[]" MaxArrayLength="8" />
+
+            <!--
+                Describes the type of message conveyed. <br/>
+                Information.  Used to note normal progress updates <br/>
+                Warning.  Notes non-fatal problem(s) in data or processing <br/>
+                Error.  Notes fatal problem(s) <br/>
+            -->
+            <Field Name="StatusType" Type="ServiceStatusType"/>
+        </Struct>
+
+        <!--
+            Provides information regarding the state of a simulation or real-world.  <br/>
+        -->
+        <Struct Name="SessionStatus">
+            <!-- The current state of the session -->
+            <Field Name="State" Type="SimulationStatusType" />
+
+            <!--
+                The simulation or scenario start time.  This is absolute time in milliseconds since epoch (1 Jan 1970 00:00 GMT).
+                If this field is zero, then no start time is specfied and each sim component is to use the first receipt of
+                this Struct with a SimStatus of "Running" as the start time.
+            -->
+            <Field Name="StartTime" Type="int64" Units="millisecond" />
+
+            <!--
+                The current time in scenario time .  This is the internal time for the simulation, not the absolute time
+                since epoch, as in "StartTime".  The internal simualation time is based on the start time and the real-time
+                muiltiple, which can change throughout the simulation.
+            -->
+            <Field Name="ScenarioTime" Type="int64" Units="millisecond"/>
+
+            <!--
+                The ratio of simulation time to real time.  Values greater than 1.0 denote faster than real-time.  Values
+                less than 0.0 have no meaning.
+            -->
+            <Field Name="RealTimeMultiple" Type="real32"/>
+
+            <!--
+                A field to store command-line style parameters used to initialize or modify an execution.  
+            -->
+            <Field Name="Parameters" Type="KeyValuePair[]" MaxArrayLength="8" />
+        </Struct>
+
+        <!--
+            A message that specifies actions that should be performed by the specified aircraft.  Actions can be navigational modes
+            or payload actions.
+        -->
+        <Struct Name="VehicleActionCommand">
+
+            <!-- A unique id for this command.  automation services should issue new ids with every new command -->
+            <Field Name="CommandID" Type="int64"/>
+
+            <!-- The id of the vehicle for this command. -->
+            <Field Name="VehicleID" Type="int64" Units="None" />
+
+            <!-- a set of actions to be performed immediately by the vehicle. -->
+            <Field Name="VehicleActionList" Type="VehicleAction[]" MaxArrayLength="8" />
+
+            <!-- Denotes the current execution status of this command. -->
+            <Field Name="Status" Type="CommandStatusType"/>
+            
+        </Struct>
+
+        <!-- An action for controlling which sensor is being transmitted on a video stream. -->
+        <Struct Name="VideoStreamAction" Extends="VehicleAction">
+            <!-- A unique id for the video stream. -->
+            <Field Name="VideoStreamID" Type="int32" Units="None" />
+
+            <!-- The PayloadID of the sensor which should be activated on this video stream. -->
+            <Field Name="ActiveSensor" Type="int32" Units="None" />
+        </Struct>
+
+
+
+        <!--
+            Description of a video stream transmitted by the aircraft (specifically, what sensors
+            are available to be transmitted via the stream).
+        -->
+        <Struct Name="VideoStreamConfiguration" Extends="PayloadConfiguration">
+            <!--
+                 List the PayloadID of each sensor that is multiplexed into this stream. The {@link VideoStreamAction} message
+                 selects which of these sensors is currently active on the stream.
+            -->
+            <Field Name="AvailableSensorList" Type="int64[]" MaxArrayLength="8" Units="None" />
+        </Struct>
+
+        <!-- Describes the current state of a video stream. -->
+        <Struct Name="VideoStreamState" Extends="PayloadState">
+
+            <!-- The PayloadID of the sensor which is active on this video stream.. -->
+            <Field Name="ActiveSensor" Type="int64" Units="None" />
+        </Struct>
+
+        <!-- Encapsulates data from an automation service to a client.  The automation service may respond with
+        MissionCommands, VehicleActionCommands, or no commands at all.  This type is meant to serve as a single
+        container for commands that are a response to {@link AutomationRequest}
+        -->
+        <Struct Name="AutomationResponse">
+            <!-- A list of MissionCommands issued by the automation service -->
+            <Field Name="MissionCommandList" Type="MissionCommand[]" MaxArrayLength="16" />
+            <!-- A list of VehicleActionCommands issued by the automation service -->
+            <Field Name="VehicleCommandList" Type="VehicleActionCommand[]" MaxArrayLength="64" />
+            <!-- Status from the automation service to the simulation regarding errors or conditions. -->
+            <Field Name="Info" Type="KeyValuePair[]" MaxArrayLength="8" />
+        </Struct>
+
+        <!-- Denotes a list of zones that should be removed permanently from the scenario. -->
+        <Struct Name="RemoveZones">
+            <!-- List of zones to remove -->
+            <Field Name="ZoneList" Type="int64[]" MaxArrayLength="32" />
+        </Struct>
+
+        <!-- Denotes a list of entities that should be removed permanently from the scenario. -->
+        <Struct Name="RemoveEntities">
+            <!-- List of entities to remove -->
+            <Field Name="EntityList" Type="int64[]" MaxArrayLength="32" />
+        </Struct>
+
+        <!-- A command to "direct" the aircraft on a particular vector. This can be passed directly to the
+            autopilot, or be directed to the operator as the current command to follow. -->
+        <Struct Name="FlightDirectorAction" Extends="NavigationAction">
+            <!-- Speed to fly -->
+            <Field Name="Speed" Type="real32" Units="meter/sec"/>
+            <!-- type of speed to fly -->
+            <Field Name="SpeedType" Type="SpeedType" Default="Airspeed"/>
+            <!-- True heading to fly -->
+            <Field Name="Heading" Type="real32" Units="degree"/>
+            <!-- Altitude to maintain.  -->
+            <Field Name="Altitude" Type="real32" Units="meter"/>
+            <!-- Altitude type for specified altitude -->
+            <Field Name="AltitudeType" Type="AltitudeType" Default="MSL" />
+            <!-- target climb/descent rate for changing altitude -->
+            <Field Name="ClimbRate" Type="real32" Units="meter/sec"/>
+        </Struct>
+
+        <!-- Reports current weather conditions.  A weather report can cover a given geographic area or
+             the entire scenario.  Multiple reports can be issued during a scenario to indicate
+             varying weather conditions over time or space. Mission planners can use weather reports
+             to plan or can read current wind conditions as reported by aircraft as part of
+             {@link AirVehicleState}.
+        -->
+        <Struct Name="WeatherReport">
+
+            <!-- The area for which this report pertains.  If this is null, then the report
+                 pertains to the entire mission area. -->
+            <Field Name="Area" Type="AbstractZone" Default="null" Optional="true" />
+
+            <!-- Windspeed value for this area -->
+            <Field Name="WindSpeed" Type="real32" Units="meter/sec"/>
+
+            <!-- Wind direction.  Direction is the true heading from which the wind is blowing. -->
+            <Field Name="WindDirection" Type="real32" Units="degree"/>
+
+            <!-- Visibility, according to the <a href="http://en.wikipedia.org/wiki/Visibility">ICAO definition</a>. -->
+            <Field Name="Visibility" Type="real32" Units="meter"/>
+
+            <!-- Height of the bottom of a cloud layer, in MSL altitude. If there is more than one cloud layer, create
+                 WeatherReports for each zone that contains a cloud layer. A value of "0" denotes free-of-clouds -->
+            <Field Name="CloudCeiling" Type="real32" Units="meter"/>
+
+            <!-- Amount of cloud coverage for the given cloud layer.  Values should be 0..1, 0 denoting
+                 free-of-clouds, and 1 denoting overcast. -->
+            <Field Name="CloudCoverage" Type="real32"/>
+
+        </Struct>
+        
+        <!-- A command to follow a set of ground waypoints.  This is analogous to a {@link MissionCommand} for aircraft. -->
+        <Struct Name="FollowPathCommand" Extends="VehicleActionCommand" >
+            
+            <!-- The first waypoint to follow.  This should correspond to the number of a waypoint in the 
+            waypoint list. If this is zero, no waypoint will be followed. -->
+            <Field Name="FirstWaypoint" Type="int64"/>
+            
+            <!-- A list of waypoints to follow -->
+            <Field Name="WaypointList" Type="PathWaypoint[]" MaxArrayLength="1024" />
+            
+            <!-- Describes the start time for this action, in scenario time.  If this field is zero, the action is
+            completed immediately. -->
+            <Field Name="StartTime" Type="int64" Units="milliseconds" Default="0"/>
+            
+            <!-- Describes the end time for this action, in scenario time.  If this field is zero, it should be ignored, otherwise
+            The entity will travel until the stop time is reached. -->
+            <Field Name="StopTime" Type="int64" Units="milliseconds" Default="0"/>
+            
+            <!-- Describes how the entity should treat the end-of-path. Entities can complete the path once, or continuously.-->
+            <Field Name="RepeatMode" Type="TravelMode" Default="SinglePass"/>
+        </Struct>
+        
+        <!-- A waypoint that can be used as part of commanding entities' movement -->
+        <Struct Name="PathWaypoint" Extends="Waypoint">
+            <!-- The amount of time that an entity should pause before moving to the next waypoint. -->
+            <Field Name="PauseTime" Type="int64" Units="milliseconds" Default="0"/>
+        </Struct>
+        
+        <!-- Tells the Entity to stop at the given location.  If the location is null, then the 
+        entity will stop immediately. -->
+        <Struct Name="StopMovementAction" Extends="VehicleAction" >
+            <!-- A location at which the entity should stop.  If this is null, the entity will stop immediately. -->
+            <Field Name="Location" Type="Location3D" Series="CMASI" Default="null" Optional="true" />
+        </Struct>
+        
+        <!-- Handles the transfer of waypoints.  This does not affect the current navigation of the 
+             aircraft.  This can be used to transfer, or request the transfer of, waypoints. -->
+        <Struct Name="WaypointTransfer">
+            <!-- ID of the entity assoicated with the waypoints -->
+            <Field Name="EntityID" Type="int64"/>
+            
+            <!-- A list of wayppoints to transfer.  This may be empty if the transfer type is "RequestWaypoints" or "ClearWaypoints" -->
+            <Field Name="Waypoints" Type="Waypoint[]" MaxArrayLength="1024" />
+            
+            <!-- describes the transfer action to take -->
+            <Field Name="TransferMode" Type="WaypointTransferMode" Default="AddWaypoints"/>
+        </Struct>
+        
+        <!-- Commands a payload to stow. -->
+        <Struct Name="PayloadStowAction">
+            <!-- payload to stow -->
+            <Field Name="PayloadID" Type="int64"/>
+        </Struct>
+		
+		
+    </StructList>
+</MDM>
+
+
+
+
