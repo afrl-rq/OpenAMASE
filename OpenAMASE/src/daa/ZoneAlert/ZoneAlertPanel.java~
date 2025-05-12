@@ -125,7 +125,7 @@ public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEven
 		IDtoLine.put(vID, violationLine);
 		IDtoText.put(vID, violationTime);
 	    }
-	    AircraftColors.setNewColor(vID, Color.YELLOW);
+	    AircraftColors.makeNewColor(vID, Color.YELLOW);
 	}
 	else if (event instanceof ActiveZoneViolation){
             System.out.println("Active Zone Violation from AMASE");
@@ -143,7 +143,7 @@ public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEven
 	    if (!AZV2.contains(vID)){
 		AZV2.add(vID);
 	    }
-	AircraftColors.setNewColor(vID, Color.RED);
+	AircraftColors.makeNewColor(vID, Color.RED);
 	}
 	else if (event instanceof SessionStatus) {
             

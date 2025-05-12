@@ -41,7 +41,9 @@
                   <DockingPortNode>
                     <SplitNode dockingRegion="east" orientation="horizontal" percentage="0.7754237" region="left">
                       <DockingPortNode>
-                        <DockableNode dockableId="avtas.amase.ui.VehicleStateDisplay"/>
+			<!--                        <DockableNode dockableId="avtas.amase.ui.VehicleStateDisplay"/> -->
+			<DockableNode dockableId="ZoneAlert.ZoneAlertStateDisplay"/>
+			
                       </DockingPortNode>
                       <DockingPortNode>
                         <DockableNode dockableId="avtas.amase.ui.SimControls"/>
