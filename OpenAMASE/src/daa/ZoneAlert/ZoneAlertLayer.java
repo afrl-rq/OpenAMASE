@@ -26,10 +26,7 @@ import javax.swing.SwingConstants;
 
 import java.awt.*;
 import java.util.*;
-import java.lang.Math;
 
-//debugging
-import java.io.*;
 
 public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEventListener {
     private Map<Long, MapLine> IDtoLine = new HashMap<>();
@@ -93,7 +90,6 @@ public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEven
 	//  5.  Display the provided time next to the vehicle* (ideally,
 	//        next to the line)
 	else if (event instanceof ImminentZoneViolation){
-            System.out.println("Imminent Zone Violation from AMASE");
 	    ImminentZoneViolation proc = (ImminentZoneViolation) event;
 	    long vID = proc.getVehicleID();
 	    double TTI = proc.getTimeToIntercept();
@@ -114,11 +110,12 @@ public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEven
 		Location3D location = airVehicleState.getLocation();                            
                 MapText violationTime = new MapText();
 		MapLine violationLine = new MapLine(location.getLatitude(), location.getLongitude(), lat, lon);
-                violationLine.setPainter(Color.WHITE, 5);
+                violationLine.setPainter(Color.YELLOW, 5);
 		violationTime.setColor(Color.BLACK);
 		violationTime.setFill(Color.WHITE);
 		violationTime.setHorizontalAlignment(SwingConstants.CENTER);
 		violationTime.setLatLon(location.getLatitude(), location.getLongitude());
+                //set TTI, time to Intercept
 		violationTime.setText(Integer.toString((int) TTI/1000));
 		violationLine.setVisible(true);
 		violationTime.setVisible(true);
@@ -128,7 +125,6 @@ public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEven
 	    AircraftColors.setNewColor(vID, Color.YELLOW);
 	}
 	else if (event instanceof ActiveZoneViolation){
-            System.out.println("Active Zone Violation from AMASE");
 	    ActiveZoneViolation proc = (ActiveZoneViolation) event;
 	    long vID = proc.getVehicleID();
             if (IDtoLine.containsKey(vID)) {
