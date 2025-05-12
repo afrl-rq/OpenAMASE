@@ -167,7 +167,7 @@ public class ZoneAlertPanel extends JPanel {
         } else{
             alert.setColor(Color.WHITE);
         }
-        alert.repaint();   
+        repaint();   
     }
     
     
