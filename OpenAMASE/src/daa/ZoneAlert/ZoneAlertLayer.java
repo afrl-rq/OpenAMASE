@@ -25,6 +25,7 @@ import uxas.messages.ActiveZoneViolation;
 import javax.swing.SwingConstants;
 
 import java.awt.*;
+import java.text.DecimalFormat;
 import java.util.*;
 
 
@@ -57,10 +58,14 @@ public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEven
 	if (event instanceof AirVehicleState){
 	    AirVehicleState proc = (AirVehicleState) event;
             long id = proc.getID();
-	    if (IZV2.contains(id) || AZV2.contains(id)){
+	    if (IZV2.contains(id)) {
+                IZV2.remove(id);
+            }
+            if (AZV2.contains(id)){
 			IZV2.remove(id);
 			AZV2.remove(id);
-	    } else
+            }
+            if (!(IZV2.contains(id) || AZV2.contains(id))) {
 		if (IZV.contains(id) || AZV.contains(id)) {
 		    if (IZV.contains(id)) {
 			IZV.remove(id);
@@ -78,7 +83,8 @@ public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEven
 			}
 		    AircraftColors.makeOriginalColor((int) id);
 		}
-	}
+	    }
+        }
 	//Imminent Zone violation:
 	//  1.  Recover vehicle ID from message
 	//  2.  Register vehicle ID as having received imminent zone violation
@@ -92,7 +98,7 @@ public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEven
 	else if (event instanceof ImminentZoneViolation){
 	    ImminentZoneViolation proc = (ImminentZoneViolation) event;
 	    long vID = proc.getVehicleID();
-	    double TTI = proc.getTimeToIntercept();
+	    long TTI = proc.getTimeToIntercept();
 	    double lat = proc.getInterceptPositionLatLong().getNorth(); //change latitude
 	    double lon = proc.getInterceptPositionLatLong().getEast(); //change longitude
 	    AirVehicleState airVehicleState = ScenarioState.getAirVehicleState(vID);
@@ -116,11 +122,15 @@ public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEven
 		violationTime.setHorizontalAlignment(SwingConstants.CENTER);
 		violationTime.setLatLon(location.getLatitude(), location.getLongitude());
                 //set TTI, time to Intercept
-		violationTime.setText(Integer.toString((int) TTI/1000));
-		violationLine.setVisible(true);
-		violationTime.setVisible(true);
+                long TTIchange = System.currentTimeMillis();
+                DecimalFormat df = new DecimalFormat("#.00");
+                String ttf = df.format((double)(TTI - TTIchange)/1000.0);
+                violationTime.setText(ttf);
+                
 		IDtoLine.put(vID, violationLine);
 		IDtoText.put(vID, violationTime);
+                IDtoLine.get(vID).setVisible(true);
+                IDtoText.get(vID).setVisible(true);
 	    }
 	    AircraftColors.setNewColor(vID, Color.YELLOW);
 	}

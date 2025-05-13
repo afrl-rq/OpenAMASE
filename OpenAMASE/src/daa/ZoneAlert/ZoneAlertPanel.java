@@ -86,7 +86,7 @@ public class ZoneAlertPanel extends JPanel {
         
         JPanel alertPanel = new JPanel();
         alertPanel.setLayout(new BorderLayout());
-        alertPanel.add(alert, BorderLayout.WEST);
+        alertPanel.add(alert, BorderLayout.CENTER);
         
         JPanel totalPanel = new JPanel();
         totalPanel.setLayout(new BorderLayout());
@@ -103,8 +103,6 @@ public class ZoneAlertPanel extends JPanel {
     
     public static class MiniAlert extends JPanel{
         //define the MiniAlert button
-        int cx = 0;
-        int cy = 0;
         int width = 50;
         int height = 50;
         Color Alert;
@@ -116,20 +114,32 @@ public class ZoneAlertPanel extends JPanel {
             Outline = Color.BLACK;
             setPreferredSize(new Dimension(50, 50));
             setMinimumSize(getPreferredSize());
-            cx = 0;
-            cy = 0;
         }
         
         @Override
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
+            
             Graphics2D g2 = (Graphics2D) g.create();
+            int panelWidth = getWidth();
+            int panelHeight = getHeight();
+            int x = (panelWidth - width) / 2;
+            int y = (panelHeight - height) / 2;
             g2.setStroke(new BasicStroke(3));
-            g.setColor(Outline);
-            g.drawOval(cx, cy, width, height);
-            g.setColor(Alert);
-            g.fillOval(cx, cy, width, height);
-
+            g2.setColor(Outline);
+            g2.drawOval(x, y, width, height);
+            g2.setColor(Alert);
+            g2.fillOval(x, y, width, height);
+            g2.setColor(Color.BLACK);
+            g2.setFont(new Font("Arial", Font.BOLD, 20));
+            FontMetrics fm = g.getFontMetrics();
+            String text = "Zone";
+            int textWidth = fm.stringWidth(text);
+            int textHeight = fm.getHeight();
+            
+            int textX = x + (width - textWidth) / 2;
+            int textY = y + (height + textHeight/2) / 2;
+            g.drawString(text, textX, textY);
         }
         
         public void setColor(Color newColor){
@@ -139,10 +149,9 @@ public class ZoneAlertPanel extends JPanel {
         
         public void setBounds(int x, int y, int width, int height) {
             super.setBounds(x, y, width, height);
-            cx = 0;
-            cy = height/4;
+            x = width/2;
+            y = height/2;
         }
-        
     }
         
     public void update(AirVehicleState avs) {
