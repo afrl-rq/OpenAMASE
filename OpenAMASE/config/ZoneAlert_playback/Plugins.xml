@@ -59,7 +59,8 @@
     <Plugin Class="avtas.amase.ui.SimControls"/>
     <!--Object Class="avtas.amase.gui.DataDisplayGUI"/-->
     <Plugin Class="avtas.amase.scenario.ScenarioEventViewer"/>
-    <Plugin Class="avtas.amase.ui.VehicleStateDisplay"/>
+    <!--Plugin Class="avtas.amase.ui.VehicleStateDisplay"/-->
+    <Plugin Class="ZoneAlert.ZoneAlertStateDisplay"/>
     <Plugin Class="avtas.amase.scenario.ScenarioOutput"/>
     <!--Plugin Class="nasa.daidalus.WellClearStateDisplay"/-->
 
