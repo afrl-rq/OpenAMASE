@@ -37,6 +37,7 @@ public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEven
     private ArrayList<Long> AZV = new ArrayList<Long>();
     private ArrayList<Long> IZV2 = new ArrayList<Long>();
     private ArrayList<Long> AZV2 = new ArrayList<Long>();
+    private double ssStartTime = 0;
 
     
     @Override
@@ -58,14 +59,15 @@ public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEven
 	if (event instanceof AirVehicleState){
 	    AirVehicleState proc = (AirVehicleState) event;
             long id = proc.getID();
-	    if (IZV2.contains(id)) {
-                IZV2.remove(id);
-            }
-            if (AZV2.contains(id)){
-			IZV2.remove(id);
-			AZV2.remove(id);
-            }
-            if (!(IZV2.contains(id) || AZV2.contains(id))) {
+            if (IZV2.contains(id) || AZV2.contains(id)){
+        	    if (IZV2.contains(id)) {
+                        IZV2.remove(id);
+                    }
+                    if (AZV2.contains(id)){
+                        	IZV2.remove(id);
+                		AZV2.remove(id);
+                    }
+            } else if (!(IZV2.contains(id) || AZV2.contains(id))) {
 		if (IZV.contains(id) || AZV.contains(id)) {
 		    if (IZV.contains(id)) {
 			IZV.remove(id);
@@ -76,10 +78,12 @@ public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEven
 		} else {
 		    //Make the IZV line and text invisible
 		    if (IDtoLine.containsKey(id)) {
-                            IDtoLine.get(id).setVisible(false);
+                            getList().remove(IDtoLine.get(id));
+                            IDtoLine.remove(id);
 			}
 		    if (IDtoText.containsKey(id)) {
-			    IDtoText.get(id).setVisible(false);
+                            getList().remove(IDtoLine.get(id));
+			    IDtoText.remove(id);
 			}
 		    AircraftColors.makeOriginalColor((int) id);
 		}
@@ -98,10 +102,11 @@ public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEven
 	else if (event instanceof ImminentZoneViolation){
 	    ImminentZoneViolation proc = (ImminentZoneViolation) event;
 	    long vID = proc.getVehicleID();
-	    long TTI = proc.getTimeToIntercept();
+            long TTI = proc.getTimeToIntercept();
 	    double lat = proc.getInterceptPositionLatLong().getNorth(); //change latitude
 	    double lon = proc.getInterceptPositionLatLong().getEast(); //change longitude
 	    AirVehicleState airVehicleState = ScenarioState.getAirVehicleState(vID);
+            double TSS = ScenarioState.getTime(); //time since start, double, seconds
 	    if (!IZV.contains(vID)){
 		IZV.add(vID);
 	    }
@@ -111,8 +116,8 @@ public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEven
 	    if (airVehicleState != null) {
                 getList().remove(IDtoLine.get(vID));
                 getList().remove(IDtoText.get(vID));
-                IDtoLine.remove(vID);
-                IDtoText.remove(vID);
+//                IDtoLine.remove(vID);
+//                IDtoText.remove(vID);
 		Location3D location = airVehicleState.getLocation();                            
                 MapText violationTime = new MapText();
 		MapLine violationLine = new MapLine(location.getLatitude(), location.getLongitude(), lat, lon);
@@ -120,28 +125,32 @@ public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEven
 		violationTime.setColor(Color.BLACK);
 		violationTime.setFill(Color.WHITE);
 		violationTime.setHorizontalAlignment(SwingConstants.CENTER);
-		violationTime.setLatLon(location.getLatitude(), location.getLongitude());
+		violationTime.setLatLon(lat, lon);
                 //set TTI, time to Intercept
-                long TTIchange = System.currentTimeMillis();
+                double TTIchange = TTI/1000.0;
                 DecimalFormat df = new DecimalFormat("#.00");
-                String ttf = df.format((double)(TTI - TTIchange)/1000.0);
+                String ttf = df.format(TTIchange - TSS);
                 violationTime.setText(ttf);
-                
+                getList().add(violationLine);  
+                getList().add(violationTime);     
 		IDtoLine.put(vID, violationLine);
 		IDtoText.put(vID, violationTime);
-                IDtoLine.get(vID).setVisible(true);
-                IDtoText.get(vID).setVisible(true);
+//                IDtoLine.get(vID).setVisible(true);
+//                IDtoText.get(vID).setVisible(true);
 	    }
 	    AircraftColors.setNewColor(vID, Color.YELLOW);
+            project(getProjection());
 	}
 	else if (event instanceof ActiveZoneViolation){
 	    ActiveZoneViolation proc = (ActiveZoneViolation) event;
 	    long vID = proc.getVehicleID();
             if (IDtoLine.containsKey(vID)) {
-                IDtoLine.get(vID).setVisible(false);
+                getList().remove(IDtoLine.get(vID));
+                IDtoLine.remove(vID);
 		}
             if (IDtoText.containsKey(vID)) {
-                IDtoText.get(vID).setVisible(false);
+                getList().remove(IDtoText.get(vID));
+                IDtoText.remove(vID);
             }
 	    if (!AZV.contains(vID)){
 		AZV.add(vID);
@@ -150,15 +159,16 @@ public class ZoneAlertLayer extends GraphicsLayer<MapGraphic> implements AppEven
 		AZV2.add(vID);
 	    }
 	AircraftColors.setNewColor(vID, Color.RED);
+        project(getProjection());
 	}
 	else if (event instanceof SessionStatus) {
-            
-            for (Map.Entry<Long, MapLine> entry : IDtoLine.entrySet()){
-		getList().add(entry.getValue());
-            }
-            for(Map.Entry<Long, MapText> entry : IDtoText.entrySet()){
-		getList().add(entry.getValue());
-            }   
+        //    
+        //    for (Map.Entry<Long, MapLine> entry : IDtoLine.entrySet()){
+	//	getList().add(entry.getValue());
+        //    }
+        //    for(Map.Entry<Long, MapText> entry : IDtoText.entrySet()){
+	//	getList().add(entry.getValue());
+        //    }   
 	    project(getProjection());
         }
     }
