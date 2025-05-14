@@ -50,12 +50,14 @@ public class ZoneAlertPanel extends JPanel {
         
         JPanel textArea = new JPanel(new BorderLayout(5,0));
         JPanel labelPanel = new JPanel(new GridLayout(0, 1));
+        JPanel alertLabelPanel = new JPanel(new GridLayout(0, 1));
         
         labelPanel.add(new JLabel("Altitude"));
         labelPanel.add(new JLabel("Speed"));
         labelPanel.add(new JLabel("Heading"));
         labelPanel.add(new JLabel("Vert Speed"));
         labelPanel.add(new JLabel("Nav Mode"));
+        alertLabelPanel.add(new JLabel("Zone Alert"));
         
         textArea.add(labelPanel, BorderLayout.WEST);
         
@@ -87,6 +89,7 @@ public class ZoneAlertPanel extends JPanel {
         JPanel alertPanel = new JPanel();
         alertPanel.setLayout(new BorderLayout());
         alertPanel.add(alert, BorderLayout.CENTER);
+        alertPanel.add(alertLabelPanel, BorderLayout.NORTH);
         
         JPanel totalPanel = new JPanel();
         totalPanel.setLayout(new BorderLayout());
@@ -130,16 +133,16 @@ public class ZoneAlertPanel extends JPanel {
             g2.drawOval(x, y, width, height);
             g2.setColor(Alert);
             g2.fillOval(x, y, width, height);
-            g2.setColor(Color.BLACK);
-            g2.setFont(new Font("Arial", Font.BOLD, 20));
-            FontMetrics fm = g.getFontMetrics();
-            String text = "Zone";
-            int textWidth = fm.stringWidth(text);
-            int textHeight = fm.getHeight();
-            
-            int textX = x + (width - textWidth) / 2;
-            int textY = y + (height + textHeight/2) / 2;
-            g.drawString(text, textX, textY);
+            //g2.setColor(Color.BLACK);
+            //g2.setFont(new Font("Arial", Font.BOLD, 20));
+            //FontMetrics fm = g.getFontMetrics();
+            //String text = "Zone";
+            //int textWidth = fm.stringWidth(text);
+            //int textHeight = fm.getHeight();
+           // 
+            //int textX = x + (width - textWidth) / 2;
+            //int textY = y + (height + textHeight/2) / 2;
+            //g.drawString(text, textX, textY);
         }
         
         public void setColor(Color newColor){
