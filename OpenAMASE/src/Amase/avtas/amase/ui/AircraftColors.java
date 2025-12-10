@@ -34,6 +34,7 @@ import java.util.List;
 public class AircraftColors {
 
     static final List<Color> colorList = new ArrayList<>();
+    static final List<Color> newColorList = new ArrayList<>();
     static Color defaultColor = Color.WHITE;
 
     static {
@@ -49,6 +50,7 @@ public class AircraftColors {
                     if (colorStr != null) {
                         Color color = Colors.getColor(colorStr, defaultColor);
                         colorList.add(color);
+                        newColorList.add(color);
                     }
 
                 }
@@ -64,6 +66,15 @@ public class AircraftColors {
             colorList.add((Color.BLUE));
             colorList.add((new Color(128, 0, 128)));  //purple
             colorList.add((new Color(0, 255, 255)));  //aqua
+            
+            newColorList.add((Color.CYAN));
+            newColorList.add((Color.MAGENTA));
+            newColorList.add((new Color(Integer.decode("#99FF66"))));  // Yellow-Green
+            newColorList.add((Color.ORANGE));
+            newColorList.add((Color.PINK));
+            newColorList.add((Color.BLUE));
+            newColorList.add((new Color(128, 0, 128)));  //purple
+            newColorList.add((new Color(0, 255, 255)));  //aqua
         }
     }
 
@@ -84,7 +95,30 @@ public class AircraftColors {
         Color color = colorList.get(index);
         return (color == null ? defaultColor : color);
     }
+    
+        public static Color getNewColor(long id) {
+        int index = ScenarioState.getAirVehicleOrder().indexOf(id);
+        if (index == -1) {
+            return defaultColor;
+        }
+        index = index % colorList.size();
+        Color color = newColorList.get(index);
+        return (color == null ? defaultColor : color);
+    }
 
+    public static void setNewColor(long id, Color color){
+        int index = ScenarioState.getAirVehicleOrder().indexOf(id);
+        index = index % colorList.size();
+        newColorList.set(index, color);
+    }
+    
+    public static void makeOriginalColor(long id){
+        int index = ScenarioState.getAirVehicleOrder().indexOf(id);
+        index = index % colorList.size();
+        Color color = colorList.get(index);
+        newColorList.set(index, color);
+    }
+    
     public static Color getDefaultColor() {
         return defaultColor;
     }

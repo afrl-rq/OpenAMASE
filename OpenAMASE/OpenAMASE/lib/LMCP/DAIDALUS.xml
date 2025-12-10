@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE MDM SYSTEM 'MDM.DTD'>
+<MDM>
+    <SeriesName>DAIDALUS</SeriesName>
+    <Namespace>larcfm/DAIDALUS</Namespace>
+    <Version>1</Version>
+    <Comment> MDM Comment </Comment>
+    <EnumList>
+        <!-- DAIDALUS classification of violation type -->
+        <Enum Name="BandsRegion">
+            <!-- Most severe classification of violation -->
+            <Entry Name="NEAR" Value="3"/>
+            <!-- Nominal classification of violation -->
+            <Entry Name="MID" Value="4"/>
+            <!-- Least severe classification of violation -->
+            <Entry Name="FAR" Value="5"/>
+        </Enum>
+    </EnumList>
+    <StructList>
+        <!-- Interval consisting of the lower and upper headings (measured from true North) that will result in a WellClear violation within the detection window -->
+        <Struct Name="GroundHeadingInterval" >
+                <!-- array containing lower and upper headings of detected WellClear violations in degrees -->
+            <Field Name="GroundHeadings" Type="real64[2]" Units="degrees"/>
+        </Struct>
+        <!-- Interval consisting of the lower and upper speeds that will result in a WellClear violation within the detection window -->
+        <Struct Name="GroundSpeedInterval" >
+            <!-- array containing lower and upper speeds of detected WellClear violations in meters per second -->
+            <Field Name="GroundSpeeds" Type="real64[2]" Units="meters/second" />
+        </Struct>
+        <!-- Interval consisting of the lower and upper vertical speeds that will result in a WellClear violation within the detection window -->
+        <Struct Name="VerticalSpeedInterval" >
+            <!-- array containing the lower and upper vertical of detected WellClear violation in meters per second -->
+            <Field Name="VerticalSpeeds" Type="real64[2]" Units="meters/second" />
+        </Struct>
+        <!-- Interval consisting of the lower and upper altitudes (MSL?) that will result in a WellClear violation within the detection window -->
+        <Struct Name="AltitudeInterval" >
+            <!-- array containing the lower and upper altitude of detected WellClear violation in meters -->
+            <Field Name="Altitude" Type="real64[2]" Units="meters" />
+        </Struct>
+            <!-- Interval consisting of the lower and upper heading (measured from true North) that will exit a WellClear violation in the minimum time -->
+        <Struct Name="GroundHeadingRecoveryInterval" >
+            <!-- array containg lower and upper heading of Recovery bands in degrees -->
+            <Field Name="RecoveryGroundHeadings" Type="real64[2]" Units="degrees" />
+        </Struct>
+            <!-- Interval consisting of the lower and upper speeds that will exit a WellClear violation in the minimum time -->
+        <Struct Name="GroundSpeedRecoveryInterval" >
+            <!-- array containing lower and upper speeds of Recovery bands in meters per second -->
+            <Field Name="RecoveryGroundSpeeds" Type ="real64[2]" Units="meters/second" />
+        </Struct>
+        <!-- Interval consisting of the lower and upper vertical speeds that will exit a WellClear violation in the minimum time -->
+        <Struct Name="VerticalSpeedRecoveryInterval" >
+            <!-- array containing the lower and upper vertical speeds of Recovery bans in meters per second -->
+            <Field Name="RecoveryVerticalSpeed" Type ="real64[2]" Units="meters/second" />
+        </Struct>
+        <!--Interval consisting of the lower and upper altitudes (MSL?) that will exit the WellClear Violation in the minimum time -->
+        <Struct Name="AltitudeRecoveryInterval" >
+            <!-- array containing the lower and upper altitude of Recovery bands in meters -->
+            <Field Name="RecoveryAltitude" Type="real64[2]" Units="meters" />
+        </Struct>
+        <!-- List of  intervals that will result in a WellClear violation within the detection window -->
+        <Struct Name="WellClearViolationIntervals">
+            <!-- List of Entities involved in Well Clear Violations -->
+            <Field Name="EntityList" Type="int64[]" Units="None" />
+            <!-- List of times to violation -->
+            <Field Name="TimeToViolationList" Type="real64[]" Units="seconds" />
+            <!-- List of alert levels for intruders -->
+            <Field Name="AlertLevelList" Type="real64[]" Units="None" />
+            <!-- Entity Id that generated this message -->
+            <Field Name="EntityId" Type="uint32" Units="None" />
+            <!-- Ownship Heading -->
+            <Field Name="CurrentHeading" Type="real64" Units="degrees"/>
+            <!-- Ownship Ground Speed -->
+            <Field Name="CurrentGoundSpeed" Type="real64" Units="m/s" />
+            <!-- Ownship Vertical Speed -->
+            <Field Name="CurrentVerticalSpeed" Type="real64" Units="m/s" />
+            <!-- Ownship Altitude -->
+            <Field Name="CurrentAltitude" Type="real64" Units="m" />
+            <!-- Ownship Latitude -->
+            <Field Name="CurrentLatitude" Type="real64" Units="degrees" />
+            <!-- Ownship Longitude -->
+            <Field Name="CurrentLongitude" Type="real64" Units="degrees" />
+            <!-- Time of the current detection -->
+            <Field Name="CurrentTime" Type="real64" Units="seconds" />
+            <!-- List of ground heading intervals that will result in a WellClear violation within the detection window -->
+            <Field Name="WCVGroundHeadingIntervals" Type="GroundHeadingInterval[]" Units="None" />
+            <!-- List of the region types associated with detected ground heading violations -->
+            <Field Name="WCVGroundHeadingRegions" Type="BandsRegion[]" Units="None" />
+            <!-- List of ground speed intervals that will result in a WellClear violation within the detection window -->
+            <Field Name="WCVGroundSpeedIntervals" Type="GroundSpeedInterval[]" Units="None" />
+            <!-- List of the region types associated with detected ground speed violations -->
+            <Field Name="WCVGroundSpeedRegions" Type="BandsRegion[]" Units="None" />
+            <!-- List of vertical speed intervals that will result in a WellClear violation within the detection window -->
+            <Field Name="WCVVerticalSpeedIntervals" Type="VerticalSpeedInterval[]" Units="None" />
+            <!-- List of the region types associated with the detected vertical speed violation -->
+            <Field Name="WCVVerticalSpeedRegions" Type="BandsRegion[]" Units="None" />
+            <!-- List of altitude intervals that will result in a WellClear violation within the detection window -->
+            <Field Name="WCVAlitudeIntervals" Type="AltitudeInterval[]" Units="None" />
+            <!-- List of the region types associated with the detected altitude violations -->
+            <Field Name="WCVAltitudeRegions" Type="BandsRegion[]" Units="None" />
+            <!-- List of the Recovery ground heading intervals that will exit a WellClear violation in the minimum time -->
+            <Field Name="RecoveryGroundHeadingIntervals" Type="GroundHeadingRecoveryInterval[]" Units="None" />
+            <!-- List of the Recovery ground speed intervals that will exit a WellClear violation in the minimum time -->
+            <Field Name="RecoveryGroundSpeedIntervals" Type="GroundSpeedRecoveryInterval[]" Units="None" />
+            <!-- List of the Recovery vertical speed intervals that will exit a WellClear violation in the minimum time -->
+            <Field Name="RecoveryVerticalSpeedIntervals" Type="VerticalSpeedRecoveryInterval[]" Units="None" />
+            <!-- List of the Recovery altitude intervals that will exit a WellCLear violation in the minimum time -->
+            <Field Name="RecoveryAltitudeIntervals" Type="AltitudeRecoveryInterval[]" Units="None" />
+        </Struct>
+        <!-- DAIDALUS configuration parameters -->
+        <Struct Name="DAIDALUSConfiguration">
+            <!-- Entity Id that generated this message -->
+            <Field Name="EntityId" Type="uint32" Units="None" />
+            <!-- Time horizon of all DAIDALUS functions -->
+            <Field Name="LookAheadTime" Type="real64" Units="seconds" />
+            <!-- Relative maximum horizontal direction maneuver to the left of current ownship direction -->
+            <Field Name="LeftTrack" Type="real64" Units="degrees" />
+            <!-- Relative maximum horizontal direction maneuver to the right of current ownship direction -->
+            <Field Name="RightTrack" Type="real64" Units="degrees" />
+            <!-- Absolute maximum horizontal speed maneuver -->
+            <Field Name="MaxGroundSpeed" Type="real64" Units="meters per second" />
+            <!-- Absolute minimum horizontal speed maneuver -->
+            <Field Name="MinGroundSpeed" Type="real64" Units="meters per second" />
+            <!-- Absolute maximum vertical speed maneuver -->
+            <Field Name="MaxVerticalSpeed" Type="real64" Units="meters per second" />
+            <!-- Absolute minimum verrtical speed maneuver -->
+            <Field Name="MinVerticalSpeed" Type="real64" Units="meters per second" />
+            <!-- Absolute maximum altitude maneuver -->
+            <Field Name="MaxAltitude" Type="real64" Units="meters" />
+            <!-- Absolute minimum altitude maneuver -->
+            <Field Name="MinAltitude" Type="real64" Units="meters" />
+            <!-- Granularity of horizontal direction maneuvers -->
+            <Field Name="TrackStep" Type="real64" Units="degrees" />
+            <!-- Granularity of horizontal speed maneuvers -->
+            <Field Name="GroundSpeedStep" Type="real64" Units="meters per second" />
+            <!-- Granularity of vertical speed maneuvers -->
+            <Field Name="VerticalSpeedStep" Type="real64" Units="meters per second" />
+            <!-- Granularity of altitude maneuvers -->
+            <Field Name="AltitudeStep" Type="real64" Units="meters" />
+            <!-- Horizontal acceleration used in the computation of horizontal speed maneuvers -->
+            <Field Name="HorizontalAcceleration" Type="real64" Units="meters per second per second" />
+            <!-- Vertical accelereation used in the computation of vertical speed maneuvers -->
+            <Field Name="VerticalAcceleration" Type="real64" Units="G" />
+            <!-- Turn rate used in the computation of horizontal direction maneuvers -->
+            <Field Name="TurnRate" Type="real64" Units="degrees per second" />
+            <!-- Bank angle used in the computation of horizontal direction maneuvers -->
+            <Field Name="BankAngle" Type="real64" Units="degrees" />
+            <!-- Vertical rate used in the computation of altitude maneuvers -->
+            <Field Name="VerticalRate" Type="real64" Units="meters per second" />
+            <!-- Time delay to stabilize recovery maneuvers -->
+            <Field Name="RecoveryStabilityTime" Type="real64" Units="seconds" />
+            <!-- Enable computation of horizontal direction recovery maneuvers -->
+            <Field Name="isRecoveryTrackBands" Type="bool" Units="None" />
+            <!-- Enable computation of horzontal speed recovery maneuvers -->
+            <Field Name="isRecoveryGroundSpeedBands" Type="bool" Units="None" />
+            <!-- Enable computation of vertical speed recovery maneuvers -->
+            <Field Name="isRecoveryVerticalSpeedBands" Type="bool" Units="None" />
+            <!-- Enable computation of altitude recovery maneuvers -->
+            <Field Name="isRecoveryAltitudeBands" Type="bool" Units="None" />
+            <!-- Enable computation of collision avoidance maneuvers -->
+            <Field Name="isCollisionAvoidanceBands" Type="bool" Units="None" />
+            <!-- Factor to reduce minimum horizontal/vertial recovery separation when computing avoidance maneuvers -->
+            <Field Name="CollisionAvoidanceBandsFactor" Type="bool" Units="None" />
+            <!-- Horizontal NMAC -->
+            <Field Name="HorizontalNMAC" Type="real64" Units="meters" />
+            <!-- Minimum horizontal separation used in the computation of recovery maneuvers -->
+            <Field Name="MinHorizontalRecovery" Type="real64" Units="meters" />
+            <!-- Vertical NMAC -->
+            <Field  Name="VerticalNMAC" Type="real64" Units="meters" />
+            <!-- Minimum vertical separation used in the computation of recovery maneuvers-->
+            <Field Name="MinVerticalRecovery" Type="real64" Units="meters" />
+            <!-- Threshold relative to ownship horizontal direction for the computation of horizontal contours -->
+            <Field Name="HorizontalContourThreshold" Type="real64" Units="meters" />
+            <!-- Threshold for the horizontal distance component of Well-Clear Volume -->
+            <Field Name="DTHR" Type="real64" Units="meters" />
+            <!-- Thershold for the vertical distance component of Well-Clear Volume -->
+            <Field Name="ZTHR" Type="real64" Units="meters" />
+            <!-- Threshold for time component of Well-Clear Volume -->
+            <Field Name="TTHR" Type="real64" Units="seconds" />
+            <!-- Number of RTCA alert levels desired for reporting -->
+            <Field Name="RTCAAlertLevels" Type="uint16" Units="None" />
+            <!-- Alert time for preventative alert -->
+            <Field Name="AlertTime1" Type="real64" Units="seconds" />
+            <!-- Early  alert time for the preventativve alert -->
+            <Field Name="EarlyAlertTime1" Type="real64" Units="seconds" />
+            <!-- Alert time for the corrective alert -->
+            <Field Name="AlertTime2" Type="real64" Units="seconds" />
+            <!-- Early alert time for the corrective alert -->
+            <Field Name="EarlyAlertTime2" Type="real64" Units="seconds" />
+            <!-- Alert time for the warning alert -->
+            <Field Name="AlertTime3" Type="real64" Units="seconds" />
+            <!-- Early alert time for the warning alert -->
+            <Field Name="EarlyAlertTime3" Type="real64" Units="seconds" />
+            <!-- Hoziontal dectection type -->
+            <Field Name="HorizontalDetectionType" Type="string" Units="None" />
+        </Struct>
+    </StructList>
+</MDM>
