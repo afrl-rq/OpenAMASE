@@ -1,1 +1,0 @@
- ./Common.sh "--config" "config/ZoneAlert_playback"

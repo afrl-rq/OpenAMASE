@@ -91,9 +91,6 @@ public class EntityLayer extends GraphicsLayer<MapGraphic> implements AppEventLi
         } else if (event instanceof AirVehicleState) {
             AirVehicleState avs = (AirVehicleState) event;
             EntityGraphic eg = (EntityGraphic) getByRefObject(avs.getID());
-            //Update color 
-            Color color = AircraftColors.getNewColor(avs.getID());
-            eg.updateColor(color);
             if (eg == null) {
 //                AirVehicleConfiguration avc = ScenarioState.getAirVehicleConfig(avs.getID());
 //                if (avc != null) {

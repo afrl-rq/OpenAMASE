@@ -35,7 +35,6 @@ import java.awt.Image;
 public class EntityGraphic extends MapGraphicsList<MapGraphic> {
 
     protected MapIcon icon;
-    protected Image imageicon;
     protected FootprintGraphic footprintGraphic;
     //TrailGraphic trail = new TrailGraphic();
     protected MapText vehName;
@@ -53,7 +52,6 @@ public class EntityGraphic extends MapGraphicsList<MapGraphic> {
 
         this.name = ec.getLabel();
         this.id = ec.getID();
-        this.imageicon = icon;
         setRefObject(this.id);
         //trail.setStroke(new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 0, new float[]{1f, 2f}, 0.5f));
         //trail.setPaint(Color.RED);
@@ -89,7 +87,6 @@ public class EntityGraphic extends MapGraphicsList<MapGraphic> {
 
         this.name = avc.getLabel();
         this.id = avc.getID();
-        this.imageicon = icon;
         setRefObject(this.id);
         //trail.setStroke(new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 0, new float[]{1f, 2f}, 0.5f));
         //trail.setPaint(Color.RED);
@@ -112,16 +109,6 @@ public class EntityGraphic extends MapGraphicsList<MapGraphic> {
         // don't show until and AirVehicleState is received
         setVisible(false);
     }
-    
-    public void updateColor(Color color) {
-        
-        Image shadowImage = IconTools.getFilledImage(this.imageicon, 20, 20, 4, Color.WHITE, color);
-        if (this.icon != null){
-            remove(this.icon);  
-        }
-        this.icon = new MapIcon(shadowImage);
-        add(this.icon);
-    }   
     
     /**
      *
