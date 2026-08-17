@@ -12,6 +12,7 @@
                 <root id="Amase.dir" name="Amase"/>
                 <root id="SetupTool.dir" name="SetupTool"/>
                 <root id="src.example.dir" name="example"/>
+                <root id="src.zonealert.dir" name="zonealert"/>
             </source-roots>
             <test-roots/>
         </data>
