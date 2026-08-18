@@ -116,7 +116,7 @@ is divided into following sections:
                 </not>
             </condition>
         </fail>
-        <j2seproject3:modulename property="module.name" sourcepath="${Core.dir}:${Amase.dir}:${SetupTool.dir}:${src.example.dir}"/>
+        <j2seproject3:modulename property="module.name" sourcepath="${src.zonealert.dir}:${Core.dir}:${Amase.dir}:${SetupTool.dir}:${src.example.dir}"/>
         <condition property="named.module.internal">
             <and>
                 <isset property="module.name"/>
@@ -209,6 +209,7 @@ is divided into following sections:
         </condition>
         <condition property="have.sources">
             <or>
+                <available file="${src.zonealert.dir}"/>
                 <available file="${Core.dir}"/>
                 <available file="${Amase.dir}"/>
                 <available file="${SetupTool.dir}"/>
@@ -315,6 +316,7 @@ is divided into following sections:
         <!-- You can override this target in the ../build.xml file. -->
     </target>
     <target depends="-pre-init,-init-private,-init-libraries,-init-user,-init-project,-do-init" name="-init-check">
+        <fail unless="src.zonealert.dir">Must set src.zonealert.dir</fail>
         <fail unless="Core.dir">Must set Core.dir</fail>
         <fail unless="Amase.dir">Must set Amase.dir</fail>
         <fail unless="SetupTool.dir">Must set SetupTool.dir</fail>
@@ -339,7 +341,7 @@ is divided into following sections:
     </target>
     <target depends="-init-ap-cmdline-properties,-init-source-module-properties" if="modules.supported.internal" name="-init-macrodef-javac-with-module">
         <macrodef name="javac" uri="http://www.netbeans.org/ns/j2se-project/3">
-            <attribute default="${Core.dir}:${Amase.dir}:${SetupTool.dir}:${src.example.dir}" name="srcdir"/>
+            <attribute default="${src.zonealert.dir}:${Core.dir}:${Amase.dir}:${SetupTool.dir}:${src.example.dir}" name="srcdir"/>
             <attribute default="${build.classes.dir}" name="destdir"/>
             <attribute default="${javac.classpath}" name="classpath"/>
             <attribute default="${javac.modulepath}" name="modulepath"/>
@@ -351,7 +353,7 @@ is divided into following sections:
             <attribute default="${excludes}" name="excludes"/>
             <attribute default="${javac.debug}" name="debug"/>
             <attribute default="${empty.dir}" name="sourcepath" unless:set="named.module.internal"/>
-            <attribute default="${Core.dir}:${Amase.dir}:${SetupTool.dir}:${src.example.dir}" if:set="named.module.internal" name="sourcepath"/>
+            <attribute default="${src.zonealert.dir}:${Core.dir}:${Amase.dir}:${SetupTool.dir}:${src.example.dir}" if:set="named.module.internal" name="sourcepath"/>
             <attribute default="${empty.dir}" name="gensrcdir"/>
             <element name="customize" optional="true"/>
             <sequential>
@@ -406,7 +408,7 @@ is divided into following sections:
     </target>
     <target depends="-init-ap-cmdline-properties,-init-source-module-properties" if="ap.supported.internal" name="-init-macrodef-javac-with-processors" unless="modules.supported.internal">
         <macrodef name="javac" uri="http://www.netbeans.org/ns/j2se-project/3">
-            <attribute default="${Core.dir}:${Amase.dir}:${SetupTool.dir}:${src.example.dir}" name="srcdir"/>
+            <attribute default="${src.zonealert.dir}:${Core.dir}:${Amase.dir}:${SetupTool.dir}:${src.example.dir}" name="srcdir"/>
             <attribute default="${build.classes.dir}" name="destdir"/>
             <attribute default="${javac.classpath}" name="classpath"/>
             <attribute default="${javac.modulepath}" name="modulepath"/>
@@ -449,7 +451,7 @@ is divided into following sections:
     </target>
     <target depends="-init-ap-cmdline-properties,-init-source-module-properties" name="-init-macrodef-javac-without-processors" unless="ap.supported.internal">
         <macrodef name="javac" uri="http://www.netbeans.org/ns/j2se-project/3">
-            <attribute default="${Core.dir}:${Amase.dir}:${SetupTool.dir}:${src.example.dir}" name="srcdir"/>
+            <attribute default="${src.zonealert.dir}:${Core.dir}:${Amase.dir}:${SetupTool.dir}:${src.example.dir}" name="srcdir"/>
             <attribute default="${build.classes.dir}" name="destdir"/>
             <attribute default="${javac.classpath}" name="classpath"/>
             <attribute default="${javac.modulepath}" name="modulepath"/>
@@ -484,7 +486,7 @@ is divided into following sections:
     </target>
     <target depends="-init-macrodef-javac-with-module,-init-macrodef-javac-with-processors,-init-macrodef-javac-without-processors" name="-init-macrodef-javac">
         <macrodef name="depend" uri="http://www.netbeans.org/ns/j2se-project/3">
-            <attribute default="${Core.dir}:${Amase.dir}:${SetupTool.dir}:${src.example.dir}" name="srcdir"/>
+            <attribute default="${src.zonealert.dir}:${Core.dir}:${Amase.dir}:${SetupTool.dir}:${src.example.dir}" name="srcdir"/>
             <attribute default="${build.classes.dir}" name="destdir"/>
             <attribute default="${javac.classpath}" name="classpath"/>
             <sequential>
@@ -1112,11 +1114,12 @@ is divided into following sections:
                 <include name="*"/>
             </dirset>
         </pathconvert>
-        <j2seproject3:depend srcdir="${Core.dir}:${Amase.dir}:${SetupTool.dir}:${src.example.dir}:${build.generated.subdirs}"/>
+        <j2seproject3:depend srcdir="${src.zonealert.dir}:${Core.dir}:${Amase.dir}:${SetupTool.dir}:${src.example.dir}:${build.generated.subdirs}"/>
     </target>
     <target depends="init,deps-jar,-pre-pre-compile,-pre-compile, -copy-persistence-xml,-compile-depend" if="have.sources" name="-do-compile">
         <j2seproject3:javac gensrcdir="${build.generated.sources.dir}"/>
         <copy todir="${build.classes.dir}">
+            <fileset dir="${src.zonealert.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
             <fileset dir="${Core.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
             <fileset dir="${Amase.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
             <fileset dir="${SetupTool.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
@@ -1141,7 +1144,7 @@ is divided into following sections:
     <target depends="init,deps-jar,-pre-pre-compile" name="-do-compile-single">
         <fail unless="javac.includes">Must select some files in the IDE or set javac.includes</fail>
         <j2seproject3:force-recompile/>
-        <j2seproject3:javac excludes="" gensrcdir="${build.generated.sources.dir}" includes="${javac.includes}, module-info.java" sourcepath="${Core.dir}:${Amase.dir}:${SetupTool.dir}:${src.example.dir}"/>
+        <j2seproject3:javac excludes="" gensrcdir="${build.generated.sources.dir}" includes="${javac.includes}, module-info.java" sourcepath="${src.zonealert.dir}:${Core.dir}:${Amase.dir}:${SetupTool.dir}:${src.example.dir}"/>
     </target>
     <target name="-post-compile-single">
         <!-- Empty placeholder for easier customization. -->
@@ -1533,6 +1536,9 @@ is divided into following sections:
             <classpath>
                 <path path="${javac.classpath}"/>
             </classpath>
+            <fileset dir="${src.zonealert.dir}" excludes="${bug5101868workaround},${excludes}" includes="${includes}">
+                <filename name="**/*.java"/>
+            </fileset>
             <fileset dir="${Core.dir}" excludes="${bug5101868workaround},${excludes}" includes="${includes}">
                 <filename name="**/*.java"/>
             </fileset>
@@ -1553,6 +1559,9 @@ is divided into following sections:
             <arg line="${javadoc.html5.cmd.line.arg}"/>
         </javadoc>
         <copy todir="${dist.javadoc.dir}">
+            <fileset dir="${src.zonealert.dir}" excludes="${excludes}" includes="${includes}">
+                <filename name="**/doc-files/**"/>
+            </fileset>
             <fileset dir="${Core.dir}" excludes="${excludes}" includes="${includes}">
                 <filename name="**/doc-files/**"/>
             </fileset>
