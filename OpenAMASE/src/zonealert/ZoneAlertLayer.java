@@ -18,8 +18,8 @@ import avtas.app.AppEventListener;
 import avtas.map.graphics.*;
 import avtas.map.layers.GraphicsLayer;
 //import larcfm.DAIDALUS.*;  //Template for imports on messages
-import uxas.messages.ImminentZoneViolation;
-import uxas.messages.ActiveZoneViolation;
+import dcllc.zonealert.ImminentZoneViolation;
+import dcllc.zonealert.ActiveZoneViolation;
 //import ProcessedZones;
 
 import javax.swing.SwingConstants;
