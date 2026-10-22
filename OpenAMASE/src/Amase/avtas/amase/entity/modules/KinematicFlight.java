@@ -192,10 +192,12 @@ public class KinematicFlight extends EntityModule {
         }
         else if (object instanceof AirVehicleState) {
             AirVehicleState avs = (AirVehicleState) object;
-            double groundspeed = Math.hypot(data.vnorth.asDouble() - northWind, data.veast.asDouble() - eastWind);
+            // vnorth and veast already include wind and are the same ground-velocity
+            // components used to propagate position in step().
+            double groundspeed = Math.hypot(data.vnorth.asDouble(), data.veast.asDouble());
             avs.setGroundspeed((float) groundspeed);
             avs.setAirspeed( (float) data.u.asDouble());
-            avs.setCourse((float) Math.toDegrees(Math.atan2(data.veast.asDouble() - eastWind, data.vnorth.asDouble() - northWind)));
+            avs.setCourse((float) Math.toDegrees(Math.atan2(data.veast.asDouble(), data.vnorth.asDouble())));
         }
     }
 }
